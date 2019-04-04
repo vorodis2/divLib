@@ -596,7 +596,7 @@ constructor(dCont,_x,_y, _color, _fun) {
   				oldParent=this.parent;
   				nP=this.getBigPar(this, oo1);
 
-  				trace(oo,"",oo1, "   ",nP )
+  				
   				nP.add(this);
   				this.x=oo1.x;
   				this.y=oo1.y;
@@ -1020,7 +1020,7 @@ export class DPanel extends DCont {
 
 	set color1(value) {
 		if(this._color1!=value){
-			trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+this._color1)
+			
 			this._color1 = value;
 			this.div.style.background = this._color1;
 			var c=dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);  		

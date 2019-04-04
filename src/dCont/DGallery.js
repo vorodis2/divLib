@@ -646,9 +646,7 @@ function DBox(_cont, _x, _y, _fun) {
 
 
 	this.image = new DImage(this.content, 0, 0, undefined, function () {
-		//this.height = this.picHeight;
-		//this.width = this.picWidth;
-		trace(this.picWidth+"     "+this.picHeight)
+	
 		self.draw();
 		if (self.funLoad) self.funLoad();
 	});
@@ -693,8 +691,7 @@ function DBox(_cont, _x, _y, _fun) {
 		this.image.x = 0;
 		this.image.width=this.image.picWidth*ss;
 		this.image.height=this.image.picHeight*ss;
-		//trace("this.image.width   "+this.image.width+"   "+this.image.picWidth)
-		//trace("wh   "+this.image.picWidth+"   "+this.image.picHeight+"    "+ss)
+
 		this.image.x = (this._width - this.image.picWidth * ss) / 2;
 		this.image.y = (this._height - this.image.picHeight * ss) / 2;
 
