@@ -1,0 +1,101 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>divLib</title>	
+<script src="build/divLib.js"></script>
+<script>
+	var trace = window.console.log.bind(window.console);
+	var array=[];
+	var pObject,content,dinamik
+	var ww=120
+	var dcmParam;
+	function downMy() {
+		//console.log(this);
+		
+		if(dinamik.uuid!=this.uuid){					
+			dinamik=this;
+			
+			//paramObject.addObject(dinamik);
+			pObject.addObject(dinamik);
+		}		
+	}
+
+
+	function init () {
+		window.onresize = sizeWindow;
+		dinamik = dcmParam=new DCM();		
+		scane= new DCont(document.body);
+		content= new DCont(scane);
+		content.position.x=220;
+		pObject=new DParamObject(scane,2,2,function(){});
+		pObject.addObject(dinamik);
+		
+		new DButton(content,0,2,"dcmParam",function(){				
+			pObject.addObject(dcmParam)
+		}).width=ww*2+10;		
+
+		plus(new DButton(null,0,0,"Button",downMy));
+		plus(new DPanel(null,0,0));
+		plus(new DImage(null,0,0,"resources/pic/0.png"));
+		plus(new DLabel(null,0,0,"text My"));
+		plus(new DSlider(null,0,0,downMy));
+		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
+		plus(new DInput(null,0,0,"DInput",downMy));
+		plus(new DTextArea(null,0,0,"DTextArea",downMy));
+		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
+		plus(new DWindow(null,0,0,"DWindow",downMy));
+		plus(new DColor(null,0,0,"#0000ff",downMy));
+		plus(new DScrollBarV(content,677,133,downMy))
+		plus(new DScrollBarH(content,677,133,downMy))
+		var g= new DGallery(content,800,300,downMy);
+		var a=[]
+		for (var i = 0; i < 10; i++) {
+			a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
+		}
+		g.start(a);
+		plus(g)
+
+		pObject.addObject(array[array.length-1].obj);
+		
+	}
+		
+	function plus (obj) {		
+		var p=new DPanel(content,0,0);
+		var p1=new DPanel(p,ww,2);
+		p.width=ww*2+10;
+		p1.width=ww+6;
+		p.height=obj.height+12;
+		p1.height=obj.height+6;
+		obj.x=2;
+		obj.y=2;
+		p1.add(obj);
+		obj.width=120;
+
+		p.obj=obj
+
+		new DLabel(p,2,2,obj.type);
+		var l=new DLabel(p,2,p1.height-8,"height:"+obj.height);
+		l.alpha=0.75;
+		l.fontSize=10;
+		array.push(p)
+		sizeWindow();
+	}
+	
+
+	function sizeWindow () {			
+		var h = document.documentElement.clientHeight;
+		var y=36;
+		var x=0;
+		for (var i = 0; i < array.length; i++) {
+			array[i].y=y;
+			array[i].x=x;
+			y+=array[i].height+2;
+			if(y>h){
+				y=2;
+				x+=ww*2+12
+				array[i].y=y;
+				array[i].x=x;
+				y+=array[i].height+2;	
+			}
+		}
+	}
+</script></head><body onload="init()"></body></html>
