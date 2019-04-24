@@ -13,7 +13,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.x = _x || 0;
 	this.y = _y || 0;
 	this.fun = _fun;
-
+	this._panelBool=false;
 
 	this._widthPic = 64; // elements width
 	this._heightPic = 64; // elements height
@@ -51,15 +51,21 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 	/*this.graphicsMask = new PIXI.Graphics();
 	this.addChild(this.graphicsMask);*/
+	
+	this.contPanel = new DCont();
+	this.add(this.contPanel);
+
 	this.content1 = new DCont();
 	this.add(this.content1);
+
+	
 
 	this.content = new DCont();
 	this.content1.add(this.content);
 
 	//var b=new DButton(this,0,-50,"DButton")
 	
-	this.content1.div.style.clip = "rect(0px "+this._width+"px "+this._height+"px 0px)";
+	this.content1.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)";
 	/*this.graphics = new PIXI.Graphics();
 	this.content.addChild(this.graphics);*/
 
@@ -275,6 +281,11 @@ export function DGallery (dCont, _x, _y, _fun) {
 			}
 		}
 
+		if(this.panel!=undefined){			
+			this.panel.width=this._width;
+			this.panel.height=this._height;
+		}
+
 		// this.graphicsMask.clear();
 		// this.graphicsMask.beginFill(0xff0000, 0);
 		// this.graphicsMask.drawRect(0, 0, wM, hM);
@@ -330,8 +341,8 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 	// прокрутка колесом мышки
 	var hhh, www;
-	/*this.mousewheel = function (e) {
-
+	this.mousewheel = function (e) {
+		trace(e)
 		if (self.kolII <= self.array.length) {
 			hhh = (self.heightPic + self.otstup) * (Math.ceil(self.array.length / self.kolII)) - self._height;
 			www = (self.widthPic + self.otstup) * self.kolII - self._width;
@@ -341,20 +352,20 @@ export function DGallery (dCont, _x, _y, _fun) {
 		}
 
 		if (self.scrollBarV.visible) {
-			if (e.delta > 0) {
+			if (e.deltaY > 0) {
 				if (self.content.y >= 0) {
 					self.content.y = 0;
-					self.scrollBarV.scrolValue = 0;
+					self.scrollBarV.value = 0;
 				} else {
-					self.scrollBarV.scrolValue -= self.sahDelta;
+					self.scrollBarV.value -= self.sahDelta;
 					self.content.y += self.sahDelta;
 				}
 			} else {
 				if (self.content.y <= -(hhh + self.otstup)) {
 					self.content.y = -(hhh + self.otstup);
-					self.scrollBarV.scrolValue = hhh;
+					self.scrollBarV.value = hhh;
 				} else {
-					self.scrollBarV.scrolValue += self.sahDelta;
+					self.scrollBarV.value += self.sahDelta;
 					self.content.y -= self.sahDelta;
 				}
 
@@ -362,26 +373,27 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 			//
 		} else if (self.scrollBarH.visible) {
-			if (e.delta > 0) {
+			if (e.deltaY > 0) {
 				if (self.content.x >= 0) {
 					self.content.x = 0;
-					self.scrollBarH.scrolValue = 0;
+					self.scrollBarH.value = 0;
 				} else {
-					self.scrollBarH.scrolValue -= self.sahDelta;
+					self.scrollBarH.value -= self.sahDelta;
 					self.content.x += self.sahDelta;
 				}
 			} else {
 				if (self.content.x <= -(www + self.otstup)) {
 					self.content.x = -(www + self.otstup);
-					self.scrollBarH.scrolValue = www;
+					self.scrollBarH.value = www;
 				} else {
-					self.scrollBarH.scrolValue += self.sahDelta;
+					self.scrollBarH.value += self.sahDelta;
 					self.content.x -= self.sahDelta;
 				}
-
 			}
 		}
-	};*/
+	};
+
+	
 
 	var bb = this._boolWheel;
 	this._boolWheel = null;
@@ -391,16 +403,36 @@ export function DGallery (dCont, _x, _y, _fun) {
 DGallery.prototype = Object.create(DCont.prototype);
 DGallery.prototype.constructor = DGallery;
 Object.defineProperties(DGallery.prototype, {
+	
+	
+	panelBool: { // вынести\внести отступ за элемент
+		set: function (value) {
+			if (this._panelBool == value) return;
+			this._panelBool = value;
+			if(this.panel==undefined){
+				this.panel=new DPanel(this.contPanel,0,0);
+				this.panel.width=this._width;
+				this.panel.height=this._height;
+			}
+			this.panel.visible=value;
+		},
+		get: function () {
+			return this._panelBool;
+		}
+	},
+
+
 	boolWheel: { // включить\выключить прокрутку колесом
 		set: function (value) {
 			if (this._boolWheel == value) return;
 			this._boolWheel = value;
 			this.interactive = this._boolWheel;
-			/*if (this._boolWheel == true) {
-				pl102Wheel.on(this, 'mousewheel', this.mousewheel);
-			} else {
-				pl102Wheel.off(this, 'mousewheel', this.mousewheel);
-			}*/
+
+			if (this._boolWheel == true) {				
+				this.div.addEventListener('mousewheel', this.mousewheel)
+			} else {				
+				this.div.removeEventListener('mousewheel', this.mousewheel)
+			}
 		},
 		get: function () {
 			return this._boolWheel;
@@ -500,7 +532,7 @@ Object.defineProperties(DGallery.prototype, {
 		set: function (value) {
 			if (this._width == value) return;
 			this._width = value;
-			this.content1.div.style.clip = "rect(0px "+this._width+"px "+this._height+"px 0px)";
+			this.content1.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)";
 			this.content1.x=0
 			this.drawScrol();
 			this.draw();
@@ -513,7 +545,7 @@ Object.defineProperties(DGallery.prototype, {
 		set: function (value) {
 			if (this._height == value) return;
 			this._height = value;
-			this.content1.div.style.clip = "rect(0px "+this._width+"px "+this._height+"px 0px)";
+			this.content1.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)";
 			this.content1.x=0
 			this.drawScrol();
 
@@ -601,12 +633,42 @@ Object.defineProperties(DGallery.prototype, {
 		get: function () {
 			return this._y;
 		}
+	},
+	activMouse: {// Активный элемент
+		set: function (value) {			
+			if (this._y == value) return;
+			this._activMouse = value;
+			 if(value==true){
+				this.alpha=1;
+					
+		    }else{
+		    	this.alpha=0.7;			    	
+		    }				
+		},
+		get: function () {
+			return this._activMouse;
+		}
 	}
+
+
+		/*set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				//this.alpha=1;
+				this.div.style.pointerEvents=null;	
+		    }else{
+		    	//this.alpha=0.7;		    	
+		    	this.div.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}	*/
 
 });
 
 
-function DBox(_cont, _x, _y, _fun) {
+export function DBox(_cont, _x, _y, _fun) {
 	DCont.call(this);
 	this.type = 'DBox';
 	var self = this;
@@ -640,7 +702,6 @@ function DBox(_cont, _x, _y, _fun) {
 
 	this.content = new DCont();
 	this.add(this.content);
-
 
 	this.panel = new DPanel(this.content, 0, 0);
 

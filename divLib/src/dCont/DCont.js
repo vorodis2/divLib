@@ -1,121 +1,4 @@
-/*import { StylePL102 } from '../plLib/pl102/index.js';
-import { UtilScaleBrowser } from '../plLib/utility/index.js';
-import { Glaf } from '../main/Glaf.js';*/
 
-
-
-
-/*
-var dContSah=0;
-export function DCont (divORCont) {	
-	this.typeBig="DCont";
-	this._x=0;
-	this._y=0;
-	this._rotation=0;
-	this._scale=1;
-	this._alpha=1;
-	this._visible=true;
-
-	this.div= document.createElement('div');
-	this.div.style.position = 'fixed';
-	this.div.style.top = '0px';
-	this.div.style.left = '0px';
-
-	this.uuid=dContSah+"_"+Math.random()
-	dContSah++;
-
-	this.add=function(c){
-		if(c==undefined) return null;
-
-	}
-
-
-	this.remove=function(c){
-		if(c==undefined) return null;
-
-	}
-
-
-	
-
-	if(divORCont!=undefined){//приатачиваем
-		if(divORCont.typeBig!=undefined){
-			if(divORCont.typeBig=="DCont"){
-				divORCont.add(this);
-				return divORCont;
-			}			
-		}
-
-		divORCont.appendChild(this.div);
-	}
-
-}
-Object.defineProperties(DCont.prototype, {
-	x: {// замена градиентов
-		set: function (value) {	
-			if(this._x!=value){
-				this._x = value;
-				this.div.style.left = this._x+'px';	
-			}								
-		},
-		get: function () {
-			return this._x;
-		}
-	},
-	y: {// замена градиентов
-		set: function (value) {	
-			if(this._y!=value){
-				this._y = value;
-				this.div.style.top = this._y+'px';	
-			}								
-		},
-		get: function () {
-			return this._y;
-		}
-	},
-	rotation: {// замена градиентов
-		set: function (value) {	
-			if(this._rotation!=value){
-				this._rotation = value;	
-			}								
-		},
-		get: function () {
-			return this._rotation;
-		}
-	},
-	scale: {// замена градиентов
-		set: function (value) {	
-			if(this._scale!=value){
-				this._scale = value;	
-			}								
-		},
-		get: function () {
-			return this._scale;
-		}
-	},
-	alpha: {// замена градиентов
-		set: function (value) {	
-			if(this._alpha!=value){
-				this._alpha = value;
-				this.div.style.opacity = this._alpha;	
-			}								
-		},
-		get: function () {
-			return this._alpha;
-		}
-	},
-	visible: {// замена градиентов
-		set: function (value) {	
-			if(this._visible!=value){
-				this._visible = value;
-				this.div.style.visibility = this._visible ? 'visible ' : 'hidden';
-			}								
-		},
-		get: function () {
-			return this._visible;
-		}
-	}
-});*/
 
 var dContSah=0;
 export class DCont {
@@ -136,6 +19,7 @@ export class DCont {
 		this._scaleBool=false;
    		this.uuid=dContSah+"_"+Math.random()
 		dContSah++;
+		this.htmlBody=undefined;
 
 
 		this.p = new PositionD(this.drag, 0, 0, 1);
@@ -179,6 +63,7 @@ export class DCont {
     		}
     		return null;
     	}
+
 		var r,r2;
     	this.testVisi= function(b){    		
     		r=this.parameter.visible;
@@ -195,12 +80,13 @@ export class DCont {
 		    	}
 		    }		   
     	}
-
+    	trace(">>>>>>>>>>>>>>>>>>>>",divORCont)
 		if(divORCont!=undefined){//приатачиваем
 			if(divORCont.parameter!=undefined){				
 				divORCont.add(this);										
 			}else{
-				divORCont.appendChild(this.div);
+				divORCont.appendChild(this.div);				
+				this.htmlBody=divORCont;
 			}			
 			
 		}
@@ -216,7 +102,7 @@ export class DCont {
 			}
 		}
 		this.children.push(c);
-		this.div.appendChild(c.div);
+		this.div.appendChild(c.div);		
 		c.parent=this;	
 		c.testVisi();	
 	}

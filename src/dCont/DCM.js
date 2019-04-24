@@ -3,10 +3,8 @@
 /*(function (global, factory) {
 	typeof exports === 'object'/* && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.DCM = {})));
+	(factory((global.DCM = {})));  303890
 }(this, (function (exports) { 'use strict';*/
-
-
 
 
 import { DCont } from './DCont.js';
@@ -28,7 +26,7 @@ export function DCM () {
 	this._fontFamily = "Arial, Helvetica, sans-serif";
 	this._otstup = 2;	
 
-
+	this.mobile=false;
 
 	this.array=[]
 	this.add=function(comp){
@@ -132,6 +130,29 @@ export function DCM () {
  		}
 	 	return '#' + this.compToHex(a[0]) + this.compToHex(a[1]) + this.compToHex(a[2]);
 	}
+
+	this.isMobile = {
+		Android: function () {
+			return navigator.userAgent.match(/Android/i);
+		},
+		BlackBerry: function () {
+			return navigator.userAgent.match(/BlackBerry/i);
+		},
+		iOS: function () {
+			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+		},
+		Opera: function () {
+			return navigator.userAgent.match(/Opera Mini/i);
+		},
+		Windows: function () {
+			return navigator.userAgent.match(/IEMobile/i);
+		},
+		any: function () {
+			return (self.isMobile.Android() || self.isMobile.BlackBerry() || self.isMobile.iOS() || self.isMobile.Opera() || self.isMobile.Windows());
+		}
+	};
+
+	if(this.isMobile.any()!=null)this.mobile=true;
 
 	this.compToHex = function (c) {
 		var hex = c.toString(16);
@@ -376,28 +397,60 @@ export class DWindow extends DCont {
 
   		this.mouseup = function(e){
   			sp=undefined;
-  			document.removeEventListener("mousemove", self.mousemove);
-  			document.removeEventListener("mouseup", self.mouseup);
+  			if(dcmParam.mobile==false){
+  				document.removeEventListener("mousemove", self.mousemove);
+  				document.removeEventListener("mouseup", self.mouseup);
+  			}else{
+  				
+  				document.removeEventListener("touchend", self.mouseup);
+  				document.removeEventListener("touchmove", self.mousemove);
+  			}
+  			
   		}
 
   		this.mousemove = function(e){  			
-  			if(sp==undefined){
-  				sp={
-  					x:e.clientX,
-  					y:e.clientY,
-  					x1:self.x,
-  					y1:self.y
-  				};
-  			}
-  			var ss=sp.x1+(e.clientX-sp.x)  			
-  			self.x=ss
-  			var ss=sp.y1+(e.clientY-sp.y)  			
-  			self.y=ss
+  			if(dcmParam.mobile==false){
+	  			if(sp==undefined){
+	  				sp={
+	  					x:e.clientX,
+	  					y:e.clientY,
+	  					x1:self.x,
+	  					y1:self.y
+	  				};
+	  			}
+	  			var ss=sp.x1+(e.clientX-sp.x)  			
+	  			self.x=ss
+	  			var ss=sp.y1+(e.clientY-sp.y)  			
+	  			self.y=ss
+	  		}else{
+	  			if(sp==undefined){
+	  				sp={
+	  					x:e.targetTouches[0].clientX,
+	  					y:e.targetTouches[0].clientY,
+	  					x1:self.x,
+	  					y1:self.y
+	  				};
+	  			}
+	  			var ss=sp.x1+(e.targetTouches[0].clientX-sp.x)  			
+	  			self.x=ss
+	  			var ss=sp.y1+(e.targetTouches[0].clientY-sp.y)  			
+	  			self.y=ss	  			
+	  		}
+
+
   		}
 
-  		this.startDrag = function(){  			
-  			document.addEventListener("mousemove", self.mousemove);
-  			document.addEventListener("mouseup", self.mouseup);
+  		this.startDrag = function(){  
+  			
+  			if(dcmParam.mobile==false){
+  				document.addEventListener("mousemove", self.mousemove);
+  				document.addEventListener("mouseup", self.mouseup);
+  			}else{
+  				
+  				document.addEventListener("touchend", self.mouseup);
+  				document.addEventListener("touchmove", self.mousemove);
+  			}
+  			
   		}
 
 
@@ -504,14 +557,16 @@ export class DWindow extends DCont {
 	get dragBool() { 		
 		return  this._dragBool;
 	}
-	set activMouse(value) {
+
+	set activMouse(value) {		
 		if(this._activMouse!=value){
-			this._activMouse = value;			
-		}
-	}	
-	get activMouse() { 		
-		return  this._activMouse;
+		    this._activMouse = value;
+		    this.button.activMouse = value;			  		        
+		}		
 	}
+  	get activMouse() { return  this._activMouse;}
+	
+
 
 }
 
@@ -737,7 +792,7 @@ constructor(dCont,_x,_y, _color, _fun) {
 
 
 export class DButton extends DCont {
-  	constructor(dCont, _x, _y, _text, _fun) {
+  	constructor(dCont, _x, _y, _text, _fun, _link) {
   		super(); 
   		this.type="DButton";
   		this.dcmParam=dcmParam; 
@@ -751,12 +806,16 @@ export class DButton extends DCont {
    		this.fun_mouseover=undefined;
    		this.fun_mouseout=undefined;
    		this.fun_mousedown=undefined;
+   		this.funDownFile=undefined;
 
   		this._width=100;
   		this._height=dcmParam.wh;
   		this._color=dcmParam._color;
   		this._colorText=dcmParam._colorText;
   		this._fontSize=dcmParam._fontSize;
+  		this._borderRadius=0;
+
+
 
 
    		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);
@@ -771,6 +830,9 @@ export class DButton extends DCont {
 		this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(self._color), -20);//"none";
 		this.object.style.display="inline-block";
 		this.object.style.fontFamily= dcmParam._fontFamily;
+
+
+		this.object.style.borderRadius=this._borderRadius+"px";
 	
 		this.object.type = 'button';
 		this.object.value = this._text;
@@ -795,9 +857,86 @@ export class DButton extends DCont {
 			if(self.fun_mouseout)self.fun_mouseout();
 		})
 
-		this.object.addEventListener("mousedown", function(){			
+
+		self.mousedown=function(){
+			if (self.file != undefined) {
+				self.file.value = null;
+	            self.file.click();
+	            if (self.funDownFile)self.funDownFile();
+	            return;
+	        }
 			if(self.fun_mousedown)self.fun_mousedown();
-		})
+		}
+		
+
+
+		if(dcmParam.mobile==false){
+			this.object.addEventListener("mousedown", self.mousedown)
+		}else{
+			this.object.addEventListener("touchstart", self.mousedown)
+		}
+
+
+
+		this.image=undefined;
+		this.reDrag=function(){
+			this.object.style.width=this._width+"px";
+			this.object.style.height=this._height+"px";
+			if(this.image!=undefined){
+				var s=this._height/this.image.picHeight;
+				this.image.height=this.image.picHeight*s;
+				this.image.width=this.image.picWidth*s;				
+			}
+		}
+
+
+
+		this.file;
+	    this.startFile = function (accept) {
+	        if (this.file == undefined) {
+	            this.file = document.createElement('input');
+	            this.file.type = 'file';
+	            this.file.multiple=true;
+	            if (accept) this.file.accept = accept;// "image/*";
+	            this.file.style.display = 'none';
+	            this.file.onchange = this.onchange;
+	        }
+	    };
+	    this.result;
+	    this.files;// files
+	    this.onchange = function (e) {
+	        if (e.target.files.length == 0) return;// нечего не выбрали
+	        self.files = e.target.files;
+	       	
+	        var reader = new FileReader();
+	        reader.readAsDataURL(e.target.files[0]);
+	        reader.onload = function (_e) {	        	
+	            self.result = _e.target.result;
+	            if (self.fun) self.fun(self.result);
+	                      
+	            /*setTimeout(function() {
+	            	trace(">>>>2>>>")  
+	            	self.file.value = null;
+	            }, 100);*/	            
+	        };
+	    };
+		
+
+		this._link="null";
+  		this.loadImeg=function(s){
+  			this._link=s;
+  			if(this.image==undefined){
+  				this.image=new DImage(this, 0,0,null,function(){
+  					self.reDrag();
+  				})
+  				this.image.div.style.pointerEvents="none";
+  			}
+  			this.image.link=this._link;
+  		}	
+
+  		if(_link!=undefined)this.loadImeg(_link)
+		
+		
   	}
 
 
@@ -807,7 +946,8 @@ export class DButton extends DCont {
 	set width(value) {
 		if(this._width!=value){
 			this._width = value;
-			this.object.style.width=this._width+"px";
+			this.reDrag()
+			//this.object.style.width=this._width+"px";
 		}		
 	}	
 	get width() { return  this._width;}
@@ -815,7 +955,8 @@ export class DButton extends DCont {
 	set height(value) {
 		if(this._height!=value){
 			this._height = value;
-			this.object.style.height=this._height+"px";
+			this.reDrag()
+			//this.object.style.height=this._height+"px";
 		}		
 	}	
 	get height() { return  this._height;}
@@ -860,6 +1001,34 @@ export class DButton extends DCont {
 	get colorText() { 		
 		return  this._colorText;
 	}
+
+	set borderRadius(value) {
+		if(this._borderRadius!=value){				
+			this._borderRadius = value;
+			this.object.style.borderRadius=this._borderRadius+"px";
+			this.object.style.webkitBorderRadius =this._borderRadius+"px";
+    		this.object.style.mozBorderRadius =this._borderRadius+"px";
+		}
+	}	
+	get borderRadius() { 		
+		return  this._borderRadius;
+	}
+
+	set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				this.alpha=1;
+				this.object.style.pointerEvents=null;	
+		    }else{
+		    	this.alpha=0.7;		    	
+		    	this.object.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}
+
+
 }
 
 export class DCheckBox extends DCont {
@@ -968,6 +1137,20 @@ export class DCheckBox extends DCont {
 	get text() { 		
 		return  this._text;
 	}
+
+	set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				this.alpha=1;
+				this.object.style.pointerEvents=null;	
+		    }else{
+		    	this.alpha=0.7;		    	
+		    	this.object.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}
 }
 
 
@@ -1030,6 +1213,24 @@ export class DPanel extends DCont {
 	get color1() { 		
 		return  this._color1;
 	}
+
+	set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				//this.alpha=1;
+				this.div.style.pointerEvents=null;	
+		    }else{
+		    	//this.alpha=0.7;		    	
+		    	this.div.style.pointerEvents="none";	
+		    }	
+		    for (var i = 0; i < this.children.length; i++) {
+				this.children[i].activMouse=value;
+			}	        
+		}
+
+	}
+  	get activMouse() { return  this._activMouse;}
 }
 
 
@@ -1139,6 +1340,8 @@ export class DImage extends DCont {
 	get link() { 		
 		return  this._link;
 	}
+
+
 }
 
 
@@ -1341,7 +1544,21 @@ export class DSlider extends DCont {
 
 		}		
 	}	
-	get max() { return  this._max;}		
+	get max() { return  this._max;}	
+
+	set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				this.alpha=1;
+				this.object.style.pointerEvents=null;	
+		    }else{
+		    	this.alpha=0.7;		    	
+		    	this.object.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}	
 
 }
 
@@ -1490,16 +1707,10 @@ export class DInput extends DCont {
   		this._text=_text||"null";
   		this._value = this._text;
 
-
-  /*		this._color="#008CBA";
-	this._color1="#ffffff";
-	this._colorText="#ffffff";
-	this._colorText1="#999999";
-	this._fontSize = 16;
-	this._fontFamily = "Arial, Helvetica, sans-serif";
-	this._otstup = 2;	*/
-
-
+  		var timeoutID = null;
+ 	
+  		this._activMouse=true
+  		this._okrug = 0;
   		this._color1=dcmParam._color1;
   		this._colorText1=dcmParam._colorText1;
   		this._fontFamily=dcmParam._fontFamily;
@@ -1518,10 +1729,109 @@ export class DInput extends DCont {
 		this.object.style.fontSize = this._fontSize + 'px';
 
 
-		this.object.oninput = function () {
-			self._text=this.value;
-			self._value =this.value;
+		this.object.oninput = function () {			
+			clearTimeout(timeoutID);
+			timeoutID = setTimeout(self.funTimeOut, 1000);
+		}
+
+		this.funTimeOut = function () {
+			self.dragInput(self.object.value);
+		}
+
+		this.dragInput = function (s) {
+			var str=s;
+
+			if(self._okrug!=0){
+				str=str*1;
+				trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+typeof str)
+				if(typeof str  != "number")str=0;
+				if(isNaN(str)==true)str=0;
+				str=Math.round(str*(1/self._okrug))/(1/self._okrug);
+			}
+			self._text=str;
+			self._value =str;
+			self.object.value = self._text;
 			if(self.fun)self.fun()
+		}
+
+
+
+		var sp;
+
+		this.mouseup = function(e){
+  			sp=undefined;
+  			if(dcmParam.mobile==false){
+  				document.removeEventListener("mousemove", self.mousemove);
+  				document.removeEventListener("mouseup", self.mouseup);
+  			}else{
+  				
+  				document.removeEventListener("touchend", self.mouseup);
+  				document.removeEventListener("touchmove", self.mousemove);
+  			}
+  			
+  		}
+		var ss,sss
+  		this.mousemove = function(e){  			
+  			
+  			if(dcmParam.mobile==false){
+	  			if(sp==undefined){
+	  				sp={
+	  					x:e.clientX,
+	  					y:e.clientY,
+	  					value:self.value,
+	  					b:false
+	  				};
+	  			}	  			
+	  			var ss=(e.clientY-sp.y);		
+	  		}else{
+	  			if(sp==undefined){
+	  				sp={
+	  					x:e.targetTouches[0].clientX,
+	  					y:e.targetTouches[0].clientY,
+	  					value:self.value
+	  				};
+	  			}
+	  			
+	  			ss=(e.targetTouches[0].clientY-sp.y)   			  			
+	  		}
+	  		if(Math.abs(ss)>20){
+	  			if(typeof sp.value  != "number")sp.value=0;
+				if(isNaN(sp.value)==true)sp.value=0;
+	  			sp.b=true;
+
+	  		}
+	  		
+	  		if(sp.b==true){
+	  			sss=sp.value+ss* self.okrug;
+	  			self.dragInput(sss);
+	  		}
+  		}
+
+
+		this.mousedown = function (e) {
+			
+			if(dcmParam.mobile==false){				
+  				document.addEventListener("mousemove", self.mousemove);
+  				document.addEventListener("mouseup", self.mouseup);
+  			}else{  				
+  				document.addEventListener("touchend", self.mouseup);
+  				document.addEventListener("touchmove", self.mousemove);
+  			}
+		}
+
+
+		this.setNum = function (okrug) {
+			this.okrug=okrug;
+
+			if(dcmParam.mobile==false){
+				this.object.addEventListener("mousedown", self.mousedown);
+  				//document.addEventListener("mousemove", self.mousemove);
+  				//document.addEventListener("mouseup", self.mouseup);
+  			}else{
+  				this.object.addEventListener("touchstart", self.mousedown);
+  				//document.addEventListener("touchend", self.mouseup);
+  				//document.addEventListener("touchmove", self.mousemove);
+  			}
 		}
 
 
@@ -1532,6 +1842,7 @@ export class DInput extends DCont {
 
   		this.x=_x||0;	
   		this.y=_y||0;	
+
   	} 
 
   	set x(v) {this.position.x = v;}	get x() { return  this.position.x;}
@@ -1557,7 +1868,8 @@ export class DInput extends DCont {
 	
 	set value(v) {		
 		this._value = v;
-		this._text = v;		
+		this._text = v;	
+		trace(this._text)	
 		this.object.value = this._text;
 				
 	}	
@@ -1605,7 +1917,19 @@ export class DInput extends DCont {
 	}	
 	get fontSize() { return  this._fontSize;}
 
-
+	set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				this.alpha=1;
+				this.object.style.pointerEvents=null;	
+		    }else{
+		    	this.alpha=0.7;		    	
+		    	this.object.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}
 
 }
 
@@ -1621,6 +1945,8 @@ export class DTextArea extends DCont {
   		if(dcmParam==undefined)dcmParam=new DCM();
   		dcmParam.add(this);
   		var self=this;
+
+  		var timeoutID=null
 
    		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);	
   		this._width=100;
@@ -1661,10 +1987,25 @@ export class DTextArea extends DCont {
 		//this.object.style.htmlElement.isOnFocus = false;
 
 
-		this.object.oninput = function () {
-			self._text=this.value;
-			self._value =this.value;
-			if(self.fun)self.fun();
+		
+
+
+
+		this.object.oninput = function () {			
+			clearTimeout(timeoutID);
+			timeoutID = setTimeout(self.funTimeOut, 1000);
+		}
+
+		this.funTimeOut = function () {
+			self.dragInput(self.object.value);
+		}
+
+		this.dragInput = function (s) {
+			var str=s;			
+			self._text=str;
+			self._value =str;
+			self.object.value = self._text;
+			if(self.fun)self.fun()
 		}
 
 
@@ -1748,6 +2089,20 @@ export class DTextArea extends DCont {
 		
 	}	
 	get fontSize() { return  this._fontSize;}
+
+	set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				this.alpha=1;
+				this.object.style.pointerEvents=null;	
+		    }else{
+		    	this.alpha=0.7;		    	
+		    	this.object.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}
 
 }
 
@@ -2212,40 +2567,74 @@ export class DScrollBarH extends DCont {
    		var pv, pv2, sss;
    		this.mouseup = function(e){
   			sp=undefined;
-  			document.removeEventListener("mousemove", self.mousemove);
-  			document.removeEventListener("mouseup", self.mouseup);
+
+  			if(dcmParam.mobile==false){
+  				document.removeEventListener("mousemove", self.mousemove);
+  				document.removeEventListener("mouseup", self.mouseup);
+  			}else{
+  				
+  				document.removeEventListener("touchend", self.mouseup);
+  				document.removeEventListener("touchmove", self.mousemove);
+  			}
   		}
 
   		this.mousemove = function(e){  			
+  			var ss=0;
+  			var sss=0;
+  			var xz=0;
+  			if(e.clientX==undefined){
+  				xz=e.targetTouches[0].clientX
+  			}else{
+  				xz=e.clientX
+  			}
+
+  			
   			if(sp==undefined){
   				sp={
-  					x:e.clientX,
-  					y:e.clientY,
+  					x:xz,
   					x1:self.x,
   					y1:self.y
   				};
   			}
-  			var ss=(e.clientX-sp.x)  			
-  			//var ss=(e.clientY-sp.y)   			
+  			ss=(xz-sp.x)  					
   			sss=ss+pv2;
+	  		
+
+	  	
+  		
+
+
   			if(self.but.width+sss>self._width)sss=self._width-self.but.width;
   			if(sss<0)sss=0;
-
   			self.value=sss/(self._width-self.but.width)*100;
-  			//self.but.x=sss;
-
   			if(self.fun)self.fun()
   			
   		}
-
+  	/*	this.startDrag = function(){  
+  			
+  			if(dcmParam.mobile==false){
+  				document.addEventListener("mousemove", self.mousemove);
+  				document.addEventListener("mouseup", self.mouseup);
+  			}else{
+  				
+  				document.addEventListener("touchend", self.mouseup);
+  				document.addEventListener("touchmove", self.mousemove);
+  			}*/
 
 
    		this.onDragStart = function () {
         	//self.downLocal = self.toLocal(pl102.global);
         	pv = self.value;
         	pv2 = this.but.x;
-        	document.addEventListener("mousemove", self.mousemove);
-  			document.addEventListener("mouseup", self.mouseup);
+        	if(dcmParam.mobile==false){
+  				document.addEventListener("mousemove", self.mousemove);
+  				document.addEventListener("mouseup", self.mouseup);
+  			}else{  				
+  				document.addEventListener("touchend", self.mouseup);
+  				document.addEventListener("touchmove", self.mousemove);
+  			}
+        	//document.addEventListener("mousemove", self.mousemove);
+  			//document.addEventListener("mouseup", self.mouseup);
         }
 
         this.panelA.div.addEventListener("mousedown", function(e){			
@@ -2412,27 +2801,42 @@ export class DScrollBarV extends DCont {
    		var pv, pv2, sss;
    		this.mouseup = function(e){
   			sp=undefined;
-  			document.removeEventListener("mousemove", self.mousemove);
-  			document.removeEventListener("mouseup", self.mouseup);
+  			if(dcmParam.mobile==false){
+  				document.removeEventListener("mousemove", self.mousemove);
+  				document.removeEventListener("mouseup", self.mouseup);
+  			}else{  				
+  				document.removeEventListener("touchend", self.mouseup);
+  				document.removeEventListener("touchmove", self.mousemove);
+  			}
   		}
 
   		this.mousemove = function(e){  			
+  			var ss=0;
+  			var sss=0;
+  			var xz=0;
+  			if(e.clientY==undefined){
+  				xz=e.targetTouches[0].clientY
+  			}else{
+  				xz=e.clientY
+  			}
+
+
+
   			if(sp==undefined){
   				sp={
   					x:e.clientX,
-  					y:e.clientY,
+  					y:xz,
   					x1:self.x,
   					y1:self.y
   				};
-  			}
-  			//var ss=(e.clientX-sp.x)  			
-  			var ss=(e.clientY-sp.y)   			
+  			}  					
+  			var ss=(xz-sp.y)   			
   			sss=ss+pv2;
   			if(self.but.width+sss>self._height)sss=self._height-self.but.width;
   			if(sss<0)sss=0;
 
   			self.value=sss/(self._height-self.but.width)*100;
-  			//self.but.y=sss;
+  			
 
   			if(self.fun)self.fun()
   			
@@ -2444,8 +2848,13 @@ export class DScrollBarV extends DCont {
         	//self.downLocal = self.toLocal(pl102.global);
         	pv = self.value;
         	pv2 = this.but.y;
-        	document.addEventListener("mousemove", self.mousemove);
-  			document.addEventListener("mouseup", self.mouseup);
+        	if(dcmParam.mobile==false){
+  				document.addEventListener("mousemove", self.mousemove);
+  				document.addEventListener("mouseup", self.mouseup);
+  			}else{  				
+  				document.addEventListener("touchend", self.mouseup);
+  				document.addEventListener("touchmove", self.mousemove);
+  			}
         }
 
         this.panelA.div.addEventListener("mousedown", function(e){			
@@ -2557,6 +2966,22 @@ export class DScrollBarV extends DCont {
 	get offsetHit() { 		
 		return  this._offsetHit;
 	}
+
+	/*set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;
+		    //this.but.activMouse = value;
+		    //this.panelA.activMouse = value;		    
+		    if(value==true){
+				this.alpha=1;
+				//this.object.style.pointerEvents=null;	
+		    }else{
+		    	this.alpha=0.7;		    	
+		    	//this.object.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}*/
 }
 
 

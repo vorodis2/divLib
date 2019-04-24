@@ -17,13 +17,15 @@ export class DCont {
 		this._parent=undefined;
 		this._scale=1;
 		this._scaleBool=false;
+		this._activMouse = true; 
    		this.uuid=dContSah+"_"+Math.random()
 		dContSah++;
+		this.htmlBody=undefined;
 
 
-		this.p = new PositionD(this.drag, 0, 0, 1);
+		this.p = new PositionD(this.dragBigXZ, 0, 0, 1);
 
-		this.drag=function(){
+		this.dragBigXZ=function(){
 			var _mat = 'scaleX('+self._scale+') scaleY('+self._scale+')';
 			self.div.style["transform"] = _mat;
 			
@@ -45,12 +47,12 @@ export class DCont {
 		
 
 			for (var i = 0; i < self.children.length; i++) {
-				self.children[i].drag()
+				self.children[i].dragBigXZ()
 			}
 		}
 
     	this.parameter=new Parameter();
-    	this.position = new PositionD(this.drag, 0, 0, 1);
+    	this.position = new PositionD(this.dragBigXZ, 0, 0, 1);
 
     	
     	this.poisk= function(obj, tip, param){
@@ -78,12 +80,14 @@ export class DCont {
 		    	}
 		    }		   
     	}
-
+    	
 		if(divORCont!=undefined){//приатачиваем
 			if(divORCont.parameter!=undefined){				
-				divORCont.add(this);										
+				divORCont.add(this);
+				this.activMouse=divORCont.activMouse;										
 			}else{
 				divORCont.appendChild(this.div);
+				this.htmlBody=divORCont;
 			}			
 			
 		}
@@ -107,12 +111,15 @@ export class DCont {
 
 	remove(c){		
 		if(c==undefined) return null;
+		
 		var rez;
-		if(this.children[i].uuid==c){
-			rez = this.children.splice(i,1);
-			rez[0].parent.div.removeChild(rez[0].div);
-			rez[0].parent=undefined;
-			return rez[0]
+		for (var i = 0; i < this.children.length; i++) {
+			if(this.children[i].uuid==c.uuid){
+				rez = this.children.splice(i,1);
+				rez[0].parent.div.removeChild(rez[0].div);
+				rez[0].parent=undefined;
+				return rez[0]
+			}
 		}
 		return null;
 	}
@@ -127,7 +134,7 @@ export class DCont {
 		if(this._scale!=value){
 			this._scaleBool=true;
 			this._scale=value;
-			this.drag();
+			this.dragBigXZ();
 		}
 		
 	}	get scale() {
@@ -136,7 +143,7 @@ export class DCont {
 	
 	set parent(value) {		
 		this._parent = value;
-		this.drag()
+		this.dragBigXZ()
 
 	}
   	get parent() { return  this._parent;}
@@ -163,13 +170,27 @@ export class DCont {
 	}
   	get visible() { return  this.parameter.visible;}
 
+
+  	set activMouse(value) {	
+  		
+		if(this._activMouse!=value){
+		    this._activMouse = value;
+		    
+		    for (var i = 0; i < this.children.length; i++) {
+				this.children[i].activMouse=value;
+			}		    
+		}
+		
+	}
+  	get activMouse() { return  this._activMouse;}
+
 }
 
 class Parameter {  	
   	constructor() {
   		
-		this.worldPosition = new PositionD(this.drag, 0, 0, 1);
-		this.localPosition = new PositionD(this.drag, 0, 0, 1);
+		this.worldPosition = new PositionD(this.dragBigXZ, 0, 0, 1);
+		this.localPosition = new PositionD(this.dragBigXZ, 0, 0, 1);
 		this.alpha=1;
 		this.visible=true;   	
   	}	

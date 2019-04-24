@@ -3,13 +3,13 @@
 <title>divLib</title>	
 <script src="build/divLib.js"></script>
 <script>
-	//var trace = window.console.log.bind(window.console);
+	var trace = window.console.log.bind(window.console);
 	var array=[];
 	var pObject,content,dinamik
 	var ww=120
 	var dcmParam;
-	function downMy() {
-		//console.log(this);
+	function downMy(s) {
+		console.log("uuuuuuuuuuuuuuuuuuuuuuuuu");
 		
 		if(dinamik.uuid!=this.uuid){					
 			dinamik=this;
@@ -22,24 +22,43 @@
 
 	function init () {
 		window.onresize = sizeWindow;
-		dinamik = dcmParam=new DCM();		
+		dinamik = dcmParam=new DCM();
+
+		scane= new DCont(document.body);
+		/*new DCheckBox(scane,988,0,"DCheckBox",function(){
+			trace(scane)
+			scane.activMouse = this.value;
+			trace(scane.activMouse)
+		}).value=true*/
+
 		scane= new DCont(document.body);
 		content= new DCont(scane);
+		
 		content.position.x=220;
 		pObject=new DParamObject(scane,2,2,function(){});
 		pObject.addObject(dinamik);
+
+		
 		
 		new DButton(content,0,2,"dcmParam",function(){				
 			pObject.addObject(dcmParam)
 		}).width=ww*2+10;		
+		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
+		plus(new DButton(null,0,0,"ButtonLoad",function(base64){
+			trace(this)
+		}));
+		array[array.length-1].obj.startFile()
+		
 
-		plus(new DButton(null,0,0,"Button",downMy));
 		plus(new DPanel(null,0,0));
 		plus(new DImage(null,0,0,"resources/pic/0.png"));
 		plus(new DLabel(null,0,0,"text My"));
 		plus(new DSlider(null,0,0,downMy));
 		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
 		plus(new DInput(null,0,0,"DInput",downMy));
+
+		array[array.length-1].obj.setNum(0.1);
+
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
 		plus(new DWindow(null,0,0,"DWindow",downMy));
@@ -52,9 +71,11 @@
 			a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
 		}
 		g.start(a);
-		plus(g)
+		plus(g);
 		
 		pObject.addObject(array[array.length-1].obj);
+
+
 		
 	}
 		
