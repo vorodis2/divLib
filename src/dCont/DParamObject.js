@@ -109,7 +109,8 @@ export function DParamObject (_cont, _x, _y, _fun) {
 		'numbercolor',
 		'boolean',
 		'number',
-		'string'
+		'string',
+		'comboBox'
 	];
 
 	for (var item in this.arrType) {
@@ -268,14 +269,25 @@ export function DParamObject (_cont, _x, _y, _fun) {
 			if (item == 'constructor') continue;
 			type = typeof this.oP[item];
 			type = this.addPrefix(type, item, this.oP[item]);
+			trace(type+"===",item)
+			
+			//проверка на Сb
+			if(this.oP[item+"CB"]!=undefined){
+				trace(type+"=----------------------------------==",item)
+				type='comboBox';
+			}
+			
+
+
 			if (this.oShablon[type]) this.oShablon[type].push(item);
 		}
-
+		
 		for (var c in this.oP) {
 			if (this.oP[c] != undefined) {
 				if (typeof this.oP[c] === 'object') {
 					for (var i = 0; i < this.typeArray.length; i++) {
 						if (this.oP[c] instanceof this.typeArray[i].type) {
+							
 							type = this.typeArray[i].name;
 							if (this.oShablon[type] == undefined) this.oShablon[type] = [];
 							if (this.typeArray[i].nameComp != undefined) {
@@ -345,6 +357,7 @@ export function DParamObject (_cont, _x, _y, _fun) {
 		if (type == 'numbercolor') nameComp = 'DColor';
 		if (type == 'number') nameComp = 'DSliderBig';
 		if (type == 'string') nameComp = 'DStringDrag';
+		if (type == 'comboBox') nameComp = 'DComboBox';
 		
 		for (var i = 0; i < this.typeArray.length; i++) {
 			
@@ -560,6 +573,15 @@ export function DParamObject (_cont, _x, _y, _fun) {
 			}
 		}
 
+		trace('>>>>',_type, _i, _param, _obj, oo)
+		if (_type == 'comboBox') {
+			oo.array=this.oP[_param+"CB"][0]
+			oo.valueS=this.oP[_param+"CB"][1]
+			/*this.omm = this.diapozon(this.oP[_param]);
+			oo.max = this.omm.max;
+			oo.min = this.omm.min;*/
+		}
+
 
 
 		/*if (this.typeYesArray != null && this._ignTypeArr == false) {
@@ -603,8 +625,9 @@ export function DParamObject (_cont, _x, _y, _fun) {
 					}
 				}
 				sah++;
-			}
+			}			
 		} else {
+			trace("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 			for (var type in this.oShablon) {
 				for (var i = 0; i < this.oShablon[type].length; i++) {
 					this.formComp(type, i, this.oShablon[type][i], o);

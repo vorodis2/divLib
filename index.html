@@ -61,6 +61,7 @@
 
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
+		pObject.addObject(array[array.length-1].obj);
 		plus(new DWindow(null,0,0,"DWindow",downMy));
 		plus(new DColor(null,0,0,"#0000ff",downMy));
 		plus(new DScrollBarV(content,677,133,downMy))
@@ -72,8 +73,48 @@
 		}
 		g.start(a);
 		plus(g);
+
+
+		var bd= new DButtonDrag(content, 0, 0, "resources/pic/0.png", "resources/pic/1.png",function(){
+			trace(this.value)
+		});
+		plus(bd);
+
+		var ab= new DAroundButton(content, 0, 0, function(s,p){
+			trace(s,p)
+		});
+
+		ab.creat("xzBool","resources/pic/0.png", "resources/pic/1.png",0)
+		ab.creat("state1","resources/pic/2.png", "resources/pic/3.png",1)
+		ab.creat("state2","resources/pic/2.png", "resources/pic/3.png",2)
+		ab.creat("state3","resources/pic/2.png", "resources/pic/3.png",3)
+		ab.creat("state4","resources/pic/2.png", "resources/pic/3.png",4)
+
 		
-		pObject.addObject(array[array.length-1].obj);
+		ab.setParam("xzBool",true)
+		
+		ab.start(content, 800, 400, ["xzBool","state1","state2","state4"])
+
+
+
+		var rrr=new DComboBox(null,0,0,["DComboBox","xz"],function(){
+			trace(this.index+"   "+this.value)
+		})
+		plus(rrr)
+
+		rrr.array=["xz1","xz2","xz3","xz4"]
+		rrr.valueS=[1,"xz2",22,33]
+
+		rrr.value=33
+		/*setTimeout(function() {
+			ab.stop()
+		}, 10000);*/
+		
+
+		//pObject.addObject(ab);
+
+		
+		//pObject.addObject(array[array.length-1].obj);
 
 
 		

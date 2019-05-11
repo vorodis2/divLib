@@ -1,4 +1,6 @@
 
+
+
 import { DCont } from './DCont.js';
 
 
@@ -391,6 +393,7 @@ export function DSettings (_cont) {
 		}
 		this.arrComp2.length = 0;
 
+
 		for (i = 0; i < this.object.arrComp.length; i++) {
 
 			for (j = 0; j < this.arrComp.length; j++) {
@@ -412,8 +415,11 @@ export function DSettings (_cont) {
 					}
 
 					if (this.object.arrComp[i].arrObj != undefined) {
-						this.arrComp[j].clear();
-						this.arrComp[j].setObj(this.object.arrComp[i].arrObj);
+				
+
+						this.arrComp[j].array = this.object.arrComp[i].arrObj;
+						if(this.object.arrComp[i].arrValue)this.arrComp[j].valueS = this.object.arrComp[i].arrValue;
+
 					}
 
 					for (var key in this.object.arrComp[i]) {
@@ -486,7 +492,7 @@ export function DSettings (_cont) {
 	this.compFinal;
 	this.down = function () {
 		self.compFinal = this;
-
+		
 		if (self.object.funPre != undefined) {
 			self.object.funPre(this);
 		}
@@ -499,20 +505,17 @@ export function DSettings (_cont) {
 					valueToSet = self.object.arrComp[i].arrValue[this.index];
 				}
 				if (paramName) {
-
 					if (self.object.param != undefined) {
 						self.object.param[paramName] = valueToSet;
 						if (self.object.param.settingsBeside) {
 							self.object.param.settingsBeside(paramName);
 						}
 					}
-
 					if (self.object.array != undefined) {
 						for (var j = 0; j < self.object.array.length; j++) {
 							self.object.array[j][paramName] = valueToSet;
 						}
 					}
-
 					if (self.object.objSave != undefined && self.object.objSave[paramName] !== undefined) {
 						self.object.objSave[paramName] = valueToSet;
 					}
@@ -528,7 +531,7 @@ export function DSettings (_cont) {
 			}
 		}
 
-		if ((this.type != 'SliderObject') && (this.type != 'DSliderBig') && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') && (this.type !== 'DCheckBox')) {
+		if ((this.type != 'SliderObject') && (this.type != 'DSliderBig') && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') /*&& (this.type !== 'DCheckBox')*/) {
 
 			if (self.object.funComplit != undefined) {
 				self.object.funComplit(this);
@@ -576,8 +579,8 @@ export function DSettings (_cont) {
 		}*/
 		component = null;
 
-		
 	
+		//trace(_type, _name, _param)
 
 
 		if (_type == 'DStringDrag') {
@@ -585,18 +588,29 @@ export function DSettings (_cont) {
 		 	component.width = this._width - this._otstup * 2;
 		}
 
+		if (_type === 'DVisualLoader') {
+			var component = new DVisualLoader(this.content, 0, 0, this.down);
+			if (_param != undefined) {
+				if (_param.getFile != undefined) component.funGetFile = _param.getFile;
+				if (_param.onload != undefined) component.onload = _param.onload;
+			}
+			component.x = this._otstup;
+			component.width = this._width - this._otstup * 2;
+			component.funUp = this.funComplit;
+		}
+
 		// if (_type == 'StringInput') {
 		// 	component = new StringInput(this.content, 0, 0, _param, this.down);
 		// 	component.width = this._width - this._otstup * 2;
 		// }
 
-		// if (_type == 'PLComboBox') {
-		// 	// при клике перебрасываетса в конец массива this.content.children
-		// 	component = new PLComboBox(this.content, 0, 0, [], this.down);
-		// 	component.x = this._otstup;
-		// 	component.width = this._width - this._otstup * 2;
-		// 	component.isAutoReversePanel = true;
-
+		if (_type == 'DComboBox') {
+			// при клике перебрасываетса в конец массива this.content.children
+			component = new DComboBox(this.content, 0, 0, ["nullxz"], this.down);
+			component.x = this._otstup;
+			component.width = this._width - this._otstup * 2;
+			component.isAutoReversePanel = true;
+		}	
 		// 	component.funChangeVisiblePanel = function () {
 		// 		for (var i = 0; i < self.arrComp2.length; i++) {
 		// 			if (self.arrComp2[i].idArr !== this.idArr) self.arrComp2[i].activMouse = !this.visiPanel;
@@ -621,12 +635,12 @@ export function DSettings (_cont) {
 			//component.funUp = this.funComplit;
 		}
 
-		// if (_type == 'PLLabel') {
-		// 	component = new PLLabel(this.content, 0, 0, _name, this.down);
-		// 	component.fontSize = 14;
-		// 	component.bold = false;
-		// 	component.x = this._otstup;
-		// }
+		if (_type == 'DLabel') {
+			component = new DLabel(this.content, 0, 0, _name, this.down);
+			component.fontSize = 14;
+			component.bold = false;
+			component.x = this._otstup;
+		}
 
 		
 		
@@ -802,7 +816,7 @@ export function DSettings (_cont) {
 
 
 
-export function DStringDrag (cont, _x, _y, _title, _fun) {
+function DStringDrag (cont, _x, _y, _title, _fun) {
 	DCont.call(this);
 	this.type = 'DStringDrag';
 	var self = this;
@@ -943,6 +957,291 @@ Object.defineProperties(DStringDrag.prototype, {
 		}
 	}
 });
+
+
+
+
+
+
+function DVisualLoader (cont, _x, _y, _fun) {
+	DCont.call(this);
+	this.type = 'DVisualLoader';
+	var self = this;
+	cont.add(this);
+
+	this.fun=_fun;
+	this._link = 'null';
+	this._value = this._link;
+
+	this._width = 100;
+	this._height = 20;
+	this.otstup = 2;
+
+	this.panel=new DPanel(this, 0, 0);
+
+
+
+	this.bat=new DButton(this, this.otstup, this.otstup,"x",function(){
+		self.value="null";
+		self.fun();
+	});
+	this._height=this.bat.height*2+this.otstup*3;
+	this.panel.height=this._height;
+	this.bat.width=this.bat.height
+
+	this.bat1=new DButton(this, this.panel.height, this.otstup*2+this.bat.height,"load",function(base64){
+		self.image.visible = true;	
+
+
+		
+
+		if (self.funGetFile) {
+
+			self.funGetFile(this.files[0], function (_link) {
+
+			
+				//var link = (_link !== null) ? _link : self.linkError;
+				self.link = _link;
+			
+				if (self.fun) self.fun();
+				//if (self.onload) self.onload(false);
+			});
+		} else {
+			self.input.value = base64;
+			self._link = base64;
+			self.image.link = base64;
+			//if (self.fun) self.fun();
+			//if (self.onload) self.onload(false);
+		}
+
+
+
+
+	});
+	this.bat1.startFile('.jpg, .png');
+
+	this.input=new DInput(this, this.panel.height, this.otstup,this._link,function(){
+		self.value=this.text;
+		self.fun();
+	});
+
+	this.panel1=new DPanel(this, this.otstup, this.otstup);
+	this.panel1.width=this.panel1.height=this.panel.height-this.otstup*2;
+
+	
+	var hh=this.panel1.width-this.otstup*3
+	this.image=new DImage(this.panel1, this.otstup, this.otstup, null, function(){
+		this.width = hh;
+		this.height = hh;
+	});
+	
+
+
+
+
+
+	this.draw = function () {
+		this.bat.x=this._width-this.bat.width-this.otstup
+		this.input.width=this._width-this.input.x-this.bat.width-this.otstup*2;
+		this.bat1.width=this._width-this.panel1.width-this.otstup*3;
+	};
+
+	this.draw();
+
+	/*this.funGetFile = null;
+	this.onload = null;
+	this.funUp = null;
+	this.fun = _fun;
+
+	this.x = _x || 0;
+	this.y = _y || 0;
+	this._otstup = 2;
+	this._wh = pl102.wh;
+	this._color = pl102.color1;
+	this._width = 100;
+	this._height = this._wh * 2 + this._otstup;
+	this._link = 'null';
+	this._value = this._link;
+	this._title = null;
+
+	this.linkError = 'resources/picNotFound.jpg';
+
+	this.content = new DCont();
+	this.addChild(this.content);
+
+	var downloadUtill = new DownloadUtill();
+	this.downloadUtill = downloadUtill;
+
+	this.contur = new PLContur(this.content, 0, 0);
+	this.contur.width = this._height;
+	this.contur.height = this._height;
+	this.contur.thickness = 0.5;
+	this.contur.color = this._color;
+
+	this.label = new PLLabel(this.content, 0, 0, '');
+
+	this.image = new PLImage(this.content, 0, 0);
+	this.image.funComplit = function () {
+		var scale = Math.min(self._height / this.picWidth, self._height / this.picHeight);
+		this.scale.set(scale, scale);
+		this.width = this.picWidth;
+		this.height = this.picHeight;
+		var rx = self._height - (this._width * scale);
+		var ry = self._height - (this._height * scale);
+		this.x = (rx === 0) ? rx : rx / 2;
+		this.y = (ry === 0) ? ry : ry / 2;
+	};
+
+	this.input = new PLInput(this.content, this._otstup, 0, 'null', function () {
+		self.link = this.value;
+		if (self.fun) self.fun();
+	});
+	// this.input.activMouse = false;
+
+
+	this.btnLoad = new PLButton(this.content, 0, 0, 'Load', function (base64) {
+		self.label.visible = false;
+		self.image.visible = false;
+
+		if (self.onload) self.onload(true);
+
+		if (self.funGetFile) {
+			self.funGetFile(base64, function (_link) {
+			
+				var link = (_link !== null) ? _link : self.linkError;
+				self.link = _link;
+			
+				if (self.fun) self.fun();
+				if (self.onload) self.onload(false);
+			});
+		} else {
+			self.input.value = base64;
+			self._link = base64;
+
+			if (self.fun) self.fun();
+			if (self.onload) self.onload(false);
+		}
+
+		var fileName = this.files[0].name.split('.');
+		var exp = fileName[fileName.length - 1];
+		if (exp === 'jd' || exp === 'JD' || exp === 'hdr' || exp === 'HDR') {
+			self.label.visible = true;
+			self.label.text = '.' + exp;
+			self.label.pivot.set(self.label.curW / 2, self.label.curH / 2);
+			self.label.position.set(self._height / 2, self._height / 2);
+		} else {
+			self.image.visible = true;
+			self.image.link = base64;
+		}
+	});
+	this.btnLoad.x = this._height + this._otstup;
+	this.btnLoad.y = this._wh + this._otstup;
+	this.btnLoad.startFile('.jpg, .png, .bmp, .jpeg, .hdr, .jd');
+
+	this.localLoad = new PLButton(this.content, 0, 0, '', function () {
+		if (self.input.value.indexOf('base64') !== -1) {
+			this.downloadUtill.saveBase64(self.input.value);
+		} else {
+			console.warn('Сохранение с линка не добавлено!');
+		}
+		if (self.fun) self.fun();
+	}, 'resources/images/adminAr/61.png');
+	this.localLoad.width = this._wh;
+	this.localLoad.activMouse = false;
+
+	this.linkClear = new PLButton(this.content, 0, 0, 'X', function () {
+		self.label.visible = false;
+		self.link = 'null';
+		//self.link = self.linkError;
+		if (self.fun) self.fun();
+	});
+	this.linkClear.width = this._wh;
+
+	this.image.funError = function () {
+		self.image.link = self.linkError
+		console.log("FIXI ANTON хдр збрасывает");
+	};
+
+
+	this.draw = function () {
+		this.input.width = this._width - this._wh * 2 - this._otstup * 3 - this._height;
+		this.input.x = this._height + this._otstup;
+		this.localLoad.x = this.input.x + this.input.width + this._otstup;
+		this.linkClear.x = this.localLoad.x + this._wh + this._otstup;
+		this.btnLoad.width = this._width - this._height - this._otstup;
+	};
+
+	this.draw();*/
+}
+
+DVisualLoader.prototype = Object.create(DCont.prototype);
+DVisualLoader.prototype.constructor = DVisualLoader;
+
+Object.defineProperties(DVisualLoader.prototype, {
+	width: {
+		set: function (value) {
+			if (this._width === value) return;
+			this._width = value;
+			this.draw();
+		},
+		get: function () {
+			return this._width;
+		}
+	},
+	height: {
+		set: function (value) {},
+		get: function () {
+			return this._height;
+		}
+	},
+	link: {
+		set: function (value) {
+			if (this._link === value) return;
+			this._link = value;
+
+			
+			if (this.link === 'null') {
+				this.image.visible = false;
+				this.input.value = this.link;
+			} else if (this.link === this.linkError) {				
+				this.image.link = this.linkError;
+				this.input.value = this.link;
+			} else {
+				this.image.visible = true;
+				this.image.link = this._link;
+				this.input.value = this._link;
+			}/**/
+		},
+		get: function () {
+			return this._link;
+		}
+	},
+	value: {
+		set: function (value) {
+			this.link = value;
+		},
+		get: function () {
+			return this._link;
+		}
+	},
+	title: {
+		set: function (value) {
+			if (this._title === value) return;
+			this._title = value;
+			this.bat1.text = value;
+/*
+			this.btnLoad.text = value;*/
+		},
+		get: function () {
+			return this._title;
+		}
+	}
+});
+
+
+
+
+
 
 
 

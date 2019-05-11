@@ -785,7 +785,278 @@ constructor(dCont,_x,_y, _color, _fun) {
 
 
 
+export class DComboBox extends DCont {
+  	constructor(dCont, _x, _y, _arr, _fun, _link) {
+  		super(); 
+  		this.type="DComboBox";
+  		this.dcmParam=dcmParam; 
+  		this.dcmParam.add(this)
+  		var self=this
+  		this.x=_x||0;	
+  		this.y=_y||0;
+   		this._array=_arr||["null"];
+   		this._valueS=_arr||["null"];
 
+   		this.fun=_fun;
+
+   		this.fun_mouseover=undefined;
+   		this.fun_mouseout=undefined;
+   		this.fun_mousedown=undefined;
+   		this.funDownFile=undefined;
+
+  		this._width=100;
+  		this._height=dcmParam.wh;
+  		this._color1=dcmParam._color1;
+  		this._colorText1=dcmParam._colorText1;
+  		this._fontSize=dcmParam._fontSize;
+  		this._borderRadius=0;
+
+
+
+
+   		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);
+   		this.object=document.createElement('select');   	
+		this.object.style.position = 'fixed';
+		this.object.style.top = '0px';
+		this.object.style.left = '0px';
+		this.object.style.background=this._color1;
+		this.object.style.color=this._colorText1;
+		/*this.object.style.cursor="pointer";*/
+		this.object.style.fontSize= this._fontSize+'px';
+		this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(self._color1), -20);//"none";
+		this.object.style.display="inline-block";
+		this.object.style.fontFamily= dcmParam._fontFamily;
+		//this.object.style.select.background=this._color1;
+
+		this.object.style.borderRadius=this._borderRadius+"px";
+	
+		/*this.object.type = 'button';
+		this.object.value = this._text;*/
+		
+
+		this.div.appendChild(this.object);
+		this.object.style.width=this._width+"px";
+		this.object.style.height=this._height+"px";
+
+		this.object.onchange=function(e){			
+			self.index=self.object.value;
+			if(self.fun)self.fun();
+		}
+		
+		/*this.object.onclick=function(){			
+			if(self.fun)self.fun();
+		}
+		
+	  	this.object.addEventListener("mouseover", function(){
+			self.object.style.background = dcmParam.compToHexArray(dcmParam.hexDec(self._color), -10);			
+			if(self.fun_mouseover)self.fun_mouseover();
+			
+		})
+
+		this.object.addEventListener("mouseout", function(){
+			self.object.style.background = self._color;			
+			if(self.fun_mouseout)self.fun_mouseout();
+		})
+
+
+		self.mousedown=function(){
+			if (self.file != undefined) {
+				self.file.value = null;
+	            self.file.click();
+	            if (self.funDownFile)self.funDownFile();
+	            return;
+	        }
+			if(self.fun_mousedown)self.fun_mousedown();
+		}*/
+		
+
+
+		if(dcmParam.mobile==false){
+			this.object.addEventListener("mousedown", self.mousedown)
+		}else{
+			this.object.addEventListener("touchstart", self.mousedown)
+		}
+
+
+
+		this.image=undefined;
+		this.reDrag=function(){
+			this.object.style.width=this._width+"px";
+			this.object.style.height=this._height+"px";			
+		}
+
+
+/*
+		this.file;
+	    this.startFile = function (accept) {
+	        if (this.file == undefined) {
+	            this.file = document.createElement('input');
+	            this.file.type = 'file';
+	            this.file.multiple=true;
+	            if (accept) this.file.accept = accept;// "image/*";
+	            this.file.style.display = 'none';
+	            this.file.onchange = this.onchange;
+	        }
+	    };
+	    this.result;
+	    this.files;// files
+	    this.onchange = function (e) {
+	        if (e.target.files.length == 0) return;// нечего не выбрали
+	        self.files = e.target.files;
+	       	
+	        var reader = new FileReader();
+	        reader.readAsDataURL(e.target.files[0]);
+	        reader.onload = function (_e) {	        	
+	            self.result = _e.target.result;
+	            if (self.fun) self.fun(self.result);
+	                      
+	           	            
+	        };
+	    };
+		
+
+		this._link="null";
+  		this.loadImeg=function(s){
+  			this._link=s;
+  			if(this.image==undefined){
+  				this.image=new DImage(this, 0,0,null,function(){
+  					self.reDrag();
+  				})
+  				this.image.div.style.pointerEvents="none";
+  			}
+  			this.image.link=this._link;
+  		}	
+
+  		if(_link!=undefined)this.loadImeg(_link)*/
+		
+		this.array=this._array;	
+		this.valueS=this._valueS;		
+  	}
+
+  	set valueS(value) {		
+		this._valueS = value;
+				
+	}	
+	get valueS() { return  this._valueS;}
+
+  	set array(value) {		
+		this._array = value;
+		this.object.options.length=this._array.length;
+		for (var i = 0; i < this.object.options.length; i++) {
+			this.object.options[i].text=this._array[i]
+			this.object.options[i].value=i
+		}
+		this.index=0;		
+		this.reDrag();		
+	}	
+	get array() { return  this._array;}
+
+
+  	set x(value) {this.position.x = value;}	get x() { return  this.position.x;}
+	set y(value) {this.position.y = value;}	get y() { return  this.position.y;}
+	set width(value) {
+		if(this._width!=value){
+			this._width = value;
+			this.reDrag();
+			//this.object.style.width=this._width+"px";
+		}		
+	}	
+	get width() { return  this._width;}
+
+	set height(value) {
+		if(this._height!=value){
+			this._height = value;
+			this.reDrag()
+			//this.object.style.height=this._height+"px";
+		}		
+	}	
+	get height() { return  this._height;}
+
+
+	set index(value) {
+		//if(this._index!=value){
+			this._index = value;
+			if(this._valueS[value]!=undefined)this._value=this._valueS[value];
+			
+			this.object.value=this._index;
+		//}
+	}	
+	get index() { 		
+		return  this._index;
+	}
+	set value(v) {		
+		this._value = v;
+		for (var i = 0; i < this._valueS.length; i++) {
+			if(this._valueS[i]==v){
+				this.index=i;
+			}
+		}		
+	}	
+	get value() { 		
+		return  this._value;
+	}
+
+
+
+	set fontSize(value) {
+		if(this._fontSize!=value){
+			this._fontSize = value;
+			this.object.style.fontSize = value+"px";
+		}
+	}	
+	get fontSize() { 		
+		return  this._fontSize;
+	}
+
+	set color1(value) {
+		if(this._color1!=value){
+			this._color1 = value;			
+			this.object.style.background = this._color1;	
+			this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
+		}
+	}	
+	get color1() { 		
+		return  this._color1;
+	}
+
+
+
+	set colorText1(value) {
+		if(this._colorText1!=value){				
+			this._colorText1 = value;
+			this.object.style.color=this._colorText1;
+		}
+	}	
+	get colorText1() { 		
+		return  this._colorText1;
+	}
+
+	set borderRadius(value) {
+		if(this._borderRadius!=value){				
+			this._borderRadius = value;
+			this.object.style.borderRadius=this._borderRadius+"px";
+			this.object.style.webkitBorderRadius =this._borderRadius+"px";
+    		this.object.style.mozBorderRadius =this._borderRadius+"px";
+		}
+	}	
+	get borderRadius() { 		
+		return  this._borderRadius;
+	}
+
+	set activMouse(value) {		
+		if(this._activMouse!=value){
+		    this._activMouse = value;		    
+		    if(value==true){
+				this.alpha=1;
+				this.object.style.pointerEvents=null;	
+		    }else{
+		    	this.alpha=0.7;		    	
+		    	this.object.style.pointerEvents="none";	
+		    }		        
+		}		
+	}
+  	get activMouse() { return  this._activMouse;}
+}
 
 
 
@@ -914,10 +1185,7 @@ export class DButton extends DCont {
 	            self.result = _e.target.result;
 	            if (self.fun) self.fun(self.result);
 	                      
-	            /*setTimeout(function() {
-	            	trace(">>>>2>>>")  
-	            	self.file.value = null;
-	            }, 100);*/	            
+	                        
 	        };
 	    };
 		
@@ -1051,6 +1319,7 @@ export class DCheckBox extends DCont {
   		this._height=Math.round(dcmParam.wh*2/3+4);
   		this._color=dcmParam._color;
   		this._colorText=dcmParam._colorText;
+  		//this.fontSizeCB=[["size 16","size 33"],[16,32]];
   		this._fontSize=dcmParam._fontSize;
 
   		this._value=false;
@@ -1110,7 +1379,7 @@ export class DCheckBox extends DCont {
 	set fontSize(value) {
 		if(this._fontSize!=value){
 			this._fontSize = value;
-			
+			this.label.fontSize = value;
 		}
 	}	
 	get fontSize() { 		
@@ -1593,6 +1862,7 @@ export class DSliderBig extends DCont {
   			if(self.fun)self.fun();
   			if(self.funChange)self.funChange();	
   		})
+  		//this.input.setNum(1);
 
   		this.slider=new DSlider(this,0,0, function(){  			
   			self.value=this.value;
@@ -1743,7 +2013,7 @@ export class DInput extends DCont {
 
 			if(self._okrug!=0){
 				str=str*1;
-				trace(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+typeof str)
+				
 				if(typeof str  != "number")str=0;
 				if(isNaN(str)==true)str=0;
 				str=Math.round(str*(1/self._okrug))/(1/self._okrug);
@@ -1802,7 +2072,7 @@ export class DInput extends DCont {
 	  		}
 	  		
 	  		if(sp.b==true){
-	  			sss=sp.value+ss* self.okrug;
+	  			sss=Math.round((sp.value+ss* self.okrug)*100)/100;
 	  			self.dragInput(sss);
 	  		}
   		}
@@ -1869,7 +2139,7 @@ export class DInput extends DCont {
 	set value(v) {		
 		this._value = v;
 		this._text = v;	
-		trace(this._text)	
+		
 		this.object.value = this._text;
 				
 	}	
