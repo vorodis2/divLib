@@ -570,10 +570,7 @@ export function DSettings (_cont) {
 	var component;
 	var bwidth = true;
 	this.addComponent = function (_type, _name, _param) {
-		/*if (window[_type] === undefined) {
-			console.warn('Не найден компонент при добавлении в SettingsBig => ' + _type);
-			return;
-		}*/
+		
 		component = null;
 
 		

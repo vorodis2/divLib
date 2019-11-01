@@ -269,11 +269,11 @@ export function DParamObject (_cont, _x, _y, _fun) {
 			if (item == 'constructor') continue;
 			type = typeof this.oP[item];
 			type = this.addPrefix(type, item, this.oP[item]);
-			trace(type+"===",item)
+			
 			
 			//проверка на Сb
 			if(this.oP[item+"CB"]!=undefined){
-				trace(type+"=----------------------------------==",item)
+				
 				type='comboBox';
 			}
 			
@@ -573,7 +573,6 @@ export function DParamObject (_cont, _x, _y, _fun) {
 			}
 		}
 
-		trace('>>>>',_type, _i, _param, _obj, oo)
 		if (_type == 'comboBox') {
 			oo.array=this.oP[_param+"CB"][0]
 			oo.valueS=this.oP[_param+"CB"][1]
@@ -627,7 +626,7 @@ export function DParamObject (_cont, _x, _y, _fun) {
 				sah++;
 			}			
 		} else {
-			trace("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+			
 			for (var type in this.oShablon) {
 				for (var i = 0; i < this.oShablon[type].length; i++) {
 					this.formComp(type, i, this.oShablon[type][i], o);

@@ -9,8 +9,8 @@
 	var ww=120
 	var dcmParam;
 	function downMy(s) {
-		console.log("uuuuuuuuuuuuuuuuuuuuuuuuu");
 		
+		trace(s,this)
 		if(dinamik.uuid!=this.uuid){					
 			dinamik=this;
 			
@@ -23,7 +23,7 @@
 	function init () {
 		window.onresize = sizeWindow;
 		dinamik = dcmParam=new DCM();
-
+		
 		scane= new DCont(document.body);
 		/*new DCheckBox(scane,988,0,"DCheckBox",function(){
 			trace(scane)
@@ -33,16 +33,60 @@
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
-		
+		//content.scale=0.75
 		content.position.x=220;
+		this.bmpPic=new DBitmapData(2,2) 	
+		/**/
+
+
+		/*
+		var element= document.createElement('div');
+		element.style.background= "red";
+		element.style.width= "100px";
+    	element.style.height= "80px";
+		document.body.appendChild(element);
+		element.style['msTransform'] = 'rotate(30deg)'; // IE*/
+
+		/*var panel=new DPanel(content, 1000,100)
+		var label=new DLabel(content, 1000,100,"dsg")*/
+
+
+		new DButton(content,55,0,"test",function(){				
+			
+
+
+			/*label.width=50+Math.random()*100;
+			label.text="adfasdfasdfasd ads f a"+Math.random();
+			for (var i = 0; i < 5; i++) {
+				label.text+=Math.random();
+			}
+			label.textAlign="center";dcmParam.ctrlCV."qwerty22222222uio".ctr
+
+			var o=label.getRect();
+			panel.width=o.width;
+			panel.height=o.height;
+
+			panel.x=label.x+o.x;
+			panel.y=label.y+o.y;*/
+
+
+
+			//pObject.addObject(dcmParam)
+			//this.div.style['msTransform']='rotate(30deg)';
+
+
+		}).fun_mousedown=function(){		
+
+			dcmParam.ctrlCV.saveText("qw333333io")
+		};
+
+		trace("--0--")
+		//return/**/	
+
+
 		pObject=new DParamObject(scane,2,2,function(){});
 		pObject.addObject(dinamik);
 
-		
-		
-		new DButton(content,0,2,"dcmParam",function(){				
-			pObject.addObject(dcmParam)
-		}).width=ww*2+10;		
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
 		plus(new DButton(null,0,0,"ButtonLoad",function(base64){
 			trace(this)
@@ -72,13 +116,14 @@
 			a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
 		}
 		g.start(a);
+		g.kolII=1
 		plus(g);
 
 
 		var bd= new DButtonDrag(content, 0, 0, "resources/pic/0.png", "resources/pic/1.png",function(){
 			trace(this.value)
 		});
-		plus(bd);
+		//plus(bd);
 
 		var ab= new DAroundButton(content, 0, 0, function(s,p){
 			trace(s,p)
@@ -100,12 +145,23 @@
 		var rrr=new DComboBox(null,0,0,["DComboBox","xz"],function(){
 			trace(this.index+"   "+this.value)
 		})
-		plus(rrr)
+		//plus(rrr)
 
 		rrr.array=["xz1","xz2","xz3","xz4"]
 		rrr.valueS=[1,"xz2",22,33]
 
 		rrr.value=33
+
+
+
+		var bd= new DHelp(content, 800, 500, "xz dsgf dsds gsdgf dsgsd g", "resources/pic/1.png",function(){
+			trace(this.value)
+		});	
+		pObject.addObject(bd);
+
+
+
+
 		/*setTimeout(function() {
 			ab.stop()
 		}, 10000);*/

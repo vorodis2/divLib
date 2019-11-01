@@ -57,8 +57,7 @@ export class DAroundButton extends DCont {
        
 
         this.creat=function(name, link, link1,state){
-            bAround=new BAround(this, name, link, link1,state,this.array.length)  
-
+            bAround=new BAround(this, name, link, link1,state,this.array.length)
             this.array.push(bAround)
         }
 
@@ -66,9 +65,7 @@ export class DAroundButton extends DCont {
 
         this.setParam=function(name, p){
             for (var i = 0; i < this.array.length; i++) {
-                if(this.array[i].name==name){
-                    
-                                    
+                if(this.array[i].name==name){                                   
                     this.array[i].setValue(p);
                 }
             }

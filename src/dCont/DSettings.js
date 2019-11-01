@@ -485,6 +485,7 @@ export function DSettings (_cont) {
 				}
 			}
 		}
+		
 		this.draw();
 	};
 
@@ -530,8 +531,8 @@ export function DSettings (_cont) {
 				}
 			}
 		}
-
-		if ((this.type != 'SliderObject') && (this.type != 'DSliderBig') && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') /*&& (this.type !== 'DCheckBox')*/) {
+	
+		if ((this.type != 'SliderObject') /*&& (this.type != 'DSliderBig')*/ && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') /*&& (this.type !== 'DCheckBox')*/) {
 
 			if (self.object.funComplit != undefined) {
 				self.object.funComplit(this);
@@ -573,14 +574,11 @@ export function DSettings (_cont) {
 	var component;
 	var bwidth = true;
 	this.addComponent = function (_type, _name, _param) {
-		/*if (window[_type] === undefined) {
-			console.warn('Не найден компонент при добавлении в SettingsBig => ' + _type);
-			return;
-		}*/
+		
 		component = null;
 
 	
-		//trace(_type, _name, _param)
+
 
 
 		if (_type == 'DStringDrag') {
@@ -1142,7 +1140,7 @@ function DVisualLoader (cont, _x, _y, _fun) {
 		if (self.input.value.indexOf('base64') !== -1) {
 			this.downloadUtill.saveBase64(self.input.value);
 		} else {
-			console.warn('Сохранение с линка не добавлено!');
+			
 		}
 		if (self.fun) self.fun();
 	}, 'resources/images/adminAr/61.png');
@@ -1159,7 +1157,7 @@ function DVisualLoader (cont, _x, _y, _fun) {
 
 	this.image.funError = function () {
 		self.image.link = self.linkError
-		console.log("FIXI ANTON хдр збрасывает");
+		
 	};
 
 

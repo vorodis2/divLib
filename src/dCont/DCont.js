@@ -25,9 +25,50 @@ export class DCont {
 
 		this.p = new PositionD(this.dragBigXZ, 0, 0, 1);
 
+
+		this.xyp={x:0,y:0}
+		this.funXYP=function(c,o){
+			o.x*=c._scale;
+			o.y*=c._scale;
+
+			o.x+=c.position._x;
+			o.y+=c.position._y;
+			if(c.visible==false)o.y+=99999
+		
+			if(c.parent!=undefined){
+				//if(c.parent.type=="DCont"){
+					self.funXYP(c.parent, o)
+				//}
+			}
+		}
+
+
+
+		this.xyPar=dcmParam.isIE;
+		
+		this.tb='visible'
+		var _mat
 		this.dragBigXZ=function(){
-			var _mat = 'scaleX('+self._scale+') scaleY('+self._scale+')';
+
+			if(self.xyPar==false)_mat = 'scaleX('+self._scale+') scaleY('+self._scale+') translate('+self.position._x+'px, '+self.position._y+'px)';
+			else{
+				//if(self.parameter.visible==true){
+					self.xyp.x=0
+					self.xyp.y=0
+					self.funXYP(self, self.xyp)				
+					_mat = 'scaleX('+self._scale+') scaleY('+self._scale+') translate('+self.xyp.x+'px, '+self.xyp.y+'px)';
+				/*}else{
+					_mat = 'scaleX('+self._scale+') scaleY('+self._scale+') translate(-9999px, 0px)';
+				}*/
+				
+
+				
+			}
+
 			self.div.style["transform"] = _mat;
+
+			self.div.style["ms-transform"] = _mat;
+			self.div.style["webkit-transform"] = _mat;
 			
 			self.parameter.worldPosition._x=self.position._x;
 			self.parameter.worldPosition._y=self.position._y;
@@ -42,8 +83,8 @@ export class DCont {
 			
 
 
-			self.div.style.left = self.parameter.worldPosition.x+'px';
-			self.div.style.top = self.parameter.worldPosition.y+'px';
+			//self.div.style.left = self.parameter.worldPosition.x+'px';
+			//self.div.style.top = self.parameter.worldPosition.y+'px';
 		
 
 			for (var i = 0; i < self.children.length; i++) {
@@ -66,6 +107,7 @@ export class DCont {
     	}
 		var r,r2;
     	this.testVisi= function(b){    		
+    		
     		r=this.parameter.visible;
 		    if(r==true){
 		    	r2=this.poisk(this,"visible",false);		    	
@@ -73,7 +115,29 @@ export class DCont {
 		    		r=false;
 		    	}
 		    }
+
+		    if(dcmParam.isIE==true){
+    			/*if(r==true){
+    				this._visible=false
+    				this.parameter.visible=false
+    			}*/
+    			
+    			this.dragBigXZ()
+    			/*if(b){
+			    	for (var i = 0; i < this.children.length; i++) {
+			    		this.children[i].testVisi(b)
+			    	}
+			    }*/
+
+
+    			return;
+    		}
+
+
+
+		    
 		    this.div.style.visibility = r ? 'visible ' : 'hidden';
+		    
 		    if(b){
 		    	for (var i = 0; i < this.children.length; i++) {
 		    		this.children[i].testVisi(b)
@@ -164,8 +228,9 @@ export class DCont {
 		    this.parameter.visible = value;
 
 		    //this.div.style.visibility = value ? 'visible ' : 'hidden';
+		    
 		    this.testVisi(true);
-
+		   
 		}
 	}
   	get visible() { return  this.parameter.visible;}
