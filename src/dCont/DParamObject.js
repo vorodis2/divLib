@@ -42,6 +42,7 @@ export function DParamObject (_cont, _x, _y, _fun) {
 	this.hhhhh=this._height
 
 	if (this._bWindow) {
+
 		this.w = new DWindow(this.cont, this._x, this._y, this._title, function () {
 			if (self.funMinimize) {
 				if (this.minimize == true) self._height = 1;
@@ -52,53 +53,16 @@ export function DParamObject (_cont, _x, _y, _fun) {
 				self.funMinimize();
 			}
 		});
-		
+		this.window=this.w
 		this.w.content.add(this.content);			
 		this.w.drag = false;
 		this.w.width = this.width;
 		this.w.height = this.height;
-
-		/*if (this.infoInt == 0) {
-			this.textArea = new PLTextArea(this.w.content, this._otstup, this._otstup, 'null');
-			this.textArea.height = 60;
-			this.textArea.width = this.w.width - this._otstup * 3 - 20;
-
-			this.but = new PLButton(this.w.content, this.textArea.width + this._otstup * 2, this._otstup, '<', function () {
-				self.setObjStr(self.textArea.text);
-			});
-			this.but.setStile(1, 64, 64);
-			this.but.height = this.textArea.height;
-			this.but.width = 20;
-
-			this.funActMouse = function (b) {
-				this.textArea.activMouse = !b;
-			};
-		}
-		if (this.infoInt == 1) {*/
-			//this.w.hasMinimizeButton = true;			
-			this.w.drag = false;
-			this._height = this.wh;
-			this.w.fun = function () {
-				/*if (this.minimize == true) {
-					self._height = self.wh;
-				} else {
-					if (self.parrentPLPO != undefined) {
-						// при открытии вложенного PLPO другие - закрываются
-						for (var i = 0; i < self.parrentPLPO.arrPLPO.length; i++) {
-							if (self.parrentPLPO.arrPLPO[i].w.minimize == false && self.parrentPLPO.arrPLPO[i].idArr != self.idArr) {
-								self.parrentPLPO.arrPLPO[i].w.minimize = true;
-
-								self.parrentPLPO.arrPLPO[i].w.fun();
-							}
-						}
-					}
-					self.draw();
-					self._height = self.w.height;
-				}
-				if (self.parrentPLPO != undefined) self.parrentPLPO.draw();
-				if (self.funMinimize) self.funMinimize(this.minimize);*/
-			};
-		//}
+		
+		this.w.drag = false;
+		this._height = this.wh;
+			
+		
 	} else {
 		this.content.x = _x;
 		this.content.y = _y;
@@ -430,7 +394,7 @@ export function DParamObject (_cont, _x, _y, _fun) {
 					}
 				} else {
 					self.oP[c] = o[c];
-					if (self.objComp[c] != undefined) {
+					if (self.objComp[c] != undefined) {						
 						self.objComp[c].value = o[c];
 					}
 				}
@@ -464,6 +428,8 @@ export function DParamObject (_cont, _x, _y, _fun) {
 		self.componentS = s;
 		self.funDragSlider(this);
 		self.setTextInput();
+
+		
 		
 		if (self.fun) self.fun(s);
 	};
@@ -500,9 +466,11 @@ export function DParamObject (_cont, _x, _y, _fun) {
 	};
 
 	this.omm;
-	this.funDragSlider = function (slider) {
-		if (!slider) return;		
+	this.funDragSlider = function (slider) {		
+		if (!slider) return;	
+		
 		if (slider.type == 'DSliderBig') {
+			console.warn("dfg  "+slider.type)	
 			if (slider.isDinamMinMax === false) return;
 			if (slider.visiMinMax == false) slider.visiMinMax = true;
 			this.omm = this.diapozon(slider.value);

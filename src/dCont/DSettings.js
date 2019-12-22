@@ -29,6 +29,7 @@ export function DSettings (_cont) {
 
 	this.tipRide = false;
 	this.arrF = [];
+	this.okrug=100
 	// this.arrayFon = new PLArrayFon(this.content);
 	// this.arrayFon.width = this._width - 1;
 	// this.arrayFon.x = 0.5;
@@ -545,7 +546,6 @@ export function DSettings (_cont) {
 
 	this.funComplit = function () {
 		if (self.object.funComplit != undefined) {
-
 			self.object.funComplit(this);
 		}
 	};
@@ -682,7 +682,7 @@ export function DSettings (_cont) {
 		if (_type == 'DSliderBig') {
 			var min = 0;
 			var max = 100;
-			var okrug = 100;
+			var okrug = this.okrug;
 			if (_param != undefined) {
 				if (_param.min != undefined) min = _param.min;
 				if (_param.max != undefined) max = _param.max;
@@ -841,6 +841,11 @@ function DStringDrag (cont, _x, _y, _title, _fun) {
 		this.input = new DInput(this, this.otstup, this.otstup, 'null', function () {
 			self.value=this.value;
 		});
+		this.input.timeFun=1;
+
+		this.input.funEnter=function(){
+			self.fun();
+		}
 		
 		
 

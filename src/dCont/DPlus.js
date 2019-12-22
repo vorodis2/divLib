@@ -186,9 +186,8 @@ export class BAround {
         this.button.state=state;
         this.button.object.bAround=this;
 
-        this.setValue=function(v){
-            
-            this.button.value=v
+        this.setValue=function(v){            
+            this.button.value=v;
         }
     }
 }

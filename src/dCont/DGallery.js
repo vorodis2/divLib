@@ -29,6 +29,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 	this._color = dcmParam._color;
 	this._color1 = dcmParam._color1;
+	this._borderRadius =dcmParam.borderRadius;
 	this._lineSize = 2;
 	this._boolPositScrol = true;// выворот положений
 	this._boolPositOtctup = true;// внутурь/наружу
@@ -128,6 +129,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 		this.arrayKesh[this.arrayKesh.length - 1].funLoad = this.funLoad;
 		this.arrayKesh[this.arrayKesh.length - 1].funOver = this.funOver;
 		this.arrayKesh[this.arrayKesh.length - 1].funOut = this.funOut;
+		this.arrayKesh[this.arrayKesh.length - 1].borderRadius = this._borderRadius;
 
 		return this.arrayKesh[this.arrayKesh.length - 1];
 	};
@@ -377,17 +379,17 @@ export function DGallery (dCont, _x, _y, _fun) {
 			if (p < 0) {
 				if (self.content.y >= 0) {
 					self.content.y = 0;
-					self.scrollBarV.value = 0;
+					//self.scrollBarV.value = 0;
 				} else {
-					self.scrollBarV.value -= self.sahDelta;
+					//self.scrollBarV.value -= self.sahDelta;
 					self.content.y += self.sahDelta;
 				}
 			} else {
 				if (self.content.y <= -(hhh + self.otstup)) {
 					self.content.y = -(hhh + self.otstup);
-					self.scrollBarV.value = hhh;
+					//self.scrollBarV.value = hhh;
 				} else {
-					self.scrollBarV.value += self.sahDelta;
+					//self.scrollBarV.value += self.sahDelta;
 					self.content.y -= self.sahDelta;
 				}
 
@@ -398,23 +400,29 @@ export function DGallery (dCont, _x, _y, _fun) {
 			if (p < 0) {
 				if (self.content.x >= 0) {
 					self.content.x = 0;
-					self.scrollBarH.value = 0;
+					//self.scrollBarH.value = 0;
 				} else {
-					self.scrollBarH.value -= self.sahDelta;
+					//self.scrollBarH.value -= self.sahDelta;
 					self.content.x += self.sahDelta;
 				}
 			} else {
 				if (self.content.x <= -(www + self.otstup)) {
 					self.content.x = -(www + self.otstup);
-					self.scrollBarH.value = www;
+					//self.scrollBarH.value = www;
 				} else {
-					self.scrollBarH.value += self.sahDelta;
+					//self.scrollBarH.value += self.sahDelta;
 					self.content.x -= self.sahDelta;
 				}
 			}
 		}
+		//self.koreckScrol();
+		self.scrolPos(true)
 		self.dragIE();
 	};
+
+	
+
+
 
 	var sp=undefined;	
 	this.dragActiv=false
@@ -432,10 +440,9 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 	var yyy=0
 	this.mousemove=function(e){
-		
+			
 		if(self.dragActiv==false)return;
 		if(self.scrollBarV.visible == false)return;
-
 		if (self.kolII <= self.array.length) {
 			hhh = (self.heightPic + self.otstup) * (Math.ceil(self.array.length / self.kolII)) - self._height;
 			www = (self.widthPic + self.otstup) * self.kolII - self._width;
@@ -539,6 +546,23 @@ Object.defineProperties(DGallery.prototype, {
 			return this._bmd;
 		}
 	},
+
+	borderRadius: { // вынести\внести отступ за элемент
+		set: function (value) {
+			if (this._borderRadius == value) return;
+			this._borderRadius = value;
+			this.scrollBarH.borderRadius = value;
+			this.scrollBarV.borderRadius = value;
+			for (var i = 0; i < this.array.length; i++) {
+				this.array[i].borderRadius = value;
+			}
+		},
+		get: function () {
+			return this._borderRadius;
+		}
+	},
+
+
 
 
 
@@ -828,7 +852,7 @@ export function DBox(_cont, _x, _y, _fun) {
 
 	this._object = null;
 
-
+	this._borderRadius=0
 	this._activ = false;
 
 	this.idArr = -1;
@@ -1090,6 +1114,18 @@ Object.defineProperties(DBox.prototype, {
 			return this._activ;
 		}
 	},
+
+	borderRadius: { // вынести\внести отступ за элемент
+		set: function (value) {
+			if (this._borderRadius == value) return;
+			this._borderRadius = value
+			this.panel.borderRadius = value
+		},
+		get: function () {
+			return this._borderRadius;
+		}
+	},
+
 	color: { // цвет обводки
 		set: function (value) {
 			if (this._color == value) return;

@@ -9,14 +9,17 @@
 	var ww=120
 	var dcmParam;
 	function downMy(s) {
-		
-		trace(s,this)
-		if(dinamik.uuid!=this.uuid){					
-			dinamik=this;
-			
-			//paramObject.addObject(dinamik);
+		trace(this)
+		//setDin(this)			
+	}
+
+	function setDin(o) {
+		if(dinamik.uuid!=o.uuid){					
+			dinamik=o;			
+			if(dinamik.type!=undefined)pObject.window.title=dinamik.type			
 			pObject.addObject(dinamik);
-		}		
+		}
+
 	}
 
 
@@ -35,57 +38,28 @@
 		content= new DCont(scane);
 		//content.scale=0.75
 		content.position.x=220;
-		this.bmpPic=new DBitmapData(2,2) 	
-		/**/
 
-
-		/*
-		var element= document.createElement('div');
-		element.style.background= "red";
-		element.style.width= "100px";
-    	element.style.height= "80px";
-		document.body.appendChild(element);
-		element.style['msTransform'] = 'rotate(30deg)'; // IE*/
-
-		/*var panel=new DPanel(content, 1000,100)
-		var label=new DLabel(content, 1000,100,"dsg")*/
-
+		this.bmpPic=new DBitmapData(2,2) 
 
 		new DButton(content,55,0,"test",function(){				
 			
 
 
-			/*label.width=50+Math.random()*100;
-			label.text="adfasdfasdfasd ads f a"+Math.random();
-			for (var i = 0; i < 5; i++) {
-				label.text+=Math.random();
-			}
-			label.textAlign="center";dcmParam.ctrlCV."qwerty22222222uio".ctr
 
-			var o=label.getRect();
-			panel.width=o.width;
-			panel.height=o.height;
-
-			panel.x=label.x+o.x;
-			panel.y=label.y+o.y;*/
-
-
-
-			//pObject.addObject(dcmParam)
-			//this.div.style['msTransform']='rotate(30deg)';
-
-
-		}).fun_mousedown=function(){		
-
+		}).fun_mousedown=function(){
 			dcmParam.ctrlCV.saveText("qw333333io")
 		};
 
-		trace("--0--")
-		//return/**/	
+	
 
 
-		pObject=new DParamObject(scane,2,2,function(){});
-		pObject.addObject(dinamik);
+		pObject=new DParamObject(scane,2,2,function(){			
+			sizeWindow()
+		});
+		//pObject.addObject(dinamik);
+
+
+
 
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
 		plus(new DButton(null,0,0,"ButtonLoad",function(base64){
@@ -95,8 +69,33 @@
 		
 
 		plus(new DPanel(null,0,0));
+
+		this._vusot=20
+		
+		/*this.slider=new DSlider(null,0,0,downMy)
+		this.slider.width=200;
+        this.slider.okrug=1
+
+        this.slider.panel.color1 = "#00336e";
+
+
+        this.slider.pan.div.style.borderRadius = this._vusot+"px";
+        this.slider.panel.div.style.borderRadius = this._vusot+"px";
+
+        var hh=this._vusot*2-2;
+
+        this.slider._height=hh;
+        this.slider.pan.height=hh-this.slider._otstup*2;
+        this.slider.panel.width=this.slider.panel.height=hh;
+        
+        this.slider.value=100
+
+
+		plus(this.slider);*/
+
 		plus(new DImage(null,0,0,"resources/pic/0.png"));
 		plus(new DLabel(null,0,0,"text My"));
+		pObject.addObject(array[array.length-1].obj);
 		plus(new DSlider(null,0,0,downMy));
 		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
 		plus(new DInput(null,0,0,"DInput",downMy));
@@ -105,7 +104,9 @@
 
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
-		pObject.addObject(array[array.length-1].obj);
+		
+		
+		
 		plus(new DWindow(null,0,0,"DWindow",downMy));
 		plus(new DColor(null,0,0,"#0000ff",downMy));
 		plus(new DScrollBarV(content,677,133,downMy))
@@ -144,20 +145,17 @@
 
 		var rrr=new DComboBox(null,0,0,["DComboBox","xz"],function(){
 			trace(this.index+"   "+this.value)
-		})
-		//plus(rrr)
-
+		})		
 		rrr.array=["xz1","xz2","xz3","xz4"]
 		rrr.valueS=[1,"xz2",22,33]
-
 		rrr.value=33
-
+		plus(rrr)
 
 
 		var bd= new DHelp(content, 800, 500, "xz dsgf dsds gsdgf dsgsd g", "resources/pic/1.png",function(){
 			trace(this.value)
 		});	
-		pObject.addObject(bd);
+		//pObject.addObject(bd);
 
 
 
@@ -186,20 +184,44 @@
 		obj.x=2;
 		obj.y=2;
 		p1.add(obj);
+		p.object=obj
+		p.panel=p1
 		obj.width=120;
 
-		p.obj=obj
+		p.obj=obj;
 
-		new DLabel(p,2,2,obj.type);
+		var l1=new DLabel(p,24,2,obj.type);
 		var l=new DLabel(p,2,p1.height-8,"height:"+obj.height);
+		p.label=l
 		l.alpha=0.75;
 		l.fontSize=10;
 		array.push(p)
+
+
+		var b=new DButton(p,2,2,">",function(){
+			setDin(this.obj)
+		});
+		b.obj=obj
+		b.width=16
+		b.height=16
+		b.color="#dddddd"
+
 		sizeWindow();
+	}
+
+	function drahHH () {
+		for (var i = 0; i < array.length; i++) {
+			
+			array[i].height=array[i].obj.height+12;
+			array[i].panel.height=array[i].obj.height+6;
+			array[i].label.y=array[i].obj.height-8
+			array[i].label.text="height:"+array[i].obj.height
+		}
 	}
 	
 
-	function sizeWindow () {			
+	function sizeWindow () {
+		drahHH()			
 		var h = document.documentElement.clientHeight;
 		var y=36;
 		var x=0;
