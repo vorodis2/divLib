@@ -25,7 +25,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this._otstup1 = 5;
 	this.clearIndex = true;
 
-	
+	this.dragNotEvent=dcmParam.dragNotEvent;
 
 	this._color = dcmParam._color;
 	this._color1 = dcmParam._color1;
@@ -60,34 +60,27 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.content1 = new DCont();
 	this.add(this.content1);
 
-	
+	this.panel=new DPanel(this.contPanel,0,0);
+	this.panel.width=this._width;
+	this.panel.height=this._height;
 
 	this.content = new DCont();
-
-
-	this.content1.add(this.content);
-
-	//var b=new DButton(this,0,-50,"DButton")
-	
+	this.content1.add(this.content)	
 	this.content1.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)";
-	/*this.graphics = new PIXI.Graphics();
-	this.content.addChild(this.graphics);*/
-
-
-	//this.content.mask = this.graphicsMask;
 
 	// Вертикальный и горизонтальный скролл
 	this.scrollBarH = new DScrollBarH(this, 0, this._height - this.otstup1, function () {
 		self.scrolPos(false);
 		// self.content.x = -this.scrolValue;
 	});
-	this.scrollBarH.offsetHit=20;
+	this.scrollBarH.offsetHit=3; // elements width
+	
 	
 	this.scrollBarV = new DScrollBarV(this, this._width - this.otstup1, 0, function () {
 		// self.content.y = -this.scrolValue;
 		self.scrolPos(false);
 	});
-	this.scrollBarV.offsetHit=20;
+	this.scrollBarV.offsetHit=3;
 
 
 	this.createZamen;// Замена типа кнопки
@@ -109,11 +102,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 			}
 		}
 
-		/*for (var i = 0; i < this.arrayKesh.length; i++) {
-			if (this.arrayKesh[i].visible == false) {
-				return this.arrayKesh[i];
-			}
-		}*/
 		if (this.createZamen != undefined) {
 			this.arrayKesh.push(this.createZamen());
 		} else {
@@ -183,14 +171,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 			self.draw();
 
 		} else {
-			/*if (this.sahRendom == self.sahRendom) {
-				self.sahRendom = Math.round(Math.random() * 10000);
-				self.array[self.sahLoad - 1].sahRendom = self.sahRendom;
-
-				
-				
-
-			}*/
 			self.array[self.sahLoad - 1].boolFL=true
 			self.array[self.sahLoad - 1].startLoad(self.array[self.sahLoad - 1].object11);
 		}
@@ -429,18 +409,23 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.mouseDown=function(e){		
 		self.dragActiv=true;
 		sp=undefined;
+		if(self.dragNotEvent==true)document.body.style.pointerEvents="none";
+		
+		
 	
 	}
 
 	this.mouseup=function(e){		
 		self.dragActiv=false;
 		sp=undefined;
+		if(self.dragNotEvent==true)document.body.style.pointerEvents=null;	
+
+	
 		
 	}
 
 	var yyy=0
-	this.mousemove=function(e){
-			
+	this.mousemove=function(e){			
 		if(self.dragActiv==false)return;
 		if(self.scrollBarV.visible == false)return;
 		if (self.kolII <= self.array.length) {
@@ -450,7 +435,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 			hhh = self.heightPic + self.otstup - self._height;
 			www = (self.widthPic + self.otstup) * self.array.length - self._width;
 		}
-
 
 		if(dcmParam.mobile==false){
   			if(sp==undefined){
@@ -468,11 +452,7 @@ export function DGallery (dCont, _x, _y, _fun) {
   				};
   			}
   			sp.ys=e.targetTouches[0].clientY
-  			/*var ss=sp.x1+(e.targetTouches[0].clientX-sp.x)  			
-  			self.x=ss
-  			var ss=sp.y1+(e.targetTouches[0].clientY-sp.y)  			
-  			self.y=ss*/	  			
-  		}
+ 		}
 
   		yyy=sp.y1-(sp.y-sp.ys);
 
@@ -481,13 +461,12 @@ export function DGallery (dCont, _x, _y, _fun) {
   			yyy=-(hhh + self.otstup)
   		}	
   		self.content.y=yyy
-  		self.scrollBarV.value = -yyy;	 		
 
+  		self.scrolPos(true)
 	}	
 
 	this._bmd=false;
-	this.startMouseDown=function(){	
-
+	this.startMouseDown=function(){
 		if(this._bmd==true){
 			if(dcmParam.mobile==false){			
 				this.content.div.addEventListener("mousedown", this.mouseDown);
@@ -511,6 +490,13 @@ export function DGallery (dCont, _x, _y, _fun) {
 		}		
 	}
 
+
+	this.bmd=true
+
+
+
+
+
 	
 
 
@@ -529,7 +515,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this._boolWheel = null;
 	this.boolWheel = bb;
 
-	
+	this.panelBool=true
 
 }
 DGallery.prototype = Object.create(DCont.prototype);
@@ -553,6 +539,7 @@ Object.defineProperties(DGallery.prototype, {
 			this._borderRadius = value;
 			this.scrollBarH.borderRadius = value;
 			this.scrollBarV.borderRadius = value;
+			this.panel.borderRadius = value;
 			for (var i = 0; i < this.array.length; i++) {
 				this.array[i].borderRadius = value;
 			}
@@ -570,7 +557,8 @@ Object.defineProperties(DGallery.prototype, {
 	panelBool: { // вынести\внести отступ за элемент
 		set: function (value) {
 			if (this._panelBool == value) return;
-			this._panelBool = value;
+			this._panelBool = value;			
+			this.panel.visible=value;
 			if(this.panel==undefined){
 				this.panel=new DPanel(this.contPanel,0,0);
 				this.panel.width=this._width;

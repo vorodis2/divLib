@@ -26,13 +26,9 @@
 	function init () {
 		window.onresize = sizeWindow;
 		dinamik = dcmParam=new DCM();
-		
+
 		scane= new DCont(document.body);
-		/*new DCheckBox(scane,988,0,"DCheckBox",function(){
-			trace(scane)
-			scane.activMouse = this.value;
-			trace(scane.activMouse)
-		}).value=true*/
+		
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
@@ -41,27 +37,44 @@
 
 		this.bmpPic=new DBitmapData(2,2) 
 
-		new DButton(content,55,0,"test",function(){				
-			
+		var b= new DButton(content,55,0,"test33",function(){
+			trace("dfgsdfgdsf")
+		})
+
+		//b.height=32
+		//b.width=32
+		b.text="2";
 
 
+		//b.textAlign="center"//
 
-		}).fun_mousedown=function(){
+		/*}).fun_mousedown=function(){
 			dcmParam.ctrlCV.saveText("qw333333io")
-		};
+		};*/
 
-	
+
 
 
 		pObject=new DParamObject(scane,2,2,function(){			
 			sizeWindow()
 		});
+		pObject.addObject(b);
+
+
+
+		//var b2= new DButton2(content,255,110,"test33",function(){})
+
+
+		//setDin(b)
 		//pObject.addObject(dinamik);
 
 
 
 
+
+
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
+
 		plus(new DButton(null,0,0,"ButtonLoad",function(base64){
 			trace(this)
 		}));
@@ -72,26 +85,7 @@
 
 		this._vusot=20
 		
-		/*this.slider=new DSlider(null,0,0,downMy)
-		this.slider.width=200;
-        this.slider.okrug=1
 
-        this.slider.panel.color1 = "#00336e";
-
-
-        this.slider.pan.div.style.borderRadius = this._vusot+"px";
-        this.slider.panel.div.style.borderRadius = this._vusot+"px";
-
-        var hh=this._vusot*2-2;
-
-        this.slider._height=hh;
-        this.slider.pan.height=hh-this.slider._otstup*2;
-        this.slider.panel.width=this.slider.panel.height=hh;
-        
-        this.slider.value=100
-
-
-		plus(this.slider);*/
 
 		plus(new DImage(null,0,0,"resources/pic/0.png"));
 		plus(new DLabel(null,0,0,"text My"));
@@ -117,29 +111,16 @@
 			a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
 		}
 		g.start(a);
-		g.kolII=1
+		g.kolII=2
 		plus(g);
 
 
 		var bd= new DButtonDrag(content, 0, 0, "resources/pic/0.png", "resources/pic/1.png",function(){
 			trace(this.value)
 		});
-		//plus(bd);
 
-		var ab= new DAroundButton(content, 0, 0, function(s,p){
-			trace(s,p)
-		});
 
-		ab.creat("xzBool","resources/pic/0.png", "resources/pic/1.png",0)
-		ab.creat("state1","resources/pic/2.png", "resources/pic/3.png",1)
-		ab.creat("state2","resources/pic/2.png", "resources/pic/3.png",2)
-		ab.creat("state3","resources/pic/2.png", "resources/pic/3.png",3)
-		ab.creat("state4","resources/pic/2.png", "resources/pic/3.png",4)
 
-		
-		ab.setParam("xzBool",true)
-		
-		ab.start(content, 800, 400, ["xzBool","state1","state2","state4"])
 
 
 
@@ -151,26 +132,17 @@
 		rrr.value=33
 		plus(rrr)
 
-
-		var bd= new DHelp(content, 800, 500, "xz dsgf dsds gsdgf dsgsd g", "resources/pic/1.png",function(){
-			trace(this.value)
-		});	
-		//pObject.addObject(bd);
-
-
-
-
-		/*setTimeout(function() {
-			ab.stop()
-		}, 10000);*/
-		
-
-		//pObject.addObject(ab);
+		var three=new DThree(null,0,0,function(){
+			
+		})
 
 		
-		//pObject.addObject(array[array.length-1].obj);
 
+		plus(three)
 
+		three.setObj(g,"children","type")
+
+		/**/
 		
 	}
 		
@@ -201,10 +173,10 @@
 		var b=new DButton(p,2,2,">",function(){
 			setDin(this.obj)
 		});
-		b.obj=obj
-		b.width=16
-		b.height=16
-		b.color="#dddddd"
+		b.obj=obj;
+		b.width=16;
+		b.height=16;
+		b.color="#dddddd";
 
 		sizeWindow();
 	}
