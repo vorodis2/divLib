@@ -40,7 +40,6 @@ export function DCM () {
 	this._otstup = 2;
 	this._boolLine=true;
 
-	trace("dsgf")
 	this.borderRadius=0
 	
 	this.mobile=false;

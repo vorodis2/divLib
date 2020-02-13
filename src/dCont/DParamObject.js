@@ -470,7 +470,6 @@ export function DParamObject (_cont, _x, _y, _fun) {
 		if (!slider) return;	
 		
 		if (slider.type == 'DSliderBig') {
-			console.warn("dfg  "+slider.type)	
 			if (slider.isDinamMinMax === false) return;
 			if (slider.visiMinMax == false) slider.visiMinMax = true;
 			this.omm = this.diapozon(slider.value);
