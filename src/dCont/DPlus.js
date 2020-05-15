@@ -5,34 +5,7 @@ import { DCont } from './DCont.js';
 import { DButton } from './DCM.js';
 
 
-/*
-export class DAroundButton extends DCont {
-  	constructor(dCont, _x, _y, _fun) {
-  		super(); 
-  		this.type="DAroundButton";
-  		var self=this
-  		this.x=_x||0;	
-  		this.y=_y||0;
-   		this.fun=_fun;
 
-		
-  	}
-
-
-
-  	set x(value) {this.position.x = value;}	get x() { return  this.position.x;}
-	set y(value) {this.position.y = value;}	get y() { return  this.position.y;}
-	set width(value) {
-		if(this._width!=value){
-			this._width = value;
-			//this.reDrag();
-			
-		}		
-	}	
-	get width() { return  this._width;}
-
-
-}*/
 
 
 
@@ -57,8 +30,7 @@ export class DAroundButton extends DCont {
        
 
         this.creat=function(name, link, link1,state){
-            bAround=new BAround(this, name, link, link1,state,this.array.length)  
-
+            bAround=new BAround(this, name, link, link1,state,this.array.length)
             this.array.push(bAround)
         }
 
@@ -66,9 +38,7 @@ export class DAroundButton extends DCont {
 
         this.setParam=function(name, p){
             for (var i = 0; i < this.array.length; i++) {
-                if(this.array[i].name==name){
-                    
-                                    
+                if(this.array[i].name==name){                                   
                     this.array[i].setValue(p);
                 }
             }
@@ -189,9 +159,8 @@ export class BAround {
         this.button.state=state;
         this.button.object.bAround=this;
 
-        this.setValue=function(v){
-            
-            this.button.value=v
+        this.setValue=function(v){            
+            this.button.value=v;
         }
     }
 }

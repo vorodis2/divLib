@@ -25,9 +25,11 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this._otstup1 = 5;
 	this.clearIndex = true;
 
+	this.dragNotEvent=dcmParam.dragNotEvent;
 
 	this._color = dcmParam._color;
 	this._color1 = dcmParam._color1;
+	this._borderRadius =dcmParam.borderRadius;
 	this._lineSize = 2;
 	this._boolPositScrol = true;// выворот положений
 	this._boolPositOtctup = true;// внутурь/наружу
@@ -58,32 +60,27 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.content1 = new DCont();
 	this.add(this.content1);
 
-	
+	this.panel=new DPanel(this.contPanel,0,0);
+	this.panel.width=this._width;
+	this.panel.height=this._height;
 
 	this.content = new DCont();
-	this.content1.add(this.content);
-
-	//var b=new DButton(this,0,-50,"DButton")
-	
+	this.content1.add(this.content)	
 	this.content1.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)";
-	/*this.graphics = new PIXI.Graphics();
-	this.content.addChild(this.graphics);*/
-
-
-	//this.content.mask = this.graphicsMask;
 
 	// Вертикальный и горизонтальный скролл
 	this.scrollBarH = new DScrollBarH(this, 0, this._height - this.otstup1, function () {
 		self.scrolPos(false);
 		// self.content.x = -this.scrolValue;
 	});
-	this.scrollBarH.offsetHit=20;
+	this.scrollBarH.offsetHit=3; // elements width
+	
 	
 	this.scrollBarV = new DScrollBarV(this, this._width - this.otstup1, 0, function () {
 		// self.content.y = -this.scrolValue;
 		self.scrolPos(false);
 	});
-	this.scrollBarV.offsetHit=20;
+	this.scrollBarV.offsetHit=3;
 
 
 	this.createZamen;// Замена типа кнопки
@@ -105,11 +102,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 			}
 		}
 
-		for (var i = 0; i < this.arrayKesh.length; i++) {
-			if (this.arrayKesh[i].visible == false) {
-				return this.arrayKesh[i];
-			}
-		}
 		if (this.createZamen != undefined) {
 			this.arrayKesh.push(this.createZamen());
 		} else {
@@ -125,6 +117,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 		this.arrayKesh[this.arrayKesh.length - 1].funLoad = this.funLoad;
 		this.arrayKesh[this.arrayKesh.length - 1].funOver = this.funOver;
 		this.arrayKesh[this.arrayKesh.length - 1].funOut = this.funOut;
+		this.arrayKesh[this.arrayKesh.length - 1].borderRadius = this._borderRadius;
 
 		return this.arrayKesh[this.arrayKesh.length - 1];
 	};
@@ -139,6 +132,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 			self.content.y = (self.scrollBarV.value / 100) * (this._height - self.scrollBarV.heightContent);
 			self.content.x = (self.scrollBarH.value / 100) * (this._width - self.scrollBarH.widthContent);
 		}
+		self.dragIE()
 	};
 
 
@@ -175,12 +169,10 @@ export function DGallery (dCont, _x, _y, _fun) {
 		if (self.sahLoad > self.array.length) {
 			if (this.complitLoad != undefined) this.complitLoad();
 			self.draw();
+
 		} else {
-			if (this.sahRendom == self.sahRendom) {
-				self.sahRendom = Math.round(Math.random() * 10000);
-				self.array[self.sahLoad - 1].sahRendom = self.sahRendom;
-				self.array[self.sahLoad - 1].startLoad(self.array[self.sahLoad - 1].object11);
-			}
+			self.array[self.sahLoad - 1].boolFL=true
+			self.array[self.sahLoad - 1].startLoad(self.array[self.sahLoad - 1].object11);
 		}
 	};
 
@@ -203,8 +195,11 @@ export function DGallery (dCont, _x, _y, _fun) {
 			self.array[self.sahLoad].sahRendom = this.sahRendom * 1;
 			this.funLoad();
 		}
-
 	};
+
+
+
+
 
 	// перерисовка галереи
 	this.draw = function () {
@@ -299,6 +294,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 		// 	this.graphics.endFill();
 
 		// }
+		this.dragIE()
 		if (this.postDraw) this.postDraw();
 	};
 
@@ -339,10 +335,11 @@ export function DGallery (dCont, _x, _y, _fun) {
 		}
 	};
 
+
 	// прокрутка колесом мышки
 	var hhh, www;
 	this.mousewheel = function (e) {
-		trace(e)
+		
 		if (self.kolII <= self.array.length) {
 			hhh = (self.heightPic + self.otstup) * (Math.ceil(self.array.length / self.kolII)) - self._height;
 			www = (self.widthPic + self.otstup) * self.kolII - self._width;
@@ -351,21 +348,28 @@ export function DGallery (dCont, _x, _y, _fun) {
 			www = (self.widthPic + self.otstup) * self.array.length - self._width;
 		}
 
+		var p=e.deltaY*-1;
+		if(e.wheelDelta!=undefined){
+			if(e.wheelDelta>0)p=1;
+			else p=-1;
+		}
+		p*=-1;
+
 		if (self.scrollBarV.visible) {
-			if (e.deltaY > 0) {
+			if (p < 0) {
 				if (self.content.y >= 0) {
 					self.content.y = 0;
-					self.scrollBarV.value = 0;
+					//self.scrollBarV.value = 0;
 				} else {
-					self.scrollBarV.value -= self.sahDelta;
+					//self.scrollBarV.value -= self.sahDelta;
 					self.content.y += self.sahDelta;
 				}
 			} else {
 				if (self.content.y <= -(hhh + self.otstup)) {
 					self.content.y = -(hhh + self.otstup);
-					self.scrollBarV.value = hhh;
+					//self.scrollBarV.value = hhh;
 				} else {
-					self.scrollBarV.value += self.sahDelta;
+					//self.scrollBarV.value += self.sahDelta;
 					self.content.y -= self.sahDelta;
 				}
 
@@ -373,42 +377,190 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 			//
 		} else if (self.scrollBarH.visible) {
-			if (e.deltaY > 0) {
+			if (p < 0) {
 				if (self.content.x >= 0) {
 					self.content.x = 0;
-					self.scrollBarH.value = 0;
+					//self.scrollBarH.value = 0;
 				} else {
-					self.scrollBarH.value -= self.sahDelta;
+					//self.scrollBarH.value -= self.sahDelta;
 					self.content.x += self.sahDelta;
 				}
 			} else {
 				if (self.content.x <= -(www + self.otstup)) {
 					self.content.x = -(www + self.otstup);
-					self.scrollBarH.value = www;
+					//self.scrollBarH.value = www;
 				} else {
-					self.scrollBarH.value += self.sahDelta;
+					//self.scrollBarH.value += self.sahDelta;
 					self.content.x -= self.sahDelta;
 				}
 			}
 		}
+		//self.koreckScrol();
+		self.scrolPos(true)
+		self.dragIE();
 	};
 
 	
 
+
+
+	var sp=undefined;	
+	this.dragActiv=false
+	this.mouseDown=function(e){		
+		self.dragActiv=true;
+		sp=undefined;
+		if(self.dragNotEvent==true)document.body.style.pointerEvents="none";
+		
+		
+	
+	}
+
+	this.mouseup=function(e){		
+		self.dragActiv=false;
+		sp=undefined;
+		if(self.dragNotEvent==true)document.body.style.pointerEvents=null;	
+
+	
+		
+	}
+
+	var yyy=0
+	this.mousemove=function(e){			
+		if(self.dragActiv==false)return;
+		if(self.scrollBarV.visible == false)return;
+		if (self.kolII <= self.array.length) {
+			hhh = (self.heightPic + self.otstup) * (Math.ceil(self.array.length / self.kolII)) - self._height;
+			www = (self.widthPic + self.otstup) * self.kolII - self._width;
+		} else {
+			hhh = self.heightPic + self.otstup - self._height;
+			www = (self.widthPic + self.otstup) * self.array.length - self._width;
+		}
+
+		if(dcmParam.mobile==false){
+  			if(sp==undefined){
+  				sp={  					
+  					y:e.clientY,  					
+  					y1:self.content.y
+  				};
+  			}  
+  			sp.ys=e.clientY			
+  		}else{
+  			if(sp==undefined){
+  				sp={  					
+  					y:e.targetTouches[0].clientY,  					
+  					y1:self.content.y
+  				};
+  			}
+  			sp.ys=e.targetTouches[0].clientY
+ 		}
+
+  		yyy=sp.y1-(sp.y-sp.ys);
+
+  		if(yyy>=0)yyy=0
+  		if(yyy <= -(hhh + self.otstup)){
+  			yyy=-(hhh + self.otstup)
+  		}	
+  		self.content.y=yyy
+
+  		self.scrolPos(true)
+	}	
+
+	this._bmd=false;
+	this.startMouseDown=function(){
+		if(this._bmd==true){
+			if(dcmParam.mobile==false){			
+				this.content.div.addEventListener("mousedown", this.mouseDown);
+				window.addEventListener("mouseup", this.mouseup);
+				
+			}else{
+				this.content.div.addEventListener("touchstart", this.mouseDown);
+				window.addEventListener("touchend", this.mouseup);
+	  			
+			}
+			dcmParam.addFunMove(self.mousemove)
+		}else{
+			if(dcmParam.mobile==false){			
+				this.content.div.removeEventListener("mousedown", this.mouseDown);
+				window.removeEventListener("mouseup", this.mouseup);
+				
+			}else{
+				this.content.div.removeEventListener("touchstart", this.mouseDown);
+				window.removeEventListener("touchend", this.mouseup);
+	  			
+			}
+			dcmParam.removeFunMove(self.mousemove) 
+		}		
+	}
+
+
+	this.bmd=true
+
+
+
+
+
+	
+
+
+
+	this.dragIE=function(){
+		if(dcmParam.isIE==true){
+			for (var i = 0; i < this.array.length; i++) {
+				this.array[i].dragIE(this)
+			}
+			this.x-=1
+			this.x+=1
+		}
+	}
+
 	var bb = this._boolWheel;
 	this._boolWheel = null;
 	this.boolWheel = bb;
+
+	this.panelBool=true
 
 }
 DGallery.prototype = Object.create(DCont.prototype);
 DGallery.prototype.constructor = DGallery;
 Object.defineProperties(DGallery.prototype, {
 	
+	bmd: { // вынести\внести отступ за элемент
+		set: function (value) {
+			if (this._bmd == value) return;
+			this._bmd = value;
+			this.startMouseDown()
+		},
+		get: function () {
+			return this._bmd;
+		}
+	},
+
+	borderRadius: { // вынести\внести отступ за элемент
+		set: function (value) {
+			if (this._borderRadius == value) return;
+			this._borderRadius = value;
+			this.scrollBarH.borderRadius = value;
+			this.scrollBarV.borderRadius = value;
+			this.panel.borderRadius = value;
+			for (var i = 0; i < this.array.length; i++) {
+				this.array[i].borderRadius = value;
+			}
+		},
+		get: function () {
+			return this._borderRadius;
+		}
+	},
+
+
+
+
+
 	
 	panelBool: { // вынести\внести отступ за элемент
 		set: function (value) {
 			if (this._panelBool == value) return;
-			this._panelBool = value;
+			this._panelBool = value;			
+			this.panel.visible=value;
 			if(this.panel==undefined){
 				this.panel=new DPanel(this.contPanel,0,0);
 				this.panel.width=this._width;
@@ -546,7 +698,7 @@ Object.defineProperties(DGallery.prototype, {
 			if (this._height == value) return;
 			this._height = value;
 			this.content1.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)";
-			this.content1.x=0
+			this.content1.x=0;
 			this.drawScrol();
 
 			this.draw();
@@ -686,9 +838,11 @@ export function DBox(_cont, _x, _y, _fun) {
 	this._otstup = 2;
 	this.clearIndex = true;
 
+	this.boolFL=false;
+
 	this._object = null;
 
-
+	this._borderRadius=0
 	this._activ = false;
 
 	this.idArr = -1;
@@ -704,18 +858,29 @@ export function DBox(_cont, _x, _y, _fun) {
 	this.add(this.content);
 
 	this.panel = new DPanel(this.content, 0, 0);
+	//this.content.div.style.clip = "rect(1px 20px 20px 0px)";
 
-
-	this.image = new DImage(this.content, 0, 0, undefined, function () {
-	
+	this.image = new DImage(this.content, 0, 0, undefined, function () {	
 		self.draw();
-		if (self.funLoad) self.funLoad();
-	});
+		this.visible=true
+		if(self.boolFL==true){
+			self.boolFL=false
+			if (self.funLoad) self.funLoad();
+		}
 
-	this.label = new DLabel(this.content, 0, 0, '|');
+	});
+	this.image.visible=false;
+
+	this.image.funError =function () {
+		this._link="fgh"
+		this.link='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAASSURBVBhXY/jBwPAfhKEMhv8ARqQH3aEVcqIAAAAASUVORK5CYII='
+	}
+
+
+	this.label = new DLabel(this.content, 0, 0, ' ');
 
 	//this.image._preloaderBool = true;
-	this.image.visible = false;
+	//this.image.visible = false;
 	this.label.visible = false;
 
 
@@ -723,7 +888,7 @@ export function DBox(_cont, _x, _y, _fun) {
 	/*this.graphics = new PIXI.Graphics();
 	this.content.addChild(this.graphics);*/
 
-	this.object;
+	this.object=undefined;
 	this._color = "#ffffff";
 	this._color1 = "#ff0000";
 	this._lineSize = 2;
@@ -760,26 +925,50 @@ export function DBox(_cont, _x, _y, _fun) {
 		this.label.y = this._height - this.label.curH - this._otstup;
 		if (this.postDraw) this.postDraw();
 	};
+	
 
-	this.isObj = function (_obj) {
-		if (this.object != undefined) {
-			if (_obj != undefined) {
-				if (_obj.link != undefined) {
-					if (this.object.link != undefined) {
-						if (this.object.link == _obj.link) {
-							return true;
-						}
-					}
-				}
-			}
-		}
+    var b,s, ss,s1
+    this.isObj = function (_obj) {
+        
 
-		return false;
-	};
+        if (this.object11 != undefined) {         
+            if (_obj != undefined) {                
+                for (s in this.object11) {
+                    ss=typeof this.object11[s]
+                    if(ss =='number'||ss =='boolean'||ss =='string'){
+                        b=false;
+                        for (s1 in _obj) {
+                            if(s==s1){
+                                if(this.object11[s]==_obj[s1]){
+                                    b=true;
+                                }
+                            }
+                        }
+                        if(!b){
+                            
+                            return false;//обьект был не найден или не равен
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    };
 
-	var b;
-	// Добавление картинки и текста, пошаговая загрузка.
-	this.startLoad = function (_obj) {
+
+
+    var b,link;
+    // Добавление картинки и текста, пошаговая загрузка.
+    this.startLoad = function (_obj) {
+        
+       
+        if(this.object!=undefined) {
+            self.funLoad();
+            return   
+        }  
+		
+
 		this.object = _obj;
 
 		if (_obj.title) {
@@ -788,7 +977,7 @@ export function DBox(_cont, _x, _y, _fun) {
 			this.label.visible = true;
 		}
 		if (_obj.src) {
-			this.image.visible = true;
+			//this.image.visible = true;
 			if (this.image.link == _obj.src) {
 				if (self.funLoad) self.funLoad();
 			} else {
@@ -805,7 +994,8 @@ export function DBox(_cont, _x, _y, _fun) {
 	this.clear = function () {
 		this.visible = false;
 		this.label.visible = false;
-		this.image.visible = false;
+		this.boolFL=false;
+		//this.image.visible = false;
 		if (this.clearIndex) {
 			this.activ = false;
 		}
@@ -818,14 +1008,14 @@ export function DBox(_cont, _x, _y, _fun) {
 		self.boolOut = false;
 		if(self._activ==false)self.panel.color1=dcmParam.compToHexArray(dcmParam.hexDec(self._color1), -30);
 		else self.panel.color1=dcmParam.compToHexArray(dcmParam.hexDec(self._color), -30);
-		if (self.funOver) self.funOver(this);
+		if (self.funOver) self.funOver(self);
 	};
 	this.mouseOut = function (e) {		
 		
 		if(self._activ==false)self.panel.color1=self._color1;
 		else self.panel.color1=self._color;
 		
-		if (self.funOut) self.funOut(this);
+		if (self.funOut) self.funOut(self);
 	};
 	this.mouseDown = function (e) {		
 		if (self.fun) self.fun();
@@ -833,55 +1023,69 @@ export function DBox(_cont, _x, _y, _fun) {
 	this.draw();
 
 
-	this.panel.div.addEventListener("mouseout", this.mouseOut);
-	this.image.image.addEventListener("mouseout", this.mouseOut);
-
-	this.panel.div.addEventListener("mouseover", this.mouseOver);
-	this.image.image.addEventListener("mouseover", this.mouseOver);
 
 
 
+	if(dcmParam.mobile==false){
+		this.image.image.addEventListener("mousedown", this.mouseDown)
+		this.panel.div.addEventListener("mousedown", this.mouseDown)
 
-	this.image.image.addEventListener("mousedown", this.mouseDown)
-	this.panel.div.addEventListener("mousedown", this.mouseDown)
+		this.panel.div.addEventListener("mouseout", this.mouseOut);
+		this.image.image.addEventListener("mouseout", this.mouseOut);
 
-	/*
+		this.panel.div.addEventListener("mouseover", this.mouseOver);
+		this.image.image.addEventListener("mouseover", this.mouseOver);		
+	}else{
+		this.image.image.addEventListener("touchstart", this.mouseDown)
+		this.panel.div.addEventListener("touchstart", this.mouseDown)
+	}
 
-	this.upBody=function(e){
-  			document.removeEventListener("mousedown", self.upBody)
-  			self.openBool=false;
-  			boolOp=false
-  			setTimeout(function() {
-  				boolOp=true
-  			}, 100);
-  		}
-
-  		this.image.image.addEventListener("mouseout", function(){
-  			self.color=cOld;  			
-  		})
-
-  		var _x,_xx, a, c, cOld
-		this.image.image.addEventListener("mousemove", function(e){			
-			_x=Math.round((e.layerX/self.image.width)*dcmParam.bmp.width)
-			if(_x>dcmParam.bmp.width)_x=dcmParam.bmp.width;
-			_y=Math.round((e.layerY/self.image.height)*dcmParam.bmp.height)
-			if(_y>dcmParam.bmp.height)_y=dcmParam.bmp.height;
-			a= dcmParam.bmp.getPixel(_x, _y);
-			c= dcmParam.compToHexArray(a);			
-			self.color=c;
-			if(self.fun_mousemove){
-				self.fun_mousemove()
-			}
-		})
-		this.image.image.addEventListener("mousedown", function(e){	
+	this.arIE=[0,0,0,0]
+	this.par=undefined
+	var sy,sy1
+	this.dragIE=function(p){
+		if(this.par==undefined)this.par=p;
+		sy=1;
+		
+		this.arIE[0]=0
+		this.arIE[2]=this._height
+		this.arIE[1]=this._width		
+		this.arIE[3]=0
 
 
+		if(this.y<-this.par.content.y){
+			sy=	-(this.y+this.par.content.y)
+			this.arIE[0]=sy
+			this.arIE[2]=sy+this._height
+			if(this.arIE[2]<this.arIE[0])this.arIE[2]=this.arIE[0]
+		}
 
-	this.graphics.interactive = true;
-	this.graphics.buttonMode = true;
-	this.graphics.on('mouseover', this.mouseOver);
-	this.graphics.on('mouseout', this.mouseOut);
-	this.graphics.on('mousedown', this.mouseDown);*/
+		sy=this.y+this.par.content.y
+		sy1=this.par._height-this._height
+		if(sy>sy1){			
+			this.arIE[0]=0
+			this.arIE[2]=this._height+(sy1-sy)
+			if(this.arIE[2]<0)this.arIE[2]=0;		
+		}
+
+
+		
+		if(this.x<-this.par.content.x){
+			sy=	-(this.x+this.par.content.x)
+			this.arIE[3]=sy;
+			this.arIE[1]=sy+this._width;
+			if(this.arIE[1]<this.arIE[3])this.arIE[1]=this.arIE[3]
+		}	
+		
+
+		sy=this.x+this.par.content.x
+		sy1=this.par._width-this._width
+		if(sy>sy1){			
+			this.arIE[3]=0
+			this.arIE[1]=this._height+(sy1-sy)			
+		}
+		this.content.div.style.clip = "rect("+Math.round(this.arIE[0])+"px "+Math.round(this.arIE[1])+"px "+Math.round(this.arIE[2])+"px "+Math.round(this.arIE[3])+"px)";
+	}
 
 
 }
@@ -900,6 +1104,18 @@ Object.defineProperties(DBox.prototype, {
 			return this._activ;
 		}
 	},
+
+	borderRadius: { // вынести\внести отступ за элемент
+		set: function (value) {
+			if (this._borderRadius == value) return;
+			this._borderRadius = value
+			this.panel.borderRadius = value
+		},
+		get: function () {
+			return this._borderRadius;
+		}
+	},
+
 	color: { // цвет обводки
 		set: function (value) {
 			if (this._color == value) return;

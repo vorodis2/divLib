@@ -29,6 +29,7 @@ export function DSettings (_cont) {
 
 	this.tipRide = false;
 	this.arrF = [];
+	this.okrug=100
 	// this.arrayFon = new PLArrayFon(this.content);
 	// this.arrayFon.width = this._width - 1;
 	// this.arrayFon.x = 0.5;
@@ -485,6 +486,7 @@ export function DSettings (_cont) {
 				}
 			}
 		}
+		
 		this.draw();
 	};
 
@@ -530,8 +532,8 @@ export function DSettings (_cont) {
 				}
 			}
 		}
-
-		if ((this.type != 'SliderObject') && (this.type != 'DSliderBig') && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') /*&& (this.type !== 'DCheckBox')*/) {
+	
+		if ((this.type != 'SliderObject') /*&& (this.type != 'DSliderBig')*/ && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') /*&& (this.type !== 'DCheckBox')*/) {
 
 			if (self.object.funComplit != undefined) {
 				self.object.funComplit(this);
@@ -544,7 +546,6 @@ export function DSettings (_cont) {
 
 	this.funComplit = function () {
 		if (self.object.funComplit != undefined) {
-
 			self.object.funComplit(this);
 		}
 	};
@@ -573,14 +574,11 @@ export function DSettings (_cont) {
 	var component;
 	var bwidth = true;
 	this.addComponent = function (_type, _name, _param) {
-		/*if (window[_type] === undefined) {
-			console.warn('Не найден компонент при добавлении в SettingsBig => ' + _type);
-			return;
-		}*/
+		
 		component = null;
 
 	
-		//trace(_type, _name, _param)
+
 
 
 		if (_type == 'DStringDrag') {
@@ -684,7 +682,7 @@ export function DSettings (_cont) {
 		if (_type == 'DSliderBig') {
 			var min = 0;
 			var max = 100;
-			var okrug = 100;
+			var okrug = this.okrug;
 			if (_param != undefined) {
 				if (_param.min != undefined) min = _param.min;
 				if (_param.max != undefined) max = _param.max;
@@ -843,6 +841,11 @@ function DStringDrag (cont, _x, _y, _title, _fun) {
 		this.input = new DInput(this, this.otstup, this.otstup, 'null', function () {
 			self.value=this.value;
 		});
+		this.input.timeFun=1;
+
+		this.input.funEnter=function(){
+			self.fun();
+		}
 		
 		
 
@@ -1142,7 +1145,7 @@ function DVisualLoader (cont, _x, _y, _fun) {
 		if (self.input.value.indexOf('base64') !== -1) {
 			this.downloadUtill.saveBase64(self.input.value);
 		} else {
-			console.warn('Сохранение с линка не добавлено!');
+			
 		}
 		if (self.fun) self.fun();
 	}, 'resources/images/adminAr/61.png');
@@ -1159,7 +1162,7 @@ function DVisualLoader (cont, _x, _y, _fun) {
 
 	this.image.funError = function () {
 		self.image.link = self.linkError
-		console.log("FIXI ANTON хдр збрасывает");
+		
 	};
 
 
