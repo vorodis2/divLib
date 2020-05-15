@@ -40,7 +40,7 @@ export function DCM () {
 	this._otstup = 2;
 	this._boolLine=true;
 
-	this.borderRadius=0
+	this.borderRadius=0;
 	
 	this.mobile=false;
 
@@ -95,6 +95,15 @@ export function DCM () {
 			return navigator.userAgent.match(/BlackBerry/i);
 		},
 		iOS: function () {
+
+			let r = navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	        if(r==null ){
+	            if(navigator.userAgent.match(/Mac OS/i)!=null){
+	                if(window.matchMedia("(any-pointer:coarse)").matches==true){
+	                    r="Mac Заебали менять апи";
+	                }
+	            }
+	        }
 			return navigator.userAgent.match(/iPhone|iPad|iPod/i);
 		},
 		Opera: function () {
@@ -223,6 +232,47 @@ export function DCM () {
 	    this.colorPolit=this.canvas.toDataURL()
 	    return this.colorPolit;	
 	}
+
+	
+
+
+	this.arrFun=[]
+	this.removeFunMove=function(fun){
+		for(let i=this.arrFun.length-1;i>=0;i--){
+			if(this.arrFun[i]===fun){
+				this.arrFun.splice(i,1)
+				
+			}
+		}
+	}
+	this.addFunMove=function(fun){
+		this.removeFunMove(fun);
+		this.arrFun.push(fun);
+	}
+	this.mousemove=function(e){
+		for (let i = 0; i < self.arrFun.length; i++) {
+			self.arrFun[i](e);
+		}
+	}
+	this.getFunMouseMove=function(){
+		if(self.mobile==false){
+			document.removeEventListener("mousemove", self.mousemove);		
+		}else{
+			document.removeEventListener("touchmove", self.mousemove);
+		}
+		return self.mousemove;
+	}
+
+	if(this.mobile==false){
+		document.addEventListener("mousemove", self.mousemove);		
+	}else{
+		document.addEventListener("touchmove", self.mousemove);
+	}
+
+	global.dcmParam=this
+	//dcmParam.removeFunMove(self.mousemove)  dcmParam.addFunMove(self.mousemove)
+
+
 }
 
 Object.defineProperties(DCM.prototype, {    
@@ -341,8 +391,7 @@ export class DWindow extends DCont {
   			}
   		}
 
-  		this.buttonMin=new DButton(this,0,0," ",function(){
-  			
+  		this.buttonMin=new DButton(this,0,0," ",function(){  			
   			self.minimize=!self.minimize;
   			if(self.fun)self.fun()
   		});	
@@ -360,18 +409,19 @@ export class DWindow extends DCont {
   		this.button.color= c; 
   		this.button.object.style.textAlign = 'left';
 
-  		var sp=undefined;	
 
+  		this.fubDrag=undefined
+  		var sp=undefined;	
+  		this.scaleBig=1
   		this.mouseup = function(e){
   			sp=undefined;
-  			if(dcmParam.mobile==false){
-  				document.removeEventListener("mousemove", self.mousemove);
+  			if(dcmParam.mobile==false){  				
   				document.removeEventListener("mouseup", self.mouseup);
-  			}else{
-  				
+  			}else{  				
   				document.removeEventListener("touchend", self.mouseup);
-  				document.removeEventListener("touchmove", self.mousemove);
-  			}  			
+  		
+  			}  
+  			dcmParam.removeFunMove(self.mousemove);		
   		}
 
   		this.mousemove = function(e){  			
@@ -384,10 +434,10 @@ export class DWindow extends DCont {
 	  					y1:self.y
 	  				};
 	  			}
-	  			var ss=sp.x1+(e.clientX-sp.x)  			
-	  			self.x=ss
-	  			var ss=sp.y1+(e.clientY-sp.y)  			
-	  			self.y=ss
+	  			var ss=sp.x1+(e.clientX-sp.x)/self.scaleDrag.s;  			
+	  			self.x=ss;
+	  			var ss=sp.y1+(e.clientY-sp.y)/self.scaleDrag.s; 			
+	  			self.y=ss;
 	  		}else{
 	  			if(sp==undefined){
 	  				sp={
@@ -397,23 +447,34 @@ export class DWindow extends DCont {
 	  					y1:self.y
 	  				};
 	  			}
-	  			var ss=sp.x1+(e.targetTouches[0].clientX-sp.x)  			
-	  			self.x=ss
-	  			var ss=sp.y1+(e.targetTouches[0].clientY-sp.y)  			
-	  			self.y=ss	  			
+	  			var ss=sp.x1+(e.targetTouches[0].clientX-sp.x)/self.scaleDrag.s;  			
+	  			self.x=ss;
+	  			var ss=sp.y1+(e.targetTouches[0].clientY-sp.y)/self.scaleDrag.s;  			
+	  			self.y=ss;	  			
 	  		}
+	  		
+	  		if(self.fubDrag!=undefined)self.fubDrag();
   		}
 
-  		this.startDrag = function(){    			
-  			if(dcmParam.mobile==false){
-  				document.addEventListener("mousemove", self.mousemove);
+  		this.startDrag = function(){
+  			this.scaleDrag.s=this.scale
+  			this.testScale(this,this.scaleDrag)
+  			if(dcmParam.mobile==false){  				
   				document.addEventListener("mouseup", self.mouseup);
-  			}else{
-  				
-  				document.addEventListener("touchend", self.mouseup);
-  				document.addEventListener("touchmove", self.mousemove);
-  			}  			
+  			}else{  				
+  				document.addEventListener("touchend", self.mouseup);  				
+  			}  
+  			dcmParam.addFunMove(self.mousemove);				
   		}
+
+  		this.testScale = function (c,o) { 		
+  			if(c.scale)o.s*=c.scale;
+  			if(c.parent){
+  				self.testScale(c.parent,o)
+  			}
+    	}
+  		this.scaleDrag={s:1}
+
 
   		this._width--;
   		this._height--;
@@ -655,6 +716,8 @@ constructor(dCont,_x,_y, _color, _fun) {
 				self.fun_mousemove()
 			}
 		})
+
+
 
 		this.image.image.addEventListener("mousedown", function(e){	
 			cOld=c;
@@ -936,243 +999,6 @@ export class DComboBox extends DCont {
   	get activMouse() { return  this._activMouse;}
 }
 
-/*
-
-export class DButton extends DCont {
-  	constructor(dCont, _x, _y, _text, _fun, _link) {
-  		super(); 
-  		
-  		this.type="DButton2";
-  		this.dcmParam=dcmParam; 
-  		this.dcmParam.add(this)
-  		var self=this
-  		this.x=_x||0;	
-  		this.y=_y||0;
-   		this._text=_text||"null";
-   		this.fun=_fun;
-
-   		this.fun_mouseover=undefined;
-   		this.fun_mouseout=undefined;
-   		this.fun_mousedown=undefined;
-   		this.funDownFile=undefined;
-
-  		this._width=100;
-  		this._height=dcmParam.wh;
-  		this._color=dcmParam._color;
-  		this._colorText=dcmParam._colorText;
-  		this._fontSize=dcmParam._fontSize;
-  		this._fontFamily=dcmParam._fontFamily;
-  		this._borderRadius=dcmParam.borderRadius
-  		this._boolLine=dcmParam._boolLine;
-
-
-   		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);
-   		this.object=document.createElement('input');   	
-		if(dcmParam.isIE==false)this.object.style.position = 'fixed';
-
-		this.object.style.top = '0px';
-		this.object.style.left = '0px';
-		this.object.style.background=this._color;
-		this.object.style.color=this._colorText;
-		this.object.style.cursor="pointer";
-		this.object.style.fontSize= this._fontSize+'px';
-		if(this._boolLine==true){
-			this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(self._color), -20);//"none";
-		}else{
-			this.object.style.border= '0px solid'
-		}
-		this.object.style.display="inline-block";
-		this.object.style.fontFamily= this._fontFamily;
-		this.object.style.borderRadius=this._borderRadius+"px";	
-		this.object.type = 'button';
-		this.object.value = this._text;
-		this.div.appendChild(this.object);
-		this.object.style.width=this._width+"px";
-		this.object.style.height=this._height+"px";
-		
-		this.object.onclick=function(){			
-			if(self.fun)self.fun();
-		}
-		
-	  	this.object.addEventListener("mouseover", function(){
-			self.object.style.background = dcmParam.compToHexArray(dcmParam.hexDec(self._color), -10);			
-			if(self.fun_mouseover)self.fun_mouseover();
-			
-		})
-
-		this.object.addEventListener("mouseout", function(){
-			self.object.style.background = self._color;			
-			if(self.fun_mouseout)self.fun_mouseout();
-		})
-
-		self.mousedown=function(){
-			if (self.file != undefined) {
-				self.file.value = null;
-	            self.file.click();
-	            if (self.funDownFile)self.funDownFile();
-	            return;
-	        }
-			if(self.fun_mousedown)self.fun_mousedown();
-		}
-
-		if(dcmParam.mobile==false){
-			this.object.addEventListener("mousedown", self.mousedown)
-		}else{
-			this.object.addEventListener("touchstart", self.mousedown)
-		}
-
-		this.image=undefined;
-		this.reDrag=function(){
-			this.object.style.width=this._width+"px";
-			this.object.style.height=this._height+"px";
-			if(this.image!=undefined){
-				var s=this._height/this.image.picHeight;
-				this.image.height=this.image.picHeight*s;
-				this.image.width=this.image.picWidth*s;				
-			}
-		}
-
-		this.file;
-	    this.startFile = function (accept) {
-	        if (this.file == undefined) {
-	            this.file = document.createElement('input');
-	            this.file.type = 'file';
-	            this.file.multiple=true;
-	            if (accept) this.file.accept = accept;// "image/*";
-	            this.file.style.display = 'none';
-	            this.file.onchange = this.onchange;
-	        }
-	    };
-	    this.result;
-	    this.files;
-	    this.onchange = function (e) {
-	        if (e.target.files.length == 0) return;// нечего не выбрали
-	        self.files = e.target.files;
-	       	
-	        var reader = new FileReader();
-	        reader.readAsDataURL(e.target.files[0]);
-	        reader.onload = function (_e) {	        	
-	            self.result = _e.target.result;
-	            if (self.fun) self.fun(self.result);	                        
-	        };
-	    };
-		
-	    this.funLoadImag=undefined;
-		this._link="null";
-  		this.loadImeg=function(s){
-  			this._link=s;
-  			if(this.image==undefined){
-  				this.image=new DImage(this, 0,0,null,function(){
-  					self.reDrag();
-  					if(self.funLoadImag!=undefined)self.funLoadImag()
-  				})
-  				this.image.div.style.pointerEvents="none";
-  			}
-  			this.image.link=this._link;
-  		}	
-
-  		if(_link!=undefined)this.loadImeg(_link)
-  	}
-
-  	set x(value) {this.position.x = value;}	get x() { return  this.position.x;}
-	set y(value) {this.position.y = value;}	get y() { return  this.position.y;}
-	set width(value) {
-		if(this._width!=value){
-			this._width = value;
-			this.reDrag()
-		}		
-	}	
-	get width() { return  this._width;}
-
-	set height(value) {
-		if(this._height!=value){
-			this._height = value;
-			this.reDrag()
-		}		
-	}	
-	get height() { return  this._height;}
-
-
-	set boolLine(value) {
-		if(this._boolLine!=value){
-			this._boolLine = value;
-			if(this._boolLine==true){
-				this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(self._color), -20);//"none";
-			}else{
-				this.object.style.border= '0px solid'
-			}
-		}
-	}	
-	get boolLine() { return  this._boolLine;}
-
-	set fontSize(value) {
-		if(this._fontSize!=value){
-			this._fontSize = value;
-			this.object.style.fontSize = value+"px";
-		}
-	}	
-	get fontSize() {return  this._fontSize;}
-
-	set fontFamily(value) {
-		if(this._fontFamily!=value){
-			this._fontFamily= value;
-			this.object.style.fontFamily= this._fontFamily;
-		}
-	}	
-	get fontFamily() {return  this._fontFamily;	}	
-
-	set color(value) {
-		if(this._color!=value){
-			this._color = value;			
-			this.object.style.background = this._color;	
-			this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(this._color), -20);
-		}
-	}	
-	get color() {return  this._color;}
-
-	set text(value) {
-		if(this._text!=value){
-			this._text = value;
-			this.object.value = this._text;
-		}
-	}	
-	get text() {return  this._text;}
-
-	set colorText(value) {
-		if(this._colorText!=value){				
-			this._colorText = value;
-			this.object.style.color=this._colorText;
-		}
-	}	
-	get colorText() { return  this._colorText;}
-
-	set borderRadius(value) {
-		if(this._borderRadius!=value){				
-			this._borderRadius = value;
-			this.object.style.borderRadius=this._borderRadius+"px";
-			this.object.style.webkitBorderRadius =this._borderRadius+"px";
-    		this.object.style.mozBorderRadius =this._borderRadius+"px";
-		}
-	}	
-	get borderRadius() { return  this._borderRadius;}
-
-	set activMouse(value) {		
-		if(this._activMouse!=value){
-		    this._activMouse = value;		    
-		    if(value==true){
-				this.alpha=1;
-				this.object.style.pointerEvents=null;	
-		    }else{
-		    	this.alpha=0.7;		    	
-		    	this.object.style.pointerEvents="none";	
-		    }		        
-		}		
-	}
-  	get activMouse() { return  this._activMouse;}
-}
-
-/**/
-
 
 
 //////////////////////////////////////
@@ -1196,9 +1022,13 @@ export class DButton extends DCont {
         this.fun_mousedown=undefined;
         this.fun_mouseup=undefined;
         this.funDownFile=undefined;
+        this.funReDrag=undefined;
+        this._activMouse=true
+        this._textAlign = "center";
 
-        this._textAlign = "center";//"center"//
-
+		this._glowColor="#000000";
+		this.aC=[1,1,1]
+		this._glowSah=0;
         
 
         this._width=100;
@@ -1220,6 +1050,7 @@ export class DButton extends DCont {
 
 
 		this.dCont=new DCont(this)
+		this.dContC=new DCont(this.dCont)
 
 
         this.panel1=new DPanel(this.dCont, 0, 0)
@@ -1252,11 +1083,27 @@ export class DButton extends DCont {
  
 
 
-        this.mousedown=function(){
-            if (self.file != undefined) {
+        this.mouseup2=function(){
+			
+			self.file.value = null;
+            self.file.click();                		
+            if (self.funDownFile)self.funDownFile();
+            document.removeEventListener("touchend", self.mouseup2);  	
+
+        }
+
+
+
+        this.mousedown=function(){ 
+        	if(self._activMouse==false )return        	
+            if (self.file != undefined) {            	
                 self.file.value = null;
                 self.file.click();
                 if (self.funDownFile)self.funDownFile();
+
+	            if(dcmParam.mobile==true){  				  				
+	  				document.addEventListener("touchend", self.mouseup2);  				
+	  			}
                 return;
             }
             bb=false;
@@ -1269,10 +1116,14 @@ export class DButton extends DCont {
   				document.addEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.addEventListener("touchend", self.mouseup);  				
-  			}   
+  			} 
+
+
+
         }
         var bb=true
-        this.mouseup=function(e){
+        this.mouseup=function(e){       	
+
         	bb=true
         	self.panel.color1=self._color;
             self.panel1.color1=self._color;
@@ -1281,9 +1132,8 @@ export class DButton extends DCont {
   				document.removeEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.removeEventListener("touchend", self.mouseup);  				
-  			} 
+  			}
 
-  			
   			if(self.fun)self.fun();
         }
 
@@ -1323,19 +1173,20 @@ export class DButton extends DCont {
 
 
 
-        this.mouseover=function(){            
+        this.mouseover=function(){  
+        	if(self._activMouse==false )return         
             if(bb==true){            	
             	self.panel.color1=dcmParam.compToHexArray(dcmParam.hexDec(self._color), -20)  
             	self.panel1.color1=dcmParam.compToHexArray(dcmParam.hexDec(self._color), -20) 
             }
             
 
-           /* self.panel1.alpha=self.alphaTeni; 
-            self.dragIcon()  */                
+                        
             if(self.fun_mouseover)self.fun_mouseover();
 
         }    
         this.mouseout=function(){
+        	if(self._activMouse==false )return   
         	if(bb==true){            	
             	self.panel.color1=self._color;
             	self.panel1.color1=self._color;  
@@ -1368,22 +1219,57 @@ export class DButton extends DCont {
             
            
             sp=5
+            var s
             if(this.image!=undefined){
-                var s=this._height/this.image.picHeight;
+                
+                s=this._height/this.image.picHeight;
+                if(this._width/this.image.picWidth<s)s=this._width/this.image.picWidth
+
                 this.image.height=this.image.picHeight*s;
-                this.image.width=this.image.picWidth*s;
-
-
-                //self.label.x=this.image.width+5;  
+                this.image.width=this.image.picWidth*s;                 
                 sp=this.image.width+5
+                if(self.label.value.length>=1){
+                	this.image.x= 0;          
+                	this.image.y= 0;                 	
+                }else{
+                	this.image.x= (this._width-this.image.width)/2;          
+                	this.image.y= (this._height-this.image.height)/2;
+                }       
+            }
+            let b=true;
 
-             
-                        
+            if(this.image!=undefined){
+            	if(this._height>self.label.fontSize*3){
+            		if(self.label.value.length>=1){
+            			b=false;
+            		}            		
+            	}
             }
 
-            this.label.width=this._width-sp;
-            self.label.y = (this._height-this._fontSize)/2
-			self.label.x = sp;
+
+            if(b){
+            	this.label.width=this._width-sp;
+            	self.label.y = (this._height-this._fontSize)/2
+				self.label.x = sp;
+            }else{
+            	s=(this._height-self.label.fontSize*2)/this.image.picHeight;
+                if(this._width/this.image.picWidth<s)s=this._width/this.image.picWidth
+
+                this.image.height=this.image.picHeight*s;
+                this.image.width=this.image.picWidth*s; 
+
+                this.image.x= (this._width-this.image.width)/2;
+                this.image.y= 0 ; 
+
+                this.label.width=this._width;
+                self.label.y = this._height-this._fontSize*1.5
+				self.label.x = 0;
+                	
+            	trace("##############")
+            }	
+            
+			this.dragCanvas();
+			if(this.funReDrag!=undefined)this.funReDrag()
         }
 
 
@@ -1434,6 +1320,52 @@ export class DButton extends DCont {
         if(_link!=undefined)this.loadImeg(_link)       
         this.borderRadius=dcmParam.borderRadius;
 
+
+    	this.canvas = undefined// document.createElement('canvas');
+		this.ctx = undefined// canvas.getContext('2d');
+    	this.dragCanvas=function(){
+  			if(this.canvas==undefined)return
+  			this.canvas.width = this.width+this._glowSah*4;
+        	this.canvas.height = this.height+this._glowSah*4;	
+  			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  			if(this._glowSah==0)return
+  			this.ctx.filter = 'blur('+this._glowSah+'px)';
+  			this.ctx.fillStyle =this._glowColor; 
+
+  	
+
+			let rr=this._borderRadius
+			roundRect(this.ctx, this._glowSah*2, this._glowSah*2, this.width, this.height,rr);
+			this.ctx.fillStyle = this._glowColor;
+      		this.ctx.fill(); 	
+      		this.ctx.lineWidth = 0;
+
+      					
+  		}
+
+  		function roundRect(_ctx,x, y, width, height, radius) {
+  			trace(x, y, width, height, radius)
+		  	if (width < 2 * radius) radius = width / 2;
+		  	if (height < 2 * radius) radius = height / 2;
+		  	_ctx.beginPath();
+		  	_ctx.moveTo(x + radius, y);
+		  	_ctx.arcTo(x + width, y, x + width, y + height, radius);
+		  	_ctx.arcTo(x + width, y + height, x, y + height, radius);
+		  	_ctx.arcTo(x, y + height, x, y, radius);
+		  	_ctx.arcTo(x, y, x + width, y, radius);
+		  	_ctx.closePath();
+		}
+
+
+  		this.initCanvas=function(){
+  			if(this.canvas!=undefined)return
+  			this.canvas = document.createElement('canvas');
+  			this.ctx = this.canvas.getContext('2d');
+  			this.dContC.div.appendChild(this.canvas); 
+  			//this.div.appendChild(this.canvas);  			
+  		}
+
+
     	this.reDrag()
     }
 
@@ -1441,6 +1373,40 @@ export class DButton extends DCont {
 
     set x(value) {this.position.x = value;} get x() { return  this.position.x;}
     set y(value) {this.position.y = value;} get y() { return  this.position.y;}
+
+
+
+	set glowColor(value) {
+		if(this._glowColor!=value){
+			this._glowColor = value;
+			let o=dcmParam.parseColor(this._glowColor)
+			this.aC[0]=	o.r;
+			this.aC[1]=	o.g;
+			this.aC[2]=	o.b;		
+			this.dragCanvas();
+			trace()
+
+
+		}		
+	}	
+	get glowColor() { return  this._glowColor;}
+
+	set glowSah(value) {
+		if(this._glowSah!=value){
+			this._glowSah = value;
+			this.initCanvas();
+			this.dragCanvas();
+			this.canvas.style.top =-this._glowSah*2+'px';
+			this.canvas.style.left = -this._glowSah*2+'px';	
+			this.canvas.style.position = 'fixed';
+
+		}		
+	}	
+	get glowSah() { return  this._glowSah;}
+
+
+
+
     set width(value) {
         if(this._width!=value){
             this._width = value;
@@ -1495,6 +1461,7 @@ export class DButton extends DCont {
             this._fontSize = value;
             this.label.y= (this._height-this._fontSize)/2
             this.label.fontSize = value; 
+            this.reDrag();
            // this.object.style.fontSize = value+"px";
         }
     }   
@@ -1530,7 +1497,6 @@ export class DButton extends DCont {
     set text(value) {
         if(this._text!=value){
             this._text = value;
-
             this.label.text =this._text
             this.reDrag();
         }
@@ -1542,7 +1508,8 @@ export class DButton extends DCont {
     set colorText(value) {
         if(this._colorText!=value){             
             this._colorText = value;
-            this.label.colorText = value;
+           
+            this.label.colorText1 = value;
             //this.object.style.color=this._colorText;
         }
     }   
@@ -1556,6 +1523,8 @@ export class DButton extends DCont {
             
             this.panel.div.style.borderRadius=this._borderRadius+"px";
             this.panel1.div.style.borderRadius=this._borderRadius+"px";
+
+			this.dragCanvas();
             
             //this.object.style.borderRadius=this._borderRadius+"px";
             //this.object.style.webkitBorderRadius =this._borderRadius+"px";
@@ -1571,10 +1540,12 @@ export class DButton extends DCont {
             this._activMouse = value;           
             if(value==true){
                 this.alpha=1;
-                this.object.style.pointerEvents=null;   
+                this.panel1.div.style.cursor="pointer";
+                //this.object.style.pointerEvents=null;   
             }else{
                 this.alpha=0.7;             
-                this.object.style.pointerEvents="none"; 
+                //this.object.style.pointerEvents="none"; 
+                this.panel1.div.style.cursor="auto";
             }               
         }       
     }
@@ -1886,34 +1857,39 @@ export class DImage extends DCont {
 		this._link = null;
 		this.fun=_fun;
 
+		this._glowColor="#000000";
+		this.aC=[1,1,1]
+		this._glowSah=0;
+
 		this._s=1;
+		var dC=new DCont()
+		this.add(dC)
 
 		this.div2= document.createElement('div');
 		if(dcmParam.isIE==false)this.div2.style.position = 'fixed';
 		this.div2.style.top = '0px';
-		this.div2.style.left = '0px';
-		this.div.appendChild(this.div2)
+		this.div2.style.left = '0px';				
+		this.div.appendChild(this.div2);
+
 
 		this.image = new Image();
 		this.div2.appendChild(this.image);
-
+		
+		this.canvas = undefined// document.createElement('canvas');
+		this.ctx = undefined// canvas.getContext('2d');
 		this.image.ondragstart = function() { return false; };
   		this.loadError=function() {        
 	       if (self.funError) self.funError();
 	    }
-  		this.loadComplit = function (e) {  			
-
-  			self.picWidth = this.naturalWidth;
-       	 	self.picHeight = this.naturalHeight;      	 	
-       	 	
-       	 	
+  		this.loadComplit = function (e) {
+    		self.picWidth = this.naturalWidth;
+       	 	self.picHeight = this.naturalHeight;       	 	
        	 	self._width++;
        	 	self._height++;       	 	
        	 	self.width=self._width-1;
         	self.height=self._height-1;
-        	
-
-        	if (self.fun) self.fun();
+        	self.dragCanvas()
+           	if (self.fun) self.fun();
   		}
 
   		this.load = function () {
@@ -1922,24 +1898,47 @@ export class DImage extends DCont {
   			this.image.onload = self.loadComplit;    
         	self.image.src = self._link;
         	self.image.crossOrigin = "";
+  		} 
+
+  		this.dragCanvas=function(){
+  			if(this.canvas==undefined)return
+  			this.canvas.width = this.image.width+this._glowSah*4;
+        	this.canvas.height = this.image.height+this._glowSah*4;	
+  			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  			if(this._glowSah==0)return
+  			this.ctx.filter = 'blur('+this._glowSah+'px)'; 
+  			this.ctx.drawImage(this.image, this._glowSah*2, this._glowSah*2, this.image.width, this.image.height);
+  			
+  			var imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+
+  			var pixels = imageData.data;
+	        var n=1
+	        for (var i = 0; i < pixels.length; i += 4) {
+	            pixels[i]     = this.aC[0]; 
+	            pixels[i + 1] = this.aC[1];  
+	            pixels[i + 2] = this.aC[2];  
+	        }	        
+	        this.ctx.putImageData(imageData, 0, 0);
   		}
 
-  		
+  		this.initCanvas=function(){
+  			if(this.canvas!=undefined)return
+  			this.canvas = document.createElement('canvas');
+  			this.ctx = this.canvas.getContext('2d');
+  			
+  			//this.div2.removeChild(this.image);
+
+  			dC.div.appendChild(this.canvas);
+  			//this.div2.appendChild(this.image);
+  			
+
+  			
+  		}
 
   		if(_link)this.link=_link;
   	}
-
   	
-  	/*set scale(value) {
-		if(this._s!=value){			
-			this._s=value;
-			this.image.width=this._width*this._s
-			this.image.height=this._height*this._s;	
-		}
-		
-	}	get scale() {
-		return  this._s;
-	}*/
+
 
   	set x(value) {this.position.x = value;}	get x() { return  this.position.x;}
 	set y(value) {this.position.y = value;}	get y() { return  this.position.y;}
@@ -1947,6 +1946,7 @@ export class DImage extends DCont {
 		if(this._width!=value){
 			this._width = value;
 			this.image.width=this._width//(100/this.picWidth);
+			this.dragCanvas()
 			//this.drag()
 
 			//this.div.style.width=this._width+"px";
@@ -1955,11 +1955,46 @@ export class DImage extends DCont {
 	}	
 	get width() { return  this._width;}
 
+
+
+
+	
+	set glowColor(value) {
+		if(this._glowColor!=value){
+			this._glowColor = value;
+			let o=dcmParam.parseColor(this._glowColor)
+			this.aC[0]=	o.r;
+			this.aC[1]=	o.g;
+			this.aC[2]=	o.b;		
+			this.dragCanvas();
+			trace()
+
+
+		}		
+	}	
+	get glowColor() { return  this._glowColor;}
+
+	set glowSah(value) {
+		if(this._glowSah!=value){
+			this._glowSah = value;
+			this.initCanvas();
+			this.dragCanvas();
+			this.canvas.style.top =-this._glowSah*2+'px';
+			this.canvas.style.left = -this._glowSah*2+'px';	
+			this.canvas.style.position = 'fixed';
+
+		}		
+	}	
+	get glowSah() { return  this._glowSah;}
+
+	
+
 	set height(value) {
 		if(this._height!=value){
 			this._height = value;
 			//this.drag()
 			this.image.height=this._height;	
+			this.dragCanvas()
 			//this.div.style.height=this._height+"px";
 		}		
 	}	
@@ -2001,43 +2036,113 @@ export class DLabel extends DCont {
   		this._text=_text||"";
   		this._value=this._text;
 
-  		this.div.textContent = this._text;
-		//this.div.appendChild(this.image);
-		this.div.style.width=this._width+"px";
-		this.div.style.fontSize=this._fontSize+"px";
-		this.div.style.color = this._colorText1;		
-		this.div.style.fontFamily= this._fontFamily;
-		this.div.style.textAlign= this._textAlign;	
+  		this._glowColor="#000000";
+		this.aC=[1,1,1]
+		this._glowSah=0;
+  		
+
+  		this.dCT=new DCont();
+  		this.add(this.dCT);
+
+  		this.dCT1=undefined//=new DCont();
+  		//this.add(this.dCT);  		
+
+  		this.dCT.div.textContent = this._text;
+		//this.dCT.div.appendChild(this.image);
+		this.dCT.div.style.width=this._width+"px";
+		this.dCT.div.style.fontSize=this._fontSize+"px";
+		this.dCT.div.style.color = this._colorText1;		
+		this.dCT.div.style.fontFamily= this._fontFamily;
+		this.dCT.div.style.textAlign= this._textAlign;
+
+		//this.dCT.div.style.filter=	"blur(3px)";
+		//this.dCT.div.style.filter=	"drop-shadow(10px 10px 2,2)"
+
 
 		var rect={x:0,y:0,width:this._width,height:this._height}
 		this.getRect=function(){
-			rect.width=this.div.scrollWidth;
-			rect.height=this.div.clientHeight;
-					
+			rect.width=this.dCT.div.scrollWidth;
+			rect.height=this.dCT.div.clientHeight;					
 			return rect;
 		}
+
+		this.initShadow=function(){
+			if(this.dCT1!=undefined)return;
+
+  			this.dCT1=new DCont();
+
+
+  			this.dCT1.div.textContent = this._text;
+			//this.dCT.div.appendChild(this.image);
+			this.dCT1.div.style.width=this._width+"px";
+			this.dCT1.div.style.fontSize=this._fontSize+"px";
+			this.dCT1.div.style.color = this._colorText1;		
+			this.dCT1.div.style.fontFamily= this._fontFamily;
+			this.dCT1.div.style.textAlign= this._textAlign;
+			this.dCT1.div.style.filter=	"blur("+this._glowSah+"px)";
+
+			if(this._bold==true){	  			
+	  			this.dCT1.div.style.fontWeight= "bold";
+	  		}else{	  			
+	  			this.dCT1.div.style.fontWeight= "normal";
+	  		}
+
+  			this.remove(this.dCT);
+  			this.add(this.dCT1); 
+  			this.add(this.dCT); 
+		}
+
   	} 
+
+
+
+
+    set glowColor(value) {  		
+  		if(this._glowColor!=value){
+  			this._glowColor=value
+  			this.initShadow()
+  			this.dCT1.div.style.color=this._glowColor;
+  		}
+  	}	get glowColor() { return  this._glowColor;}	
+
+  	set glowSah(value) {  		
+  		if(this._glowSah!=value){
+  			this._glowSah=value;
+  			this.initShadow()
+  			this.dCT1.div.style.filter=	"blur("+this._glowSah+"px)";
+  			
+  		}
+  	}	get glowSah() { return  this._glowSah;}	
+
+
+
+
+
 
     set textAlign(value) {  		
   		if(this._textAlign!=value){
   			this._textAlign=value
-  			this.div.style.textAlign= this._textAlign;	
+  			this.dCT.div.style.textAlign= this._textAlign;	
+  			if(this.dCT1)this.dCT1.div.textAlign= this._textAlign;
   		}
   	}	get textAlign() { return  this._textAlign;}	
 
   	set fontFamily(value) {  		
   		if(this._fontFamily!=value){
   			this._fontFamily=value
-  			this.div.style.fontFamily= this._fontFamily;	
+  			this.dCT.div.style.fontFamily= this._fontFamily;
+  			if(this.dCT1)this.dCT1.div.fontFamily= this._fontFamily;	
   		}
   	}	get fontFamily() { return  this._fontFamily;}
 
   	set bold(value) {
   		this._bold = value;
   		if(this._bold==true){
-  			this.div.style.fontWeight= "bold";
+  			this.dCT.div.style.fontWeight= "bold";
+  			if(this.dCT1)this.dCT1.div.style.fontWeight= "bold";
   		}else{
-  			this.div.style.fontWeight= "normal";
+  			this.dCT.div.style.fontWeight= "normal";
+  			if(this.dCT1)this.dCT1.div.style.fontWeight= "normal";
   		}
   	}	get bold() { return  this._bold;}
 
@@ -2046,7 +2151,7 @@ export class DLabel extends DCont {
 	set width(value) {
 		if(this._width!=value){
 			this._width = value;
-			this.div.style.width=this._width+"px";
+			this.dCT.div.style.width=this._width+"px";
 		}		
 	}	
 	get width() { return  this._width;}
@@ -2057,12 +2162,13 @@ export class DLabel extends DCont {
 					
 		}		
 	}	
-	get height() { return this.div.clientHeight;}
+	get height() { return this.dCT.div.clientHeight;}
 
 	set fontSize(value) {
 		if(this._fontSize!=value){
 			this._fontSize = value;
-			this.div.style.fontSize=this._fontSize+"px";
+			this.dCT.div.style.fontSize=this._fontSize+"px";
+			if(this.dCT1)this.dCT1.div.fontSize=this._fontSize+"px";
 		}
 	}	
 	get fontSize() { 		
@@ -2073,7 +2179,7 @@ export class DLabel extends DCont {
 		if(this._colorText1!=value){				
 			this._colorText1 = value;
 			this._color = value;
-			this.div.style.color=this._colorText1;
+			this.dCT.div.style.color=this._colorText1;			
 		}
 	}	
 	get colorText1() { 		
@@ -2084,7 +2190,7 @@ export class DLabel extends DCont {
 		if(this._color!=value){				
 			this._color = value;
 			this._colorText1 = value;
-			this.div.style.color=this._color;
+			this.dCT.div.style.color=this._color;
 		}
 	}	
 	get color() { 		
@@ -2096,7 +2202,8 @@ export class DLabel extends DCont {
 		if(this._text!=value){			
 			this._text = value;
 			this._value = value;
-			this.div.textContent = this._text;
+			this.dCT.div.textContent = this._text;
+			if(this.dCT1)this.dCT1.div.textContent=this._text;
 		}
 	}	
 	get text() { 		
@@ -2115,18 +2222,11 @@ export class DLabel extends DCont {
 
 	
 
+
 }
 
 
-/*
-	this._color="#008CBA";
-	this._color1="#ffffff";
-	this._colorText="#ffffff";
-	this._colorText1="#999999";
-	this._fontSize = 16;
-	this._fontFamily = "Arial, Helvetica, sans-serif";
 
-*/
 
 
 export class DSlider extends DCont {
@@ -2190,13 +2290,16 @@ export class DSlider extends DCont {
 
   			sp=undefined;
   			if(dcmParam.mobile==false){
-  				document.removeEventListener("mousemove", self.mousemove);
+  				
   				document.removeEventListener("mouseup", self.mouseup);
   			}else{
   				
   				document.removeEventListener("touchend", self.mouseup);
-  				document.removeEventListener("touchmove", self.mousemove);
+  				
   			}
+  			dcmParam.removeFunMove(self.mousemove);	
+
+
   			if(self.funChange) self.funChange() 			
   		}
 
@@ -2238,11 +2341,14 @@ export class DSlider extends DCont {
 
   		this.scaleDrag={s:1}
 
-
+  		this.xyp={x:0,y:0}
   		this.getPosGlob = function (c2){
   			var rx=c2.x;
+  			var scal=1
+  			if(c2.scale)scal=c2.scale
+  			
   			if(c2.parent){
-  				rx+=this.getPosGlob(c2.parent)
+  				rx+=this.getPosGlob(c2.parent)*scal
   			}
   			return rx
    		}
@@ -2250,6 +2356,8 @@ export class DSlider extends DCont {
 
 		this.mousedown = function (e) {	
 				
+			self.scaleDrag.s=1;			
+			self.testScale(self, self.scaleDrag)
 
 			if(e.target.xz!=undefined){	
 				
@@ -2258,26 +2366,33 @@ export class DSlider extends DCont {
 				if(e.offsetX!=undefined)self.naValue(e.offsetX)
 				else{
 					if(e.targetTouches)if(e.targetTouches[0]){
-						var rr=self.getPosGlob(self.pan)
-						self.naValue(e.targetTouches[0].clientX-rr)
+						//var rr=self.getPosGlob(self.pan)
+						
+						self.xyp.x=0
+						self.xyp.y=0
+						self.funXYP(self.pan, self.xyp)	
+						let coords = e.targetTouches[0].target.getBoundingClientRect();
+						let rr=self.xyp.x
+						let rr1=(e.targetTouches[0].clientX-coords.x)/self.scaleDrag.s
+						
+						self.naValue(rr1)
 					}					
 				}
 				if(self.fun)self.fun();	
 				
 			}
-			self.scaleDrag.s=1;			
-			self.testScale(self, self.scaleDrag)
+			
 			
 			document.body.style.pointerEvents="none";
 
 
-			if(dcmParam.mobile==false){				
-  				document.addEventListener("mousemove", self.mousemove);
+			if(dcmParam.mobile==false){	 				
   				document.addEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.addEventListener("touchend", self.mouseup);
-  				document.addEventListener("touchmove", self.mousemove);
+  				
   			}
+  			dcmParam.addFunMove(self.mousemove);	
 		}
 
 
@@ -2443,15 +2558,20 @@ export class DSliderBig extends DCont {
   			if(self.fun)self.fun();	
   		})
 
+
+
+
   		this.slider.funChange=function(){
   			
   			if(self.funChange)self.funChange();	
   		}
 
   		this.slider.y=dcmParam.wh/2-2;
-  		this.label=new DLabel(this,0,0, this._text);
-  		this.label.fontSize=this.label.fontSize*2/3;	
+  		
+  		this.label=new DLabel(null,0,0, this._text);
+  		this.label.fontSize=this.label.fontSize*2/3;
 
+		
   		
 
   		this.label1=new DLabel(this,0,0, this._min+"");
@@ -2461,6 +2581,19 @@ export class DSliderBig extends DCont {
   		this.label2=new DLabel(this,0,0, this._max+"");
   		this.label2.fontSize=this.label.fontSize*2/3;
   		this.label2.y=37
+
+		if(dcmParam.mobile==true){
+  			this.slider.height=this.input.height
+  			this.slider.y=0;
+  			this.slider.pan.add(this.label)
+  			this.label.y=7
+  			this.label.x=10
+			this.label.div.style.pointerEvents="none";
+			this.label.alpha=0.5;
+  		}else{
+  			this.add(this.label)
+  		}
+
 
 
 		this._width++;
@@ -2667,13 +2800,14 @@ export class DInput extends DCont {
 		this.mouseup = function(e){
   			sp=undefined;
   			if(dcmParam.mobile==false){
-  				document.removeEventListener("mousemove", self.mousemove);
+  			
   				document.removeEventListener("mouseup", self.mouseup);
   			}else{
   				
   				document.removeEventListener("touchend", self.mouseup);
-  				document.removeEventListener("touchmove", self.mousemove);
+  				
   			}
+  			dcmParam.removeFunMove(self.mousemove);	
   			
   		}
 		var ss,sss
@@ -2718,12 +2852,13 @@ export class DInput extends DCont {
 			
 			
 			if(dcmParam.mobile==false){				
-  				document.addEventListener("mousemove", self.mousemove);
+  				
   				document.addEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.addEventListener("touchend", self.mouseup);
-  				document.addEventListener("touchmove", self.mousemove);
+  				
   			}
+  			dcmParam.addFunMove(self.mousemove);	
 		}
 
 		this.mousedown1 = function (e) {
@@ -2736,12 +2871,9 @@ export class DInput extends DCont {
 
 			if(dcmParam.mobile==false){
 				this.object.addEventListener("mousedown", self.mousedown);
-  				//document.addEventListener("mousemove", self.mousemove);
-  				//document.addEventListener("mouseup", self.mouseup);
+  			
   			}else{
-  				this.object.addEventListener("touchstart", self.mousedown);
-  				//document.addEventListener("touchend", self.mouseup);
-  				//document.addEventListener("touchmove", self.mousemove);
+  				this.object.addEventListener("touchstart", self.mousedown);  			
   			}
 		}
 
@@ -3575,14 +3707,12 @@ export class DScrollBarH extends DCont {
    		this.mouseup = function(e){
    			document.body.style.pointerEvents='auto'
   			sp=undefined;
-  			if(dcmParam.mobile==false){
-  				document.removeEventListener("mousemove", self.mousemove);
+  			if(dcmParam.mobile==false){  				
   				document.removeEventListener("mouseup", self.mouseup);
-  			}else{
-  				
-  				document.removeEventListener("touchend", self.mouseup);
-  				document.removeEventListener("touchmove", self.mousemove);
+  			}else{  				
+  				document.removeEventListener("touchend", self.mouseup);  				
   			}
+  			dcmParam.removeFunMove(self.mousemove);	
   		}
 
   		this.mousemove = function(e){  			
@@ -3635,12 +3765,13 @@ export class DScrollBarH extends DCont {
 
   			document.body.style.pointerEvents='none'	
         	if(dcmParam.mobile==false){
-  				document.addEventListener("mousemove", self.mousemove);
+  				
   				document.addEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.addEventListener("touchend", self.mouseup);
-  				document.addEventListener("touchmove", self.mousemove);
+  				
   			}
+  			dcmParam.addFunMove(self.mousemove);	
         }
 
         this.panelA.div.addEventListener("mousedown", function(e){			
@@ -3808,12 +3939,13 @@ export class DScrollBarV extends DCont {
    			document.body.style.pointerEvents='auto'
   			sp=undefined;
   			if(dcmParam.mobile==false){
-  				document.removeEventListener("mousemove", self.mousemove);
+  			
   				document.removeEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.removeEventListener("touchend", self.mouseup);
-  				document.removeEventListener("touchmove", self.mousemove);
+  				
   			}
+  			dcmParam.removeFunMove(self.mousemove);	
   		}
 
   		this.mousemove = function(e){  			
@@ -3856,12 +3988,13 @@ export class DScrollBarV extends DCont {
         	pv = self.value;
         	pv2 = this.but.y;
         	if(dcmParam.mobile==false){
-  				document.addEventListener("mousemove", self.mousemove);
+  			
   				document.addEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.addEventListener("touchend", self.mouseup);
-  				document.addEventListener("touchmove", self.mousemove);
+  				
   			}
+  			dcmParam.addFunMove(self.mousemove);
         }
 
         this.panelA.div.addEventListener("mousedown", function(e){			
@@ -4272,13 +4405,14 @@ export class DWindowS extends DCont {
         this.mouseup = function(e){
             sp=undefined;
             if(dcmParam.mobile==false){
-                document.removeEventListener("mousemove", self.mousemove);
+            
                 document.removeEventListener("mouseup", self.mouseup);
             }else{
                 
                 document.removeEventListener("touchend", self.mouseup);
-                document.removeEventListener("touchmove", self.mousemove);
+               
             }
+            	dcmParam.removeFunMove(self.mousemove);	
             
         }
 
@@ -4315,13 +4449,14 @@ export class DWindowS extends DCont {
 
         this.startDrag = function(){            
             if(dcmParam.mobile==false){
-                document.addEventListener("mousemove", self.mousemove);
+               
                 document.addEventListener("mouseup", self.mouseup);
             }else{
                 
                 document.addEventListener("touchend", self.mouseup);
-                document.addEventListener("touchmove", self.mousemove);
+                
             }
+            dcmParam.addFunMove(self.mousemove);		
             
         }
 

@@ -471,22 +471,24 @@ export function DGallery (dCont, _x, _y, _fun) {
 			if(dcmParam.mobile==false){			
 				this.content.div.addEventListener("mousedown", this.mouseDown);
 				window.addEventListener("mouseup", this.mouseup);
-				window.addEventListener("mousemove", this.mousemove);
+				
 			}else{
 				this.content.div.addEventListener("touchstart", this.mouseDown);
 				window.addEventListener("touchend", this.mouseup);
-	  			window.addEventListener("touchmove", this.mousemove);
+	  			
 			}
+			dcmParam.addFunMove(self.mousemove)
 		}else{
 			if(dcmParam.mobile==false){			
 				this.content.div.removeEventListener("mousedown", this.mouseDown);
 				window.removeEventListener("mouseup", this.mouseup);
-				window.removeEventListener("mousemove", this.mousemove);
+				
 			}else{
 				this.content.div.removeEventListener("touchstart", this.mouseDown);
 				window.removeEventListener("touchend", this.mouseup);
-	  			window.removeEventListener("touchmove", this.mousemove);
+	  			
 			}
+			dcmParam.removeFunMove(self.mousemove) 
 		}		
 	}
 
@@ -1006,14 +1008,14 @@ export function DBox(_cont, _x, _y, _fun) {
 		self.boolOut = false;
 		if(self._activ==false)self.panel.color1=dcmParam.compToHexArray(dcmParam.hexDec(self._color1), -30);
 		else self.panel.color1=dcmParam.compToHexArray(dcmParam.hexDec(self._color), -30);
-		if (self.funOver) self.funOver(this);
+		if (self.funOver) self.funOver(self);
 	};
 	this.mouseOut = function (e) {		
 		
 		if(self._activ==false)self.panel.color1=self._color1;
 		else self.panel.color1=self._color;
 		
-		if (self.funOut) self.funOut(this);
+		if (self.funOut) self.funOut(self);
 	};
 	this.mouseDown = function (e) {		
 		if (self.fun) self.fun();

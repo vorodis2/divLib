@@ -225,12 +225,8 @@ export class DCont {
 
   	set visible(value) {
 		if(this.parameter.visible!=value){
-		    this.parameter.visible = value;
-
-		    //this.div.style.visibility = value ? 'visible ' : 'hidden';
-		    
-		    this.testVisi(true);
-		   
+		    this.parameter.visible = value;		    
+		    this.testVisi(true);		   
 		}
 	}
   	get visible() { return  this.parameter.visible;}

@@ -451,12 +451,13 @@ export  function DThree(dCont, _x, _y, fun){
     if(dcmParam.mobile==false){         
         this.content.div.addEventListener("mousedown", this.mouseDown);
         window.addEventListener("mouseup", this.mouseup);
-        window.addEventListener("mousemove", this.mousemove);
+        
     }else{
         this.content.div.addEventListener("touchstart", this.mouseDown);
         window.addEventListener("touchend", this.mouseup);
-        window.addEventListener("touchmove", this.mousemove);
+        
     }
+    dcmParam.addFunMove(self.mousemove)
 
 
 

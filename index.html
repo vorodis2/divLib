@@ -6,10 +6,10 @@
 	var trace = window.console.log.bind(window.console);
 	var array=[];
 	var pObject,content,dinamik
-	var ww=120
+	var ww=150
 	var dcmParam;
 	function downMy(s) {
-		trace(this)
+		//trace(this)
 		//setDin(this)			
 	}
 
@@ -32,25 +32,33 @@
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
-		//content.scale=0.75
-		content.position.x=220;
+		//content.scale=0.65
+		content.position.x=420;
 
-		this.bmpPic=new DBitmapData(2,2) 
+		this.bmpPic=new DBitmapData(2,2); 
 
-		var b= new DButton(content,55,0,"test33",function(){
-			trace("dfgsdfgdsf")
+		var dragPic=new DDragPic(scane);
+	
+
+		var b= new DButton(content,55,0,"test33",function(){			
+			
+           
+
 		})
 
-		//b.height=32
-		//b.width=32
-		b.text="2";
+
 
 
 		//b.textAlign="center"//
 
-		/*}).fun_mousedown=function(){
-			dcmParam.ctrlCV.saveText("qw333333io")
-		};*/
+		
+		b.fun_mousedown=function(){
+			//dragPic.testDrag(20);
+			trace()
+			var o={sss:"dfgsdfgdsf"}
+			var l="resources/pic/3.png";            
+            dragPic.start(32, l, o);
+		};
 
 
 
@@ -76,7 +84,7 @@
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
 
 		plus(new DButton(null,0,0,"ButtonLoad",function(base64){
-			trace(this)
+			trace(base64,this)
 		}));
 		array[array.length-1].obj.startFile()
 		
@@ -158,7 +166,7 @@
 		p1.add(obj);
 		p.object=obj
 		p.panel=p1
-		obj.width=120;
+		obj.width=ww;
 
 		p.obj=obj;
 
