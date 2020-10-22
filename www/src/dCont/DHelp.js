@@ -7,9 +7,6 @@ import { DCont } from './DCont.js';
 
 
 
-
-
-
 export class DHelp extends DCont {
     constructor(dCont, _x, _y, _text, _link) {
         super(dCont); 

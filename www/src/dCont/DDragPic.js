@@ -1,15 +1,4 @@
 
-/*
-глобальный, перетягивает картинки, юзаеться в клиенте и админ
-
-дев 
-vorodis2.com   
-vorodis2@gmail.com 
-2019
-*/
-
-
-
 export function DDragPic(dC) {  
     var self=this   
     this.type="DDragPic";
@@ -22,6 +11,7 @@ export function DDragPic(dC) {
     this.otstup2=10;
     this.dCont=new DCont();
 
+
     this.fUp=undefined;
     this.object=undefined;
     this._x=0;
@@ -31,8 +21,7 @@ export function DDragPic(dC) {
     
     this.image=new DImage(this.dCont, 0,0);
     this.image.div.style.pointerEvents="none";
-    this.dCont.div.style.pointerEvents="none";
-     
+    this.dCont.div.style.pointerEvents="none";     
     this.array=[];
 
 
@@ -44,9 +33,9 @@ export function DDragPic(dC) {
 
     this.devas = dcmParam.mobile;
 
+    var sT=1;
+    this.oSc={x:0,y:0,x:1}
 
-
-  
     this.start = function(wh,link,object,fUp){
         if(this.whBase!=null)wh=this.whBase
         this.image.link=link;
@@ -56,6 +45,7 @@ export function DDragPic(dC) {
         this.image.y=-wh/2;
         this.fUp=fUp;
         sp=undefined;
+
         
         this.dCont.alpha=0;
         //this.dCont.scale=0;      
@@ -65,12 +55,36 @@ export function DDragPic(dC) {
         this.link=link;
         this.active = true; 
 
+
+        
+        this.fXYS(this.dC,this.oSc,true);
+
+        this.dCont.x=dcmParam.globXY.x*this.oSc.s;
+        this.dCont.y=dcmParam.globXY.y*this.oSc.s;
+
         dcmParam.addFunMove(this.mousemove)
        
     }
 
  
+    this.fXYS=function(c,o,b){
+        if(b!=undefined){
+            o.x=0;
+            o.y=0;
+            o.s=1;
+        }
+        o.x*=c._scale;
+        o.y*=c._scale;
+        o.s*=c._scale;
 
+        o.x+=c.position._x;
+        o.y+=c.position._y;
+        if(c.visible==false)o.y+=99999
+    
+        if(c.parent!=undefined){                
+            self.fXYS(c.parent, o)              
+        }
+    }
 
    
 
@@ -124,15 +138,18 @@ export function DDragPic(dC) {
         }
 
 
-        self.dCont.x=self._x+self.pointZdvig.x;
-        self.dCont.y=self._y+self.pointZdvig.y;
+        self.dCont.x=self._x/self.oSc.s+self.pointZdvig.x;
+        self.dCont.y=self._y/self.oSc.s+self.pointZdvig.y;
 
-        let dd= self.getDistance (self.dCont,sp)
+        if(self.dCont.alpha<1){
+            self.dCont.alpha+=0.1;
+        }
+        /*let dd= self.getDistance(self.dCont,sp)
         let n=dd/50;
         if(n>1)n=1;
         if(self.dCont.alpha<n){           
             self.dCont.alpha=n;
-        } 
+        }*/ 
         
     }
 
@@ -166,6 +183,9 @@ export function DDragPic(dC) {
         if(self.fClik!=undefined)self.fClik();
     }
 
+    this.sp
+    this.point={x:0,y:0}  
+    this.posit={x:0,y:0}
     this.mousemove1 = function(e){        
         if(sp==undefined){
             if(self.devas==false){
@@ -179,25 +199,35 @@ export function DDragPic(dC) {
                     y:e.touches[0].clientY
                 };
             }
-        }         
+            self.sp = sp
+        } 
+
         var ss,ss1
         if(self.devas==false){       
             ss=(e.clientX-sp.x);            
             ss1=(e.clientY-sp.y);
+            self.posit.x=e.clientX
+            self.posit.y=e.clientY
         }else{
             ss=(e.touches[0].clientX-sp.x);            
             ss1=(e.touches[0].clientY-sp.y);
-        }     
+            self.posit.x=e.touches[0].clientX
+            self.posit.y=e.touches[0].clientY
+        }   
+        self.point.x=ss;
+        self.point.y=ss1;
+
+        if(self.fDDD) self.fDDD()
         if(Math.abs(ss>self.dist)||Math.abs(ss1>self.dist)){
             self.mouseStop();
-            if(self.fDrag!=undefined)self.fDrag();
-           
-        }         
+            if(self.fDrag!=undefined)self.fDrag(); 
+            return;          
+        } 
+       
     }
 
     this.mouseStop = function(){
-        sp=undefined;
-        
+        sp=undefined;        
         if(self.devas==false){            
             document.removeEventListener("mouseup", self.mouseup1);
         }else{           
@@ -209,13 +239,14 @@ export function DDragPic(dC) {
 
     this.dist=0;    
     this.fClik=0;
-    this.fDrag=0;     
-    this.testDrag = function(dist,fClik,fDrag){ 
+    this.fDrag=0;   
+    this.fDDD=undefined  
+    this.testDrag = function(dist,fClik,fDrag,fDDD){ 
         sp=undefined;  
         this.dist=dist;
         this.fClik=fClik;
         this.fDrag=fDrag;
-
+        this.fDDD=fDDD;
 
         if(this.devas==false){
             document.addEventListener("mouseup", self.mouseup1);
@@ -257,6 +288,3 @@ export function DDragPic(dC) {
         }
     });
 }
-
-
-

@@ -15,6 +15,9 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.fun = _fun;
 	this._panelBool=false;
 
+	this._prosentH=0;
+	this._prosentW=0;
+
 	this._widthPic = 64; // elements width
 	this._heightPic = 64; // elements height
 	this._width = 200;
@@ -148,7 +151,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 		if (this.array[_ind].y + this.content.y - this.otstup < 0) this.content.y = -this.array[_ind].y + this.otstup;
 
 		this.scrolPos(true);
-
 	};
 
 	// Функция клика по иконке
@@ -156,7 +158,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 		self.index = this.idArr;
 		self.obj = self.array[this.idArr].object;
-
 
 		if (self.fun) self.fun();
 	};
@@ -200,7 +201,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 
 
-
+	this.zScrol=0
 	// перерисовка галереи
 	this.draw = function () {
 		if (this.preDraw) this.preDraw();
@@ -258,21 +259,21 @@ export function DGallery (dCont, _x, _y, _fun) {
 
 		if (this._boolPositScrol) {
 			if (this._boolPositOtctup) {
-				this.scrollBarH.y = hM - this.otstup - this._otstup1;
-				this.scrollBarV.x = wM - this.otstup - this._otstup1;
+				this.scrollBarH.y = hM - this.otstup - this._otstup1+this.zScrol;
+				this.scrollBarV.x = wM - this.otstup - this._otstup1+this.zScrol;
 			} else {
-				this.scrollBarH.y = hM + this.otstup;
-				this.scrollBarV.x = wM + this.otstup;
+				this.scrollBarH.y = hM + this.otstup+this.zScrol;
+				this.scrollBarV.x = wM + this.otstup+this.zScrol;
 			}
 
 
 		} else {
 			if (this._boolPositOtctup) {
-				this.scrollBarH.y = this.otstup;
-				this.scrollBarV.x = this.otstup;
+				this.scrollBarH.y = this.otstup+this.zScrol;
+				this.scrollBarV.x = this.otstup+this.zScrol;
 			} else {
-				this.scrollBarH.y = -this.otstup - this._otstup1;
-				this.scrollBarV.x = -this.otstup - this._otstup1;
+				this.scrollBarH.y = -this.otstup - this._otstup1+this.zScrol;
+				this.scrollBarV.x = -this.otstup - this._otstup1+this.zScrol;
 			}
 		}
 
@@ -348,12 +349,25 @@ export function DGallery (dCont, _x, _y, _fun) {
 			www = (self.widthPic + self.otstup) * self.array.length - self._width;
 		}
 
-		var p=e.deltaY*-1;
-		if(e.wheelDelta!=undefined){
-			if(e.wheelDelta>0)p=1;
-			else p=-1;
-		}
-		p*=-1;
+		var delta=-1;
+        var p=e.delta
+        if(e.wheelDelta==undefined){
+            p=e.wheelDelta
+        }
+
+        if(e.delta)if(e.delta<0)delta=1;
+        if(e.deltaY)if(e.deltaY<0)delta=1;
+        if(e.detail)if(e.detail<0)delta=1;
+
+        
+        if(e.wheelDelta!=undefined){
+            if(e.wheelDelta>0)delta=-1;
+            else delta=1;
+        }
+
+
+        p=delta;
+
 
 		if (self.scrollBarV.visible) {
 			if (p < 0) {
@@ -551,6 +565,55 @@ Object.defineProperties(DGallery.prototype, {
 		}
 	},
 
+	prosentH: { // вынести\внести отступ за элемент
+		set: function (value) {
+			
+			this._prosentH = value;
+			let hd=(this.hh-this._height)*this._prosentH;      
+	        if(hd>0)hd=0
+	        this.content.y=  hd  
+			
+		},
+		get: function () {
+			let hd=this.hh-this._height;       
+	        this._prosentH=this.content.y/hd
+	        return  this._prosentH;
+		}
+	},
+
+	prosentW: { // вынести\внести отступ за элемент
+		set: function (value) {
+			
+			this._prosentW = value;
+			let hd=(this.ww-this._height)*this._prosentW;      
+	        if(hd>0)hd=0
+	        this.content.x=  hd  
+			
+		},
+		get: function () {
+			let hd=this.ww-this._height;       
+	        this._prosentW=this.content.x/hd
+	        return  this._prosentW;
+		}
+	},
+
+	/*
+
+set prosentH(value) {                
+        this._prosentH = value;
+        let hd=(this.hh-this._height)*this._prosentH;      
+        if(hd>0)hd=0
+        this.content.y=  hd   
+        
+    }
+    get prosentH() {
+        let hd=this.hh-this._height;       
+        this._prosentH=this.content.y/hd
+        return  this._prosentH;
+    }
+
+	*/
+
 
 
 
@@ -582,8 +645,10 @@ Object.defineProperties(DGallery.prototype, {
 
 			if (this._boolWheel == true) {				
 				this.div.addEventListener('mousewheel', this.mousewheel)
+				this.div.addEventListener("DOMMouseScroll", this.mousewheel);
 			} else {				
 				this.div.removeEventListener('mousewheel', this.mousewheel)
+				this.div.removeEventListener('DOMMouseScroll', this.mousewheel)
 			}
 		},
 		get: function () {
@@ -960,8 +1025,7 @@ export function DBox(_cont, _x, _y, _fun) {
 
     var b,link;
     // Добавление картинки и текста, пошаговая загрузка.
-    this.startLoad = function (_obj) {
-        
+    this.startLoad = function (_obj) {        
        
         if(this.object!=undefined) {
             self.funLoad();

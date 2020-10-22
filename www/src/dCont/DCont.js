@@ -97,7 +97,6 @@ export class DCont {
 
     	
     	this.poisk= function(obj, tip, param){
-
     		if(obj[tip]==param)return obj;
     		if(obj.parent!=undefined){
     			let rr=this.poisk(obj.parent, tip, param)
@@ -105,9 +104,9 @@ export class DCont {
     		}
     		return null;
     	}
+
 		var r,r2;
-    	this.testVisi= function(b){    		
-    		
+    	this.testVisi= function(b){
     		r=this.parameter.visible;
 		    if(r==true){
 		    	r2=this.poisk(this,"visible",false);		    	
@@ -116,20 +115,8 @@ export class DCont {
 		    	}
 		    }
 
-		    if(dcmParam.isIE==true){
-    			/*if(r==true){
-    				this._visible=false
-    				this.parameter.visible=false
-    			}*/
-    			
-    			this.dragBigXZ()
-    			/*if(b){
-			    	for (var i = 0; i < this.children.length; i++) {
-			    		this.children[i].testVisi(b)
-			    	}
-			    }*/
-
-
+		    if(dcmParam.isIE==true){    			
+    			this.dragBigXZ()    			
     			return;
     		}
 

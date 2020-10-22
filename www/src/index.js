@@ -1,5 +1,5 @@
 import { DCont } from './dCont/DCont.js';
-import { DCM, DComboBox,DButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DBitmapData,DScrollBarH,DScrollBarV,DWindowS,DButSim} from './dCont/DCM.js';
+import { DCM, DComboBox,DButton, DGlow,DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DBitmapData,DScrollBarH,DScrollBarV,DWindowS,DButSim} from './dCont/DCM.js';
 import { DSettings} from './dCont/DSettings.js';
 import { DParamObject} from './dCont/DParamObject.js';
 import { DGallery,DBox} from './dCont/DGallery.js';
@@ -8,6 +8,7 @@ import { DHelp} from './dCont/DHelp.js';
 import { DThree} from './dCont/DThree.js';
 import { DButtonDrag, DAroundButton} from './dCont/DPlus.js';
 import {DDragPic} from './dCont/DDragPic.js';
+import {DHole} from './dCont/DHole.js';
 
 global.DDragPic = DDragPic;
 global.DButton = DButton;
@@ -44,5 +45,7 @@ global.DButSim=DButSim
 global.DWindowS=DWindowS
 global.DHelp=DHelp
 global.DThree=DThree
+global.DGlow=DGlow
+global.DHole=DHole
 
-export { DCont, DCM,DDragPic, DButton,DComboBox, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree};
+export { DCont, DCM,DDragPic, DButton,DGlow,DComboBox, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree,DHole};

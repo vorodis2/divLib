@@ -127,6 +127,10 @@ export  function DThree(dCont, _x, _y, fun){
               
         return but;
     }
+    this.mouseUpFun
+    this.mouseOverFun
+    this.mouseOutFun
+    this.naId=-1
     //Отловка события нажатия, наведения курсора и когда курсор убирается
     this.mouseEvent = function(obj){ 
         //Нажатие клавиши     
@@ -139,12 +143,20 @@ export  function DThree(dCont, _x, _y, fun){
         //Наведение курсора
         if(obj.sobEvent == "mouseOver"){
             obj.isIndexOver=true;
+            this.naId=obj.id
             this.drawElement(this.arrBut);
+            if(self.mouseOverFun)self.mouseOverFun(obj)
         }   
         //Отведение курсора
         if(obj.sobEvent == "mouseOut"){
             obj.isIndexOver = false;
+            this.naId=-1
             this.drawElement(this.arrBut);
+            if(self.mouseOutFun)self.mouseOutFun(obj)
+        }
+        
+        if(obj.sobEvent == "mouseUp"){
+            if(self.mouseUpFun)self.mouseUpFun(obj)
         }
     } 
 
@@ -404,9 +416,14 @@ export  function DThree(dCont, _x, _y, fun){
     this.mouseup=function(e){       
         self.dragActiv=false;
         sp=undefined;
-        document.body.style.pointerEvents=null; 
+        document.body.style.pointerEvents=null;
 
-    
+        if(self.naId!=-1){
+            if(self.bufferOt[self.naId])
+            if(self.mouseUpFun)self.mouseUpFun(self.bufferOt[self.naId])
+        } 
+
+        
         
     }
 
@@ -631,7 +648,6 @@ function DObjectThree(cont, _x, _y, fun, par){
     this.isOpen=false; 
     this.isIndexOver = false;
     this.three = null;
-
     this.inited = false;
     this.init = function () {
         this.content = new DCont();
@@ -688,11 +704,16 @@ function DObjectThree(cont, _x, _y, fun, par){
             if(self.fun!=undefined)self.fun();
         };
 
+        
+
+        
+
         if(dcmParam.mobile==false){         
             this.panel1.div.addEventListener("mousedown", this.mouseDown);
             this.panel1.div.addEventListener("mouseout", this.mouseOut);
             this.panel1.div.addEventListener("mouseover", this.mouseOver);
-        
+            
+            //this.panel1.div.addEventListener("mouseup", this.mouseup);
         }else{
             this.panel1.div.addEventListener("touchstart", this.mouseDown);        
         }
@@ -732,6 +753,14 @@ function DObjectThree(cont, _x, _y, fun, par){
         this.icon.drawIcon();
         this.label.visible=true;
         this.rect = this.label.getRect();
+        if(this._height<24){
+            let s=Math.round(this._height)-8
+            if(s<4)s=4
+            this.label.fontSize=s
+        }else{
+            this.label.fontSize=16
+        }
+        
         //this.rect.width/=this.worldTransform.a;
         //this.rect.height/=this.worldTransform.a;
         this.label.y = (this._height - this.rect.height) / 2;

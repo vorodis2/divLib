@@ -6,6 +6,7 @@
 621 DColor
 836 DComboBox
 1115 DButton
+1115 DGlow
 1392 DCheckBox
 1546 DPanel
 1655 DImage
@@ -51,6 +52,7 @@ export function DCM () {
 		this.array.push(comp)
 	}
 
+	//this.textarea = document.createElement('input')	
 	this.input = document.createElement('input')
   	this.input.type = 'text';
   	this.input.value="xz"
@@ -59,6 +61,11 @@ export function DCM () {
   	document.body.appendChild(self.input);  		
   	this.activInp=undefined	
 	this.ctrlCV=new CtrlCV();
+
+	this.textarea = document.createElement('textarea');
+	/*this.textarea.style.position = 'fixed';
+	this.textarea.style.top = '650px'; */
+	
 
 	var style = document.createElement('style');
 	style.type = 'text/css';
@@ -144,6 +151,15 @@ export function DCM () {
 			}, 1);		
 		});
 	}
+
+
+	/*this.dCT= document.createElement('div');
+	this.dCT.style.position = 'fixed';
+	this.dCT.style.top = '0px';
+	this.dCT.style.left = '0px';
+
+	document.body.appendChild(this.dCT);
+  	this.dCT.appendChild(self.textarea); */
 
 	this.compToHex = function (c) {
 		var hex = c.toString(16);
@@ -249,10 +265,25 @@ export function DCM () {
 		this.removeFunMove(fun);
 		this.arrFun.push(fun);
 	}
+
+	this.globXY={x:0,y:0};
+
 	this.mousemove=function(e){
 		for (let i = 0; i < self.arrFun.length; i++) {
 			self.arrFun[i](e);
 		}
+		if(self.mobile==false){
+            self.globXY.x=e.clientX;
+            self.globXY.y=e.clientY;
+               
+        }else{
+        	if(e.touches&&e.touches[0]){
+        		self.globXY.x=e.touches[0].clientX;
+            	self.globXY.y=e.touches[0].clientY;
+        	}
+        	
+            
+        }
 	}
 	this.getFunMouseMove=function(){
 		if(self.mobile==false){
@@ -270,8 +301,63 @@ export function DCM () {
 	}
 
 	global.dcmParam=this
-	//dcmParam.removeFunMove(self.mousemove)  dcmParam.addFunMove(self.mousemove)
 
+
+
+
+
+
+	this.mouseup = function(e){
+		document.body.style.pointerEvents='auto'		
+		if(self.mobile==false){  				
+			document.removeEventListener("mouseup", self.mouseup);
+		}else{  				
+			document.removeEventListener("touchend", self.mouseup);	
+		} 	
+	}
+
+	this.mousedown=function(e){		
+		if(e.target&&e.target.value!=undefined){
+			return		
+		}
+		document.body.style.pointerEvents="none";		
+		if(self.mobile==false){  				
+			document.addEventListener("mouseup", self.mouseup);
+		}else{  				
+			document.addEventListener("mouseup", self.mouseup);  				
+		}  
+	}	
+
+	
+
+	this.addFunNotActivDiv=function(div){
+		let dd=null;
+		if(div!=undefined){
+			if(div.addEventListener!=undefined){
+				dd=div
+			}else{
+				if(div.div!=undefined && div.div.addEventListener!=undefined)dd=div.div
+			}
+		}
+		
+		if(dd==null){
+			console.warn("тама некуда прикрепить событие ",div)
+			return
+		}
+		if(this.mobile==false){  				
+			dd.addEventListener("mousedown", this.mousedown);
+		}else{  				
+			dd.addEventListener("mousedown", this.mousedown);  				
+		}		
+	}
+
+	this.remuveFunNotActivDiv=function(div){
+		if(this.mobile==false){  				
+			div.removeEventListener("mousedown", this.mousedown);
+		}else{  				
+			div.removeEventListener("mousedown", this.mousedown);  				
+		}
+	}
 
 }
 
@@ -619,6 +705,7 @@ constructor(dCont,_x,_y, _color, _fun) {
   		this._otstup=dcmParam._otstup;
   		this._height=dcmParam.wh;
   		this._openBool=false;
+  		this._activMouse=true
 		var boolOp=true
 
   		this.panel=new DPanel(this);
@@ -764,6 +851,17 @@ constructor(dCont,_x,_y, _color, _fun) {
 		}		
 	}	
 	get height() { return  this._height;}
+
+
+	set activMouse(value) {
+		if(this._activMouse!=value){
+			this._activMouse = value;
+			this.input.activMouse=value
+			this.button.activMouse=value
+		}
+	}	
+	get activMouse() { return  this._activMouse;}
+
 
 
 	set borderRadius(value) {
@@ -1039,6 +1137,7 @@ export class DButton extends DCont {
         this._fontFamily=dcmParam._fontFamily;
         this._borderRadius=0;
         this._boolLine=dcmParam._boolLine;
+        this._boolFond=true;
 
         this.alphaTeni=0.1;
 
@@ -1080,6 +1179,7 @@ export class DButton extends DCont {
         this.label.color=this._colorText;
         this.label.textAlign = this.textAlign;
         this.panel1.div.style.cursor="pointer";
+        this.label.fontFamily= this._fontFamily;
  
 
 
@@ -1091,6 +1191,7 @@ export class DButton extends DCont {
             document.removeEventListener("touchend", self.mouseup2);  	
 
         }
+
 
 
 
@@ -1206,7 +1307,7 @@ export class DButton extends DCont {
             this.panel1.div.addEventListener("touchstart", self.mousedown)
         }
 
-
+        this.boolDrahVert=true
         var sp=5
         var ww,ww1
         this.image=undefined;
@@ -1245,13 +1346,14 @@ export class DButton extends DCont {
             		}            		
             	}
             }
-
-
+            if(this.boolDrahVert==false)b=true;
+           
             if(b){
             	this.label.width=this._width-sp;
             	self.label.y = (this._height-this._fontSize)/2
 				self.label.x = sp;
             }else{
+
             	s=(this._height-self.label.fontSize*2)/this.image.picHeight;
                 if(this._width/this.image.picWidth<s)s=this._width/this.image.picWidth
 
@@ -1265,7 +1367,7 @@ export class DButton extends DCont {
                 self.label.y = this._height-this._fontSize*1.5
 				self.label.x = 0;
                 	
-            	trace("##############")
+            	
             }	
             
 			this.dragCanvas();
@@ -1321,12 +1423,16 @@ export class DButton extends DCont {
         this.borderRadius=dcmParam.borderRadius;
 
 
+
+
+		this.rectPlus={x:0,y:0,w:0,h:0}
     	this.canvas = undefined// document.createElement('canvas');
 		this.ctx = undefined// canvas.getContext('2d');
     	this.dragCanvas=function(){
   			if(this.canvas==undefined)return
-  			this.canvas.width = this.width+this._glowSah*4;
-        	this.canvas.height = this.height+this._glowSah*4;	
+
+  			this.canvas.width = (this.width+this.rectPlus.w)+this._glowSah*4;
+        	this.canvas.height = (this.height+this.rectPlus.h)+this._glowSah*4;	
   			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   			if(this._glowSah==0)return
   			this.ctx.filter = 'blur('+this._glowSah+'px)';
@@ -1340,11 +1446,13 @@ export class DButton extends DCont {
       		this.ctx.fill(); 	
       		this.ctx.lineWidth = 0;
 
+      		this.dContC.x=this.rectPlus.x;
+      		this.dContC.y=this.rectPlus.y;
+
       					
   		}
 
-  		function roundRect(_ctx,x, y, width, height, radius) {
-  			trace(x, y, width, height, radius)
+  		function roundRect(_ctx,x, y, width, height, radius) {  			
 		  	if (width < 2 * radius) radius = width / 2;
 		  	if (height < 2 * radius) radius = height / 2;
 		  	_ctx.beginPath();
@@ -1455,6 +1563,20 @@ export class DButton extends DCont {
         return  this._boolLine;
     }
 
+    set boolFond(value) {
+        if(this._boolFond!=value){
+            this._boolFond = value;
+            this.panel.visible=value;
+            if(value==false)this.panel1.alpha = 0.01;
+            else  this.panel1.alpha = 1;            
+        }
+    }   
+    get boolFond() {        
+        return  this._boolFond;
+    }
+
+
+
 
     set fontSize(value) {
         if(this._fontSize!=value){
@@ -1472,6 +1594,7 @@ export class DButton extends DCont {
     set fontFamily(value) {
         if(this._fontFamily!=value){
             this._fontFamily= value;
+            this.label.fontFamily= value;
             //this.object.style.fontFamily= this._fontFamily;
 
         }
@@ -1521,8 +1644,8 @@ export class DButton extends DCont {
         if(this._borderRadius!=value){              
             this._borderRadius = value;
             
-            this.panel.div.style.borderRadius=this._borderRadius+"px";
-            this.panel1.div.style.borderRadius=this._borderRadius+"px";
+            this.panel.borderRadius=this._borderRadius;
+            this.panel1.borderRadius=this._borderRadius;
 
 			this.dragCanvas();
             
@@ -1554,6 +1677,124 @@ export class DButton extends DCont {
 }
 
 /**/
+
+
+
+export class DGlow extends DCont {
+  	constructor(dCont, _x, _y, _text, _fun) {
+  		super(); 
+  		this.type="DGlow";
+  		if(dcmParam==undefined)dcmParam=new DCM();
+  		dcmParam.add(this);
+  		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);  
+  		this.x=_x||0;	
+  		this.y=_y||0;
+  		
+  		var self = this  		
+  		this._borderRadius=0;
+  		this._width = 100;
+  		this._height =100; 
+  		this._glowColor="#000000";
+		this.aC=[1,1,1]
+		this._glowSah=10;
+
+  		this.canvas = document.createElement('canvas');
+  		this.ctx = this.canvas.getContext('2d');
+  		this.div.appendChild(this.canvas); 
+  		this.canvas.style.top =-this._glowSah*2+'px';
+		this.canvas.style.left = -this._glowSah*2+'px';	
+		this.canvas.style.position = 'fixed';
+
+
+  		this.reDrag=function(){
+  			if(Math.round(this.width+this._glowSah*4)!=this.canvas.width)this.canvas.width = Math.round(this.width+this._glowSah*4)
+  			if(Math.round(this.height+this._glowSah*4)!=this.canvas.height)this.canvas.height = Math.round(this.height+this._glowSah*4)	
+        	
+  			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  			
+  			this.ctx.filter = 'blur('+this._glowSah+'px)';
+  			this.ctx.fillStyle =this._glowColor;   	
+
+			let rr=this._borderRadius
+			roundRect(this.ctx, this._glowSah*2, this._glowSah*2, this.width, this.height,rr);
+			this.ctx.fillStyle = this._glowColor;
+      		this.ctx.fill(); 	
+      		this.ctx.lineWidth = 0;
+
+  		}
+
+
+  		function roundRect(_ctx,x, y, width, height, radius) {  			
+		  	if (width < 2 * radius) radius = width / 2;
+		  	if (height < 2 * radius) radius = height / 2;
+		  	_ctx.beginPath();
+		  	_ctx.moveTo(x + radius, y);
+		  	_ctx.arcTo(x + width, y, x + width, y + height, radius);
+		  	_ctx.arcTo(x + width, y + height, x, y + height, radius);
+		  	_ctx.arcTo(x, y + height, x, y, radius);
+		  	_ctx.arcTo(x, y, x + width, y, radius);
+		  	_ctx.closePath();
+		}
+
+  		this.reDrag()
+
+  	}
+
+  	set width(value) {
+        if(this._width!=value){
+            this._width = value;
+            this.reDrag()
+           
+        }       
+    }   
+    get width() { return  this._width;}
+
+
+    set height(value) {
+        if(this._height!=value){
+            this._height = value;
+            this.reDrag();
+            
+        }       
+    }   
+    get height() { return  this._height;}
+
+    set glowColor(value) {
+		if(this._glowColor!=value){
+			this._glowColor = value;
+			let o=dcmParam.parseColor(this._glowColor)
+			this.aC[0]=	o.r;
+			this.aC[1]=	o.g;
+			this.aC[2]=	o.b;		
+			this.reDrag();
+			
+
+		}		
+	}	
+	get glowColor() { return  this._glowColor;}
+
+	set glowSah(value) {
+		if(this._glowSah!=value){
+			this._glowSah = value;
+			this.reDrag();			
+			this.canvas.style.top =-this._glowSah*2+'px';
+			this.canvas.style.left = -this._glowSah*2+'px';	
+			this.canvas.style.position = 'fixed';
+		}		
+	}	
+	get glowSah() { return  this._glowSah;}
+
+	set borderRadius(value) {
+        if(this._borderRadius!=value){              
+            this._borderRadius = value;
+			this.reDrag();
+        }
+    }   
+    get borderRadius() {        
+        return  this._borderRadius;
+    }
+
+}
 
 
 
@@ -1709,25 +1950,79 @@ export class DPanel extends DCont {
   		this._width=100;
   		this._height=100;
   		this._color1=dcmParam._color1;
-
 		this._boolLine=dcmParam._boolLine;
-
 		this._borderRadius=dcmParam.borderRadius;
 
+		this._glowColor="#000000";
+		this.aC=[1,1,1];
+		
+		this._glowSah=0;
 
-		this.div.style.borderRadius = this._borderRadius+"px";	
-  		this.div.style.background=this._color1;
+		this.dContC=new DCont(this);
+		this.dCont=new DCont(this);
+
+		this.dCont.div.style.borderRadius = this._borderRadius+"px";	
+  		this.dCont.div.style.background=this._color1;
   		if(this._boolLine==true){	  		
-	  		this.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
+	  		this.dCont.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
 	  	}else{
-	  		this.div.style.border= '0px solid'; 
+	  		this.dCont.div.style.border= '0px solid'; 
 	  	}	  	
 
-  		this.div.style.width=(this._width-2)+"px";
-  		this.div.style.height=(this._height-2)+"px";
+  		this.dCont.div.style.width=(this._width-2)+"px";
+  		this.dCont.div.style.height=(this._height-2)+"px";
 
   		this.content=new DCont(this);
-  		this.content.y=this._wh
+  		this.content.y=this._wh;
+
+		this.rectPlus={x:0,y:0,w:0,h:0}
+  		this.canvas = undefined// document.createElement('canvas');
+		this.ctx = undefined// canvas.getContext('2d');
+    	this.dragCanvas=function(){
+  			if(this.canvas==undefined)return
+
+  			this.canvas.width = (this.width+this.rectPlus.w)+this._glowSah*4;
+        	this.canvas.height = (this.height+this.rectPlus.h)+this._glowSah*4;	
+  			this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  			if(this._glowSah==0)return
+  			this.ctx.filter = 'blur('+this._glowSah+'px)';
+  			this.ctx.fillStyle =this._glowColor; 
+
+  	
+
+			let rr=this._borderRadius
+			roundRect(this.ctx, this._glowSah*2, this._glowSah*2, this.width, this.height,rr);
+			this.ctx.fillStyle = this._glowColor;
+      		this.ctx.fill(); 	
+      		this.ctx.lineWidth = 0;
+
+      		this.dContC.x=this.rectPlus.x;
+      		this.dContC.y=this.rectPlus.y;			
+  		}
+
+  		function roundRect(_ctx,x, y, width, height, radius) {  			
+		  	if (width < 2 * radius) radius = width / 2;
+		  	if (height < 2 * radius) radius = height / 2;
+		  	_ctx.beginPath();
+		  	_ctx.moveTo(x + radius, y);
+		  	_ctx.arcTo(x + width, y, x + width, y + height, radius);
+		  	_ctx.arcTo(x + width, y + height, x, y + height, radius);
+		  	_ctx.arcTo(x, y + height, x, y, radius);
+		  	_ctx.arcTo(x, y, x + width, y, radius);
+		  	_ctx.closePath();
+		}
+
+
+  		this.initCanvas=function(){
+  			if(this.canvas!=undefined)return
+  			this.canvas = document.createElement('canvas');
+  			this.ctx = this.canvas.getContext('2d');
+  			this.dContC.div.appendChild(this.canvas); 
+  			//this.div.appendChild(this.canvas);  			
+  		}
+
+
+
 
   	}
 
@@ -1739,7 +2034,8 @@ export class DPanel extends DCont {
 	set width(value) {
 		if(this._width!=value){
 			this._width = value;
-			this.div.style.width=(this._width-2)+"px";
+			this.dCont.div.style.width=(this._width-2)+"px";
+			this.dragCanvas()
 		}		
 	}	
 	get width() { return  this._width;}
@@ -1747,7 +2043,8 @@ export class DPanel extends DCont {
 	set height(value) {
 		if(this._height!=value){
 			this._height = value;
-			this.div.style.height=(this._height-2)+"px";
+			this.dCont.div.style.height=(this._height-2)+"px";
+			this.dragCanvas()
 		}		
 	}	
 	get height() { return  this._height;}
@@ -1756,7 +2053,8 @@ export class DPanel extends DCont {
 		if(this._borderRadius!=value){				
 			this._borderRadius = value;
 
-			this.div.style.borderRadius = value+"px";			
+			this.dCont.div.style.borderRadius = value+"px";		
+			this.dragCanvas();	
 		}
 	}	
 	get borderRadius() { 		
@@ -1768,9 +2066,9 @@ export class DPanel extends DCont {
 		if(this._boolLine!=value){			
 			this._boolLine = value;	
 			if(this._boolLine==true){	  		
-	  		this.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
+	  		this.dCont.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
 		  	}else{
-		  		this.div.style.border= '0px solid'; 
+		  		this.dCont.div.style.border= '0px solid'; 
 		  	}
 			
 		}
@@ -1779,31 +2077,18 @@ export class DPanel extends DCont {
 		return  this._boolLine;
 	}
 
-	set boolLine(value) {
-		if(this._boolLine!=value){			
-			this._boolLine = value;	
-			if(this._boolLine==true){	  		
-	  		this.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
-		  	}else{
-		  		this.div.style.border= '0px solid'; 
-		  	}
-			
-		}
-	}	
-	get boolLine() { 		
-		return  this._boolLine;
-	}
+
 
 
 	set color1(value) {
 		if(this._color1!=value){			
 			this._color1 = value;
-			this.div.style.background = this._color1;
+			this.dCont.div.style.background = this._color1;
 			var c=dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);  		
   			if(this._boolLine==true){	  		
-		  		this.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
+		  		this.dCont.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
 		  	}else{
-		  		this.div.style.border= '0px solid'; 
+		  		this.dCont.div.style.border= '0px solid'; 
 		  	}	
 		}
 	}	
@@ -1819,15 +2104,47 @@ export class DPanel extends DCont {
 	}
 
 
+	set glowColor(value) {
+		if(this._glowColor!=value){
+			this._glowColor = value;
+			let o=dcmParam.parseColor(this._glowColor)
+			this.aC[0]=	o.r;
+			this.aC[1]=	o.g;
+			this.aC[2]=	o.b;		
+			this.dragCanvas();
+			
+
+
+		}		
+	}	
+	get glowColor() { return  this._glowColor;}
+
+	set glowSah(value) {
+		if(this._glowSah!=value){
+			this._glowSah = value;
+			this.initCanvas();
+			this.dragCanvas();
+			this.canvas.style.top =-this._glowSah*2+'px';
+			this.canvas.style.left = -this._glowSah*2+'px';	
+			this.canvas.style.position = 'fixed';
+
+		}		
+	}	
+	get glowSah() { return  this._glowSah;}
+
+
+
+
+
 	set activMouse(value) {		
 		if(this._activMouse!=value){
 		    this._activMouse = value;		    
 		    if(value==true){
 				//this.alpha=1;
-				this.div.style.pointerEvents=null;	
+				this.dCont.div.style.pointerEvents=null;	
 		    }else{
 		    	//this.alpha=0.7;		    	
-		    	this.div.style.pointerEvents="none";	
+		    	this.dCont.div.style.pointerEvents="none";	
 		    }	
 		    for (var i = 0; i < this.children.length; i++) {
 				this.children[i].activMouse=value;
@@ -1899,6 +2216,8 @@ export class DImage extends DCont {
         	self.image.src = self._link;
         	self.image.crossOrigin = "";
   		} 
+
+
 
   		this.dragCanvas=function(){
   			if(this.canvas==undefined)return
@@ -2024,7 +2343,11 @@ export class DLabel extends DCont {
   		var self=this;
   		this.x=_x||0;	
   		this.y=_y||0;
-   		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);	
+   		
+
+
+
+
   		this._width=100;
   		this._height=dcmParam._fontSize;
   		this._fontSize=dcmParam._fontSize;
@@ -2065,6 +2388,132 @@ export class DLabel extends DCont {
 			rect.height=this.dCT.div.clientHeight;					
 			return rect;
 		}
+
+
+
+
+	/*	var wMax=0
+		this.getRectBig=function(){
+			dcmParam.textarea
+
+			
+			
+			//dcmParam.textarea.style.cssText = "font-weight: bold"; 
+			dcmParam.textarea.style.contenteditable="true"
+			if(dcmParam.textarea.style.fontWeight!=this.dCT.div.style.fontWeight)dcmParam.textarea.style.fontWeight=this.dCT.div.style.fontWeight
+			if(dcmParam.textarea.style.width!=this.dCT.div.style.width)dcmParam.textarea.style.width=this.dCT.div.style.width
+			if(dcmParam.textarea.style.fontSize!=this.dCT.div.style.fontSize)dcmParam.textarea.style.fontSize=this.dCT.div.style.fontSize
+			if(dcmParam.textarea.style.fontFamily!=this.dCT.div.style.fontFamily)dcmParam.textarea.style.fontFamily=this.dCT.div.style.fontFamily
+			if(dcmParam.textarea.style.textAlign!=this.dCT.div.style.fontSize)dcmParam.textarea.style.fontSize=this.dCT.div.style.textAlign
+			if(dcmParam.textarea.value!=this.text)dcmParam.textarea.value=this.text;
+
+
+			dcmParam.textarea.style.scrollbarWidth="auto"	
+				
+
+			var ss = getTextLineBreaks(dcmParam.textarea);
+			trace(ss)
+			
+			return {x:0,y:0,width:wMax,height:dcmParam.textarea.clientHeight}
+							
+			
+		}*/
+
+		/***********************/
+
+/*
+		function getTextLineBreaks (_oTextarea) {
+			var oTextarea = _oTextarea; // || document.getElementById('myTextarea');
+			oTextarea.setAttribute('wrap', 'off');
+
+			var strRawValue = oTextarea.value;
+			oTextarea.value = '';
+			var nEmptyWidth = oTextarea.scrollWidth;
+			var nLastWrappingIndex = -1;
+
+			trace(nEmptyWidth, oTextarea.value, oTextarea.style.width)
+
+			function testBreak (strTest) {
+				oTextarea.value = strTest;
+				//console.log("@@",oTextarea.scrollWidth , nEmptyWidth, strTest)
+
+				return oTextarea.scrollWidth > nEmptyWidth;
+			}
+			function getWidth (strTest) {
+				oTextarea.value = strTest;
+				return oTextarea.scrollWidth;
+			}
+
+			function findNextBreakLength (strSource, nLeft, nRight) {
+				var nCurrent;
+				if (typeof (nLeft) === 'undefined') {
+					nLeft = 0;
+					nRight = -1;
+					nCurrent = 64;
+				} else {
+					if (nRight === -1) { nCurrent = nLeft * 2; } else if (nRight - nLeft <= 1) { return Math.max(2, nRight); } else { nCurrent = nLeft + (nRight - nLeft) / 2; }
+				}
+				var strTest = strSource.substr(0, nCurrent);
+				var bLonger = testBreak(strTest);
+
+				if (bLonger) { 
+					nRight = nCurrent;
+									 
+				} else {
+					
+					if (nCurrent >= strSource.length) {
+					//trace("@@@"+oTextarea.scrollWidth)
+						return null; 
+					}
+					nLeft = nCurrent;
+
+
+				}
+				//trace(nLeft, nRight, bLonger)
+				return findNextBreakLength(strSource, nLeft, nRight);
+			}
+
+			var i = 0,
+				j;
+			var strNewValue = '';
+
+
+			while (i < strRawValue.length) {
+				//trace(" ## ")
+				var breakOffset = findNextBreakLength(strRawValue.substr(i));
+
+				if(wMax<breakOffset)wMax=breakOffset;
+				//trace(breakOffset+" #########   "+strRawValue.substr(i))
+				if (breakOffset === null) {
+					strNewValue += strRawValue.substr(i);					
+					break;
+				}
+				nLastWrappingIndex = -1;
+				var nLineLength = breakOffset - 1;
+				for (j = nLineLength - 1; j >= 0; j--) {
+					var curChar = strRawValue.charAt(i + j);
+					if (curChar === ' ' || curChar === '-' || curChar === '+') {
+						nLineLength = j + 1;
+						break;
+					}
+				}
+				trace("!!!!!!!!!!!",getWidth("ffff"))
+
+				strNewValue += strRawValue.substr(i, nLineLength) + '\n';
+
+				i += nLineLength;
+			}
+			//trace(i,j,strRawValue)
+			oTextarea.value = strRawValue;
+			oTextarea.setAttribute('wrap', '');
+			return strNewValue;
+		}*/
+		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);
+
+		this.testVisi(true);
+
+		////////////////////////////
+
 
 		this.initShadow=function(){
 			if(this.dCT1!=undefined)return;
@@ -2593,6 +3042,7 @@ export class DSliderBig extends DCont {
   		}else{
   			this.add(this.label)
   		}
+  		this.label.testVisi(true);
 
 
 
@@ -2609,7 +3059,7 @@ export class DSliderBig extends DCont {
 		if(this._width!=v){
 			this._width = v;				
 			this.slider.width=(this._width-dcmParam._otstup)*0.7
-			this.input.width=(this._width-dcmParam._otstup)*0.3
+			this.input.width=(this._width-dcmParam._otstup)*0.3-4
 			this.input.x=this.slider.width+dcmParam._otstup;
 
 			this.label2.x=this.input.x-4*this.label2.text.length;
@@ -4617,6 +5067,7 @@ export class DButSim extends DCont {
         this._borderRadius=0;
         this._boolLine=dcmParam._boolLine;
 
+
         this.alphaTeni=0.1;
 
         this.aSah=1;
@@ -4884,11 +5335,9 @@ export class DButSim extends DCont {
         if(this._borderRadius!=value){              
             this._borderRadius = value;
             
-            this.panel.div.style.borderRadius=this._borderRadius+"px";
-            this.panel1.div.style.borderRadius=this._borderRadius+"px";
-            //this.object.style.borderRadius=this._borderRadius+"px";
-            //this.object.style.webkitBorderRadius =this._borderRadius+"px";
-            //this.object.style.mozBorderRadius =this._borderRadius+"px";
+            this.panel.borderRadius=this._borderRadius;
+            this.panel1.borderRadius=this._borderRadius;
+
         }
     }   
     get borderRadius() {        
