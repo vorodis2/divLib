@@ -1,0 +1,265 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>testAdmin1</title>
+
+
+
+
+<script src='src/lib/jquery-1.11.3.js'></script>
+<script src='src/libMy/divLib.js'></script>
+<script src='src/lib/three.min.js'></script>
+<script src='src/lib/loaders/GLTFLoader.js'></script>
+
+
+
+
+
+<style type="text/css">
+	#stats { position: absolute; top:0; left: 200px; }
+</style>
+
+</head>
+<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<body>
+
+<script  type="module">
+
+	import { MVisi3D } from './src/libMy/visi3D/MVisi3D.js';
+	import { SceneSB } from './src/libMy/visi3D/SceneSB.js';
+	import { PM } from './src/pm/PM.js';
+
+	window.trace = window.console.log.bind(window.console);
+
+	window.dcmParam;	
+
+	var contentHTML
+	var objectBase
+	var arrGal=[]
+
+	var content3d
+	var visi3D
+	var pm
+	var c3d
+	var dCont
+	function sizeWindow () {
+		var w = document.documentElement.clientWidth;
+		var h = document.documentElement.clientHeight;
+		if(window.innerWidth!=undefined)w = window.innerWidth;
+		if(window.innerHeight!=undefined)h = window.innerHeight;
+		if(arrGal[0]){
+			arrGal[0].height=arrGal[1].height=(h-15)/2;
+			arrGal[1].y=arrGal[1].height+10;
+			let s=1;
+			if (w < 800) s=w/800
+			dCont.scale=s	
+		}		
+		
+		if(visi3D)visi3D.sizeWindow(0,0,w,h);
+	}
+
+	function init () {
+		$.ajax({
+            url: "resources/config.json?x="+Math.random(),
+            success: function function_name(data) {                         
+                if(typeof data === "string") {
+					objectBase = JSON.parse(data)				
+				} else objectBase = data;						
+				start();	                                
+            },
+            error:function function_name(data) {
+                console.log("Что то случилось с конфигом")
+            }
+        });		
+	}	
+
+	
+
+
+	function start () {
+		
+		window.dcmParam = new DCM();//интерфейс
+		dcmParam.fontSize=10;
+		
+
+
+		//инт 3d Veiw
+		contentHTML= document.createElement('div');
+		contentHTML.style.position = 'fixed';
+		contentHTML.style.top = '0px';
+		contentHTML.style.left = '0px';		
+		document.body.appendChild(contentHTML); 
+
+
+
+
+
+		content3d = new THREE.Object3D(); 
+
+		visi3D = new MVisi3D(contentHTML, null, dcmParam.mobile, true, true, true, false);		
+		visi3D.yes3d = true;       	
+		visi3D.groupObject.add(content3d);
+        content3d.rotation.x=-Math.PI/2;
+        
+
+       
+       //инит настройки мира
+        let sceneSB=new SceneSB(visi3D);
+        for (let i = 0; i <  sceneSB.array.length; i++) {
+            if (objectBase.scene[sceneSB.array[i].name] === undefined) {
+                objectBase.scene[sceneSB.array[i].name] = {};                
+            }            
+            sceneSB.array[i].setBasa(objectBase.scene[sceneSB.array[i].name]);
+        } 
+		visi3D.position3d.isDragPan=true;
+
+        var geometry = new THREE.BoxBufferGeometry( 10, 10, 10 );
+		var material = new THREE.MeshBasicMaterial( {color: 0x777777} );
+		c3d = new THREE.Mesh( new THREE.BoxBufferGeometry( 10, 10, 10 ));
+		content3d.add( c3d );
+
+ 		function touchmove (e){            
+            e.preventDefault();
+            visi3D.position3d.stageMoveNew(e);
+            visi3D.event3DArr.mousemove(e);
+     
+            e.stopPropagation();
+        }        
+        if (dcmParam.mobile==true){            
+            window.addEventListener('touchmove', touchmove, { passive: false, capture: true });
+            visi3D.position3d.div.removeEventListener('touchmove', visi3D.position3d.stageMoveNew, { passive: false, capture: true });
+            window.removeEventListener('touchmove', visi3D.event3DArr.mousemove);           
+        }
+
+		//инит pm рузруливателя загрузки обьектов
+		pm = new PM(visi3D, objectBase);       
+
+
+
+		//инт галереи
+		function downGal () {
+			
+
+			if(this.idArr==0)openProd(this.obj.id)//открываем обьект				
+				
+			
+			if(this.idArr==1){//открываем обьект				
+				var m=pm.mat.getIDReturn(this.obj.id)				
+				dC3dMat(c3d,m)				
+			}
+			if(this.idArr==2){//изменения	
+				pm.iz.setMod(c3d,pm.iz.strToObj(this.obj.i1),this.obj.b)
+			}
+
+			visi3D.intRend=1;
+			setTimeout(function() {	visi3D.intRend=1;}, 500);
+			setTimeout(function() {	visi3D.intRend=1;}, 1500);
+		}
+
+		function openProd (id) {
+			arrGal[2].visible=false;
+			pm.getId(id, function(_c3d){					
+	            content3d.remove(c3d)
+	            c3d=_c3d		           
+	            content3d.add(c3d)
+	            openG(c3d.hron.object.resurs, id)
+			},true)			
+		}
+
+
+		function openG (o,id) {
+			if(o.array==undefined)return
+			if(o.array.length==0)return	
+			arrGal[2].visible=true;
+			
+			for (var i = 0; i < o.array.length; i++) {
+				o.array[i].title=o.array[i].i
+				o.array[i].src="resources/data/"+id+"/resources/"+o.array[i].name;
+			}
+			arrGal[2].start(o.array);
+			arrGal[2].height=o.array.length*(2+arrGal[2].heightPic)+5
+
+		}
+
+
+
+		function dC3dMat (_o,_m) {
+			if(_o.material)_o.material=_m
+			if(_o.children)	for (var i = 0; i < _o.children.length; i++) dC3dMat (_o.children[i],_m)				
+		}
+
+		dCont=new DCont(document.body);
+
+		var arN=[]
+		for (var i = 0; i < 3; i++) {
+			arrGal[i]=new DGallery(dCont,5,5,downGal);			
+    		arrGal[i].kolII=4;
+    		arrGal[i].widthPic=arrGal[i].heightPic=arrGal[i].width/4-3; 
+    		arrGal[i].idArr=i
+    		if(i==2) {
+    			arrGal[i].kolII=1;
+    			arrGal[i].width=arrGal[i].widthPic+4
+    			arrGal[i].visible=false;
+    			arrGal[i].x=arrGal[0].width+6
+    		}
+		}
+
+
+
+
+		for (var i = 0; i < objectBase.bd.length; i++) {
+			if(objectBase.bd[i].sort==-1){
+				arN[arN.length]=objectBase.bd[i];
+				arN[arN.length-1].src="resources/data/"+objectBase.bd[i].id+"/100.png"
+			}
+			objectBase.bd[i].src="resources/data/"+objectBase.bd[i].id+"/100.png"
+		}
+		arrGal[0].start(arN);
+		if(arN.length!=0)openProd(arN[0].id);
+
+
+
+
+
+
+		for (var i = 0; i < objectBase.materials.length; i++) {
+			objectBase.materials[i].src="resources/data/"+objectBase.materials[i].id+"/100.png"
+		}
+		arrGal[1].start(objectBase.materials);
+
+
+
+
+
+
+		window.onresize = sizeWindow;
+		sizeWindow()
+		animate()
+
+		function korektTrace () {
+			var textarea = document.createElement('textarea')
+			textarea.style.width=(150)+"px";
+			textarea.style.height=(250)+"px";
+			textarea.style.position = 'fixed';
+			textarea.style.top = '254px';
+			textarea.style.left = '0px';
+			textarea.style.fontSize = '12px';
+			document.body.appendChild(textarea)	
+			window.trace=function(s){			
+				textarea.value=s+"\n"+textarea.value
+			}
+		}
+		//korektTrace()
+
+	}
+
+
+	function animate() {
+		requestAnimationFrame( animate );
+		if(visi3D)visi3D.upDate() 
+	}
+
+	init()
+</script>
+
+	
+</body></html>
