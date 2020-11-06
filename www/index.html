@@ -2,6 +2,7 @@
 <meta charset="UTF-8">
 <title>divLib</title>	
 <script src="build/divLib.js"></script>
+<script src="build/divLibPlus.js"></script>
 <script>
 	var trace = window.console.log.bind(window.console);
 	var array=[];
@@ -89,8 +90,15 @@
            
 
 		})
-		pObject.addObject(b);
-//return				
+		var compDev=new DCompDev(content,55,55,"test33",function(){			
+			
+           
+
+		}) 
+
+
+		pObject.addObject(compDev);
+return				
 
 		//
 

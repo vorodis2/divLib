@@ -8,8 +8,6 @@
 <script src="build/divLib.js"></script>
 
 
-
-
 <style type="text/css">
 	#stats { position: absolute; top:0; left: 200px; }
 </style>
@@ -20,7 +18,7 @@
 
 <script  type="module">
 	window.trace = window.console.log.bind(window.console);
-	import { DCreatIcon } from "./src/dCont/DCreatIcon.js";
+	import { DCreatIconCopy } from "./src/dCont/DCreatIconCopy.js";
 
 	
 
@@ -28,9 +26,8 @@
 
 	
 
-
 	function init () {
-		;
+		document.addEventListener('contextmenu', event => event.preventDefault());
 		dcmParam=new DCM();
 
 		scane= new DCont(document.body);
@@ -44,7 +41,8 @@
 		});
 
 
-		let d=new DCreatIcon(content, 222,22, "test")
+		let d=new DCreatIconCopy(content, 222,22, "test")
+
 
 		pObject.addObject(d)
 	}
