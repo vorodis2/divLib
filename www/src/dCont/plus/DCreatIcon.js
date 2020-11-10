@@ -883,7 +883,14 @@ export class DCDrow {
         this.ca1.style.top = '0px';
         this.ca1.style.left = '0px';
         this.ct1 = this.ca1.getContext('2d');
-        this.dCont.div.appendChild(this.ca1); 
+        this.dCont.div.appendChild(this.ca1);
+
+        this.ca2 = document.createElement('canvas');
+        this.ca2.style.position = 'fixed';
+        this.ca2.style.top = '0px';
+        this.ca2.style.left = '0px';
+        this.ct2 = this.ca2.getContext('2d');
+
 
         this.canvas = document.createElement('canvas');
         this.canvas.style.position = 'fixed';
@@ -962,15 +969,28 @@ export class DCDrow {
         this.draw=function(p,p1){
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.ct1.clearRect(0, 0, this.ca1.width, this.ca1.height);
+            this.ca2.width=this.ca1.width
+            this.ca2.height=this.ca1.height
+
+            this.ct2.clearRect(0, 0, this.ca2.width, this.ca2.height);
             if(this.body.active==true)this.drawBody(this.body, false);
            
-            this.ct1.strokeStyle = this._glowColor;
-            this.ct1.filter = 'blur('+this._glowSah+'px)';
+
+
+            
+
+
 
             for (let i = 0; i < this.array.length; i++) {
                 this.drawBody(this.array[i], false);                
             }
-            this.ctx.drawImage(this.ca1,0,0)
+
+            this.ct2.strokeStyle = this._glowColor;            
+            this.ct2.filter = 'blur('+this._glowSah+'px)';
+            this.ct2.drawImage(this.ca1,0,0)
+
+
+            this.ctx.drawImage(this.ca2,0,0)
 
             for (let i = 0; i < this.array.length; i++) {
                 this.drawBody(this.array[i], true);
