@@ -2,6 +2,7 @@
 <meta charset="UTF-8">
 <title>divLib</title>	
 <script src="build/divLib.js"></script>
+<script src="build/divLibPlus.js"></script>
 <script>
 	var trace = window.console.log.bind(window.console);
 	var array=[];
@@ -19,6 +20,7 @@
 			if(dinamik.type!=undefined)pObject.window.title=dinamik.type			
 			pObject.addObject(dinamik);
 		}
+
 	}
 
 
@@ -30,8 +32,9 @@
 		
 
 		scane= new DCont(document.body);
-		content= new DCont(scane);		
-		content.position.x=250+333;
+		content= new DCont(scane);
+		//content.scale=0.65
+		content.position.x=420;
 
 		
 
@@ -62,7 +65,7 @@
 		pObject=new DParamObject(scane,2,2,function(){			
 			sizeWindow()
 		});
-		pObject.infoInt=0
+
 
 
 		
@@ -87,46 +90,15 @@
            
 
 		})
-		pObject.addObject(b);
+		var compDev=new DCompDev(content,55,55,"test33",function(){			
+			
+           
+
+		}) 
 
 
-
-		var ooo={
-			name:"savePlan",//имя кнопки
-			help:"Тут пишем пояснения, 300 символов, короче не много",//пояснения
-			success:function(){},//удачиный ответ
-			error:function(){},//не удачиный ответ
-			obj:{//то что посылаем через аякс на сервер, собственно тут сам запрос
-				url: 'get_response',
-		        type: 'POST',
-		        data: {
-		        	d:JSON.stringify({test:10}),
-		        	checked:false,
-		        	csrfmiddlewaretoken:"xz Тут нужен ключь, который генериться под юзеров "
-		        },
-		        cache: false,
-		        async: false,
-			}
-		}
-
-		var pObject1=new DParamObject(scane,222,2,function(){	
-
-			console.warn("+++",ooo)
-
-		},1);
-		pObject1.tipRide=true;
-		pObject1.width=333
-		pObject1.arrayLabel=["help"];
-		pObject1.actIgnBtn =true;
-		pObject1.arrType.push("object")
-		//pObject1.typeArray=["obj"]
-		pObject1.infoInt=0
-		pObject1.addObject(ooo);
-
-
-		trace("@@>>",ooo)
-
-//return				
+		pObject.addObject(compDev);
+return				
 
 		//
 
