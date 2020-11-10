@@ -10,6 +10,8 @@ export function DSettings (_cont) {
 	this.type = 'DSettings';
 
 	this.content=new DCont();
+	this.content.nameType="DSettings"
+	this.content.thisType=this
 	// this.content.type = 'SettingsBigCont';
 	// this.content.settingsBig = this;
 	if (_cont != undefined) _cont.add(this.content);
@@ -494,7 +496,10 @@ export function DSettings (_cont) {
 	this.compFinal;
 	this.down = function () {
 		self.compFinal = this;
+		let po=null
+		//это вложеность
 		
+
 		if (self.object.funPre != undefined) {
 			self.object.funPre(this);
 		}
@@ -507,19 +512,24 @@ export function DSettings (_cont) {
 					valueToSet = self.object.arrComp[i].arrValue[this.index];
 				}
 				if (paramName) {
-					if (self.object.param != undefined) {
-						self.object.param[paramName] = valueToSet;
-						if (self.object.param.settingsBeside) {
-							self.object.param.settingsBeside(paramName);
+					if(typeof self.object.param[paramName] !="object"){
+
+
+					
+						if (self.object.param != undefined) {
+							self.object.param[paramName] = valueToSet;
+							if (self.object.param.settingsBeside) {
+								self.object.param.settingsBeside(paramName);
+							}
 						}
-					}
-					if (self.object.array != undefined) {
-						for (var j = 0; j < self.object.array.length; j++) {
-							self.object.array[j][paramName] = valueToSet;
+						if (self.object.array != undefined) {
+							for (var j = 0; j < self.object.array.length; j++) {
+								self.object.array[j][paramName] = valueToSet;
+							}
 						}
-					}
-					if (self.object.objSave != undefined && self.object.objSave[paramName] !== undefined) {
-						self.object.objSave[paramName] = valueToSet;
+						if (self.object.objSave != undefined && self.object.objSave[paramName] !== undefined) {
+							self.object.objSave[paramName] = valueToSet;
+						}
 					}
 				}
 
@@ -533,7 +543,7 @@ export function DSettings (_cont) {
 			}
 		}
 	
-		if ((this.type != 'SliderObject') /*&& (this.type != 'DSliderBig')*/ && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') /*&& (this.type !== 'DCheckBox')*/) {
+		if ((this.type != 'SliderObject')/* && (this.type != 'DParamObject')*/ && (this.type != 'PLSliderBigRad') && (this.type !== 'SliderImg') /*&& (this.type !== 'DCheckBox')*/) {
 
 			if (self.object.funComplit != undefined) {
 				self.object.funComplit(this);
@@ -609,6 +619,15 @@ export function DSettings (_cont) {
 			component.width = this._width - this._otstup * 2;
 			component.isAutoReversePanel = true;
 		}	
+
+		if (_type == 'DParamObject') {
+			// при клике перебрасываетса в конец массива this.content.children
+			component = new DParamObject(this.content, 0, 0, this.down,1);
+			component.x = this._otstup;
+			component.width = this._width - this._otstup * 2;
+			component.tipRide=true;
+			component.arrType.push("object")		
+		}	
 		// 	component.funChangeVisiblePanel = function () {
 		// 		for (var i = 0; i < self.arrComp2.length; i++) {
 		// 			if (self.arrComp2[i].idArr !== this.idArr) self.arrComp2[i].activMouse = !this.visiPanel;
@@ -638,6 +657,7 @@ export function DSettings (_cont) {
 			component.fontSize = 14;
 			component.bold = false;
 			component.x = this._otstup;
+			component.width = this._width - this._otstup * 2;
 		}
 
 		

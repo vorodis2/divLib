@@ -1,6 +1,6 @@
 
 
-export function DParamObject (_cont, _x, _y, _fun) {
+export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	DSettings.call(this);
 	this.type = 'DParamObject';
 	if(dcmParam==undefined)dcmParam=new DCM();
@@ -13,8 +13,9 @@ export function DParamObject (_cont, _x, _y, _fun) {
 	this.cont = _cont;
 	this.infoInt = -1//_infoInt != undefined ? _infoInt : -1;
 
+	this.arrayLabel=[];
 	this._height = 100;
-	this._bWindow = true;
+	this._bWindow = _bWindow==undefined?true:false;
 	this._ignTypeArr = false;
 	this._actIgnBtn = false;
 	this._title = 'DParamObject';
@@ -42,7 +43,6 @@ export function DParamObject (_cont, _x, _y, _fun) {
 	this.hhhhh=this._height
 
 	if (this._bWindow) {
-
 		this.w = new DWindow(this.cont, this._x, this._y, this._title, function () {
 			if (self.funMinimize) {
 				if (this.minimize == true) self._height = 1;
@@ -53,28 +53,33 @@ export function DParamObject (_cont, _x, _y, _fun) {
 				self.funMinimize();
 			}
 		});
-		this.window=this.w
-		this.w.content.add(this.content);			
-		this.w.drag = false;
-		this.w.width = this.width;
-		this.w.height = this.height;
-		
-		this.w.drag = false;
-		this._height = this.wh;
+	} else {
+		this.w = new DPanel(this.cont, this._x, this._y)
+	}	
+	this.window=this.w
+	this.w.content.add(this.content);			
+	this.w.drag = false;
+	this.w.width = this.width;
+	this.w.height = this.height;
+	
+	this.w.drag = false;
+	this._height = this.wh;
 			
 		
-	} else {
-		this.content.x = _x;
-		this.content.y = _y;
-	}
+	
+		//this.content.x = _x;
+		//this.content.y = _y;
+	
 
 
 	this.arrType = [
+		'label',
 		'numbercolor',
 		'boolean',
 		'number',
 		'string',
-		'comboBox'
+		'comboBox'/*,
+		'object'*/
 	];
 
 	for (var item in this.arrType) {
@@ -191,26 +196,24 @@ export function DParamObject (_cont, _x, _y, _fun) {
 				}
 			}
 		}
-		
-
 	};
 
 
-	this.draw2 = function () {
-	
+	this.draw2 = function () {	
 		this.hhhhh = this.finalHeight//+pl102.wh/2;
 		if(this.parrentPLPO!=undefined)this.hhhhh = this.finalHeight+pl102.wh-this._otstup;
 		//else this.w.height = this.finalHeight;
 
 		if (this.infoInt == 0) {
-			this.textArea.y = this.finalHeight;
-			this.but.y = this.finalHeight;
-			this.hhhhh += this.textArea.height;
-		}
-		if (this.ignBtn) this.ignBtn.x = this.w.width - this.ignBtn.width - 3;
-		this.w.height=this.hhhhh+dcmParam.wh
-		self.updateScroll();
+			this.initTA()
+			this.textArea.y = this.finalHeight;			
+			this.hhhhh += this.textArea.height+4;
 
+		}
+		if (this.ignBtn!=undefined) this.ignBtn.x = this.w.width - this.ignBtn.width - 3;
+		this.w.height=this.hhhhh+(this._bWindow?dcmParam.wh:0)
+		this._height=this.w.height
+		self.updateScroll();
 	};
 
 	this.generatShablon = function () {
@@ -224,32 +227,39 @@ export function DParamObject (_cont, _x, _y, _fun) {
 			arrParam2 = Object.getOwnPropertyNames(this.oP);
 			this.generatShablon2(arrParam1);
 		}
+		
 	};
 
 	this.generatShablon2 = function (arrParam) {
 		// Наполнение
+			
+	
 		for (var item in arrParam) {
 			if (this.tipRide != true) item = arrParam[item];
+	
+
 			if (item == 'constructor') continue;
+
 			type = typeof this.oP[item];
 			type = this.addPrefix(type, item, this.oP[item]);
 			
 			
 			//проверка на Сb
-			if(this.oP[item+"CB"]!=undefined){
-				
+			if(this.oP[item+"CB"]!=undefined){				
 				type='comboBox';
 			}
 			
 
 
-			if (this.oShablon[type]) this.oShablon[type].push(item);
+			if (this.oShablon[type]) this.oShablon[type].push(item);			
 		}
 		
+
 		for (var c in this.oP) {
 			if (this.oP[c] != undefined) {
 				if (typeof this.oP[c] === 'object') {
 					for (var i = 0; i < this.typeArray.length; i++) {
+					
 						if (this.oP[c] instanceof this.typeArray[i].type) {
 							
 							type = this.typeArray[i].name;
@@ -309,24 +319,32 @@ export function DParamObject (_cont, _x, _y, _fun) {
 
 	this.creatToShablon = function () {
 		for (var type in this.oShablon) {
-			for (var i = 0; i < this.oShablon[type].length; i++) {
-				this.addTypeComp(type, i);
+			for (var i = 0; i < this.oShablon[type].length; i++) {				
+				this.addTypeComp(type, i,this.oShablon[type][i]);
 			}
 		}
 	};
 
-	this.addTypeComp = function (type, index) {
-		var nameComp, comp, t;
+	this.addTypeComp = function (type, index,as) {
+		var nameComp, comp, t;		
 		if (type == 'boolean') nameComp = 'DCheckBox';
 		if (type == 'numbercolor') nameComp = 'DColor';
 		if (type == 'number') nameComp = 'DSliderBig';
 		if (type == 'string') nameComp = 'DStringDrag';
+		if (type == 'object') nameComp = 'DParamObject';
 		if (type == 'comboBox') nameComp = 'DComboBox';
+		if (as && type=='string' && as){
+			for (var i = 0; i < this.arrayLabel.length; i++) {
+				if(this.arrayLabel[i]==as){
+					nameComp = 'DLabel';
+				}
+			}
+		}
 		
-		for (var i = 0; i < this.typeArray.length; i++) {
-			
+		
+		for (var i = 0; i < this.typeArray.length; i++) {			
 			if (this.typeArray[i].name == type) {
-				nameComp = 'PLParamObject';
+				nameComp = 'DParamObject';
 				if (this.typeArray[i].nameComp != undefined) {
 					nameComp = this.typeArray[i].nameComp;
 
@@ -334,17 +352,30 @@ export function DParamObject (_cont, _x, _y, _fun) {
 			}
 		}
 
-		if (this.objComp[type + index] == undefined && nameComp) {
-		
+		if (this.objComp[type + index] == undefined && nameComp) {		
 			comp = this.addComponent(nameComp, type + index);
 			this.funDragSlider(comp);
 		}
 	};
 
+	this.textArea=undefined	
+	this.initTA = function () {
+		if(this.textArea!=undefined)return;
+		this.textArea=new DTextArea(this.w.content,2,2)
+		this.textArea.width=this.w.width-4
+		this.textArea.height=75
+		this.textArea.fontSize=10
+
+	}
+
 	this.setTextInput = function () {
-		this.objJSON = this.getObjStr();
-		this.textJSON = JSON.stringify(this.objJSON);
-		if (this.infoInt == 0)self.textArea.text = this.textJSON;
+		if (this.infoInt == 0){
+			this.objJSON = this.getObjStr();			
+			this.textJSON = JSON.stringify(this.objJSON);
+			this.initTA()			
+			self.textArea.text = this.textJSON;
+		}
+		
 	};
 
 	this.getObjStr = function () {
@@ -358,7 +389,7 @@ export function DParamObject (_cont, _x, _y, _fun) {
 				}
 				if (bb == false) {
 					for (var j = 0; j < this.arrComp2.length; j++) {
-						if (this.arrComp2[j].type == 'PLParamObject') {
+						if (this.arrComp2[j].type == 'DParamObject') {
 							for (var ss in this.oP) {
 								if (this.oP[ss] == this.arrComp2[j].param) {
 									o[ss] = this.arrComp2[j].getObjStr();
@@ -421,16 +452,12 @@ export function DParamObject (_cont, _x, _y, _fun) {
 	};
 
 	this.componentS;
-	this.funComplit = function (s) {
-		
+	this.funComplit = function (s) {		
 		if(s==undefined)s=self.compFinal
 		this.component = this;
 		self.componentS = s;
 		self.funDragSlider(this);
-		self.setTextInput();
-
-		
-		
+		self.setTextInput();		
 		if (self.fun) self.fun(s);
 	};
 
@@ -631,33 +658,34 @@ export function DParamObject (_cont, _x, _y, _fun) {
 	this.getObj = function () {};
 
 	var signBtn = 15;
+	this.ignBtn
 	this.createIgnBtn = function () {
-		this.ignBtn = new DButton(this.w, 0, 0, '+', function () {
+		if(this._bWindow==true){
+			this.ignBtn = new DButton(this.w, 0, 0, '+', function () {
 
-			self.ignTypeArr = !self._ignTypeArr;
+				self.ignTypeArr = !self._ignTypeArr;
 
-			if (self._ignTypeArr == true) this.text = '-';
-			else this.text = '+';
+				if (self._ignTypeArr == true) this.text = '-';
+				else this.text = '+';
 
-			if (self.funMinimize) {
-				if (self.w.minimize) self.w.minimize = false;
+				if (self.funMinimize) {
+					if (self.w.minimize) self.w.minimize = false;
 
-				self.draw();
-				// self._height = self.finalHeight + self.wh + self.otstup;
-				self._height = this.hhhhh;
+					self.draw();
+					// self._height = self.finalHeight + self.wh + self.otstup;
+					self._height = this.hhhhh;
 
-				self.funMinimize();
-			}
-		});
-		this.ignBtn.width = this.ignBtn.height = signBtn;
-		this.ignBtn.visible = this._actIgnBtn;
-		this.ignBtn.y = 7;
+					self.funMinimize();
+				}
+			});
+			this.ignBtn.width = this.ignBtn.height = signBtn;
+			this.ignBtn.visible = this._actIgnBtn;
+			this.ignBtn.y = 7;
+		}
 	};
 
 	if (this._actIgnBtn == true) this.createIgnBtn();
-
 	this._heightWindow = 100;
-
 	this.updateScroll = function () {
 		if (!this.scrollPane || !this.isScroll) return;
 
@@ -801,8 +829,10 @@ Object.defineProperties(DParamObject.prototype, {
 		set: function (v) {
 			if (this._actIgnBtn == v) return;
 			this._actIgnBtn = v;
+
 			if (!this.ignBtn) this.createIgnBtn();
-			this.ignBtn.visible = this._actIgnBtn;
+			
+			if (this.ignBtn!=undefined)this.ignBtn.visible = this._actIgnBtn;
 		},
 		get: function () {
 			return this._actIgnBtn;

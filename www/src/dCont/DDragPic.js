@@ -16,7 +16,7 @@ export function DDragPic(dC) {
     this.object=undefined;
     this._x=0;
     this._y=0;
-    this.pointZdvig={x:22,y:0}
+    this.pointZdvig={x:0,y:0}
     this.whBase=null;
     
     this.image=new DImage(this.dCont, 0,0);
@@ -36,7 +36,7 @@ export function DDragPic(dC) {
     var sT=1;
     this.oSc={x:0,y:0,x:1}
 
-    this.start = function(wh,link,object,fUp){
+    this.start = function(wh,link,object,fUp,alpha){
         if(this.whBase!=null)wh=this.whBase
         this.image.link=link;
         this.image.width=wh;
@@ -47,8 +47,8 @@ export function DDragPic(dC) {
         sp=undefined;
 
         
-        this.dCont.alpha=0;
-        //this.dCont.scale=0;      
+        this.dCont.alpha= alpha ==undefined ? 0 : alpha;
+              
         this.dC.add(this.dCont);
 
         this.object=object;
@@ -59,8 +59,8 @@ export function DDragPic(dC) {
         
         this.fXYS(this.dC,this.oSc,true);
 
-        this.dCont.x=dcmParam.globXY.x*this.oSc.s;
-        this.dCont.y=dcmParam.globXY.y*this.oSc.s;
+        this.dCont.x=dcmParam.globXY.x/this.oSc.s;
+        this.dCont.y=dcmParam.globXY.y/this.oSc.s;
 
         dcmParam.addFunMove(this.mousemove)
        
