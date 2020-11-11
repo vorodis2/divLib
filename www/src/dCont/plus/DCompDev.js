@@ -9,6 +9,7 @@ Date.now();g=b-n;q=Math.min(q,g);r=Math.max(r,g);m.textContent=g+" MS ("+q+"-"+r
 import { DCont } from '../DCont.js';
 
 import { DCreatIcon } from './DCreatIcon.js';
+
 export class DCompDev extends DCont{
     constructor(dCont, _x, _y, _text, _fun) {
         super();
@@ -19,153 +20,290 @@ export class DCompDev extends DCont{
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);         
         this.x=_x||0; 
         this.y=_y||0;
-        this.text="DevWindow"
-        // this.text=_text||"DCompDev";
+        this.text=_text||"DevWindow";
         this.fun=_fun;
         this.array=[]
         this._index=-1
         this._width=516;
         this._height=356.5;
         this._notSize=600
-       //npm run build
+        this._otstup=5
+
         this.wind=new DWindow(this,50,50,this.text);
         this.wind.width=516
         this.wind.height=356
 
 
+        this.panBut = new DPanel(this.wind.content,0, 0)
+        this.panBut.width = this.wind.width
+        this.panBut.height = 38
 
-        this.array[0]=new DXBasa0(this,0,"Icon")
-        this.array[1]=new DXBasa1(this,1,"FTP")
+        // this.array[0]=new DXBasa0(this,0,"Icon")
+        // this.array[1]=new DXBasa1(this,1,"FTP")
+
+        this.dCont=new DCont(this.wind.content);
+        this.dCont.x=this._otstup;
+        this.dCont.y=this._otstup+32;
 
         this.arrObjPar=[]
         this.arrDCont=[]
         this.arrButName=[]
         this.arrW=[]
         this.arrH=[]
-        this.addCont=function(objPar, dCont,name,w,h){
-            this.arrObjPar.push(objPar)
+        this.arrID=[]
+        this.xx = 0
+        this.index=-1;
+
+        this.sob=function(s,p,p1){
+            trace(s,p,p1)
+            if(s=="index")self.index=p
+        }
+
+
+        this.addCont=function(objPar, dCont, name, w, h){
+            w = w != undefined ? w : this._notSize;
+            h = h != undefined ? h : this._notSize;
+
+            var gron=new GronXZ(this,objPar, dCont, name, w, h)
+            gron.idArr=this.array.length
+            gron.fun=this.sob
+            this.array.push(gron);
+
+            this.panBut.add(gron.button)
+
+
+            /*
+
+            this.arrObjPar.push(objPar) 
             this.arrDCont.push(dCont)
-            this.arrButName.push(new DButton(this.wind,content,0,0,name))
+            this.arrButName.push(new DButton(this.wind.content, this.xx, 0, name, function(){              
+                self.index=this.idArr
+            }))
+            this.arrButName[this.arrButName.length-1].idArr = this.arrButName.length-1;
+
             this.arrW.push(w);
             this.arrH.push(h);
+
+            this.xx += this.arrButName[0].width + this._otstup
+            this.arrID.push(this.arrID[this.arrID.length])
+        */
         }
-        this.index=0;
+
+        var oo1 = new DCreatIcon(null, 0, 0, null,function(s,p) {})
+        var o1=new DXFTP(this.dCont)
+        // var ooo1 = new DWStenColiz(this.dCont)
 
 
-        var oo=new DXBasa0(this,0,"Icon")
-        this.addCont(oo,panel,"Iconxz",516,356);
+        this.addCont(oo1,oo1,"Icon",516,356);
+        this.addCont(o1, o1.dCont,"FTP",undefined,undefined);
+        // this.addCont(ooo1, ooo1.dCont,"DWStenColiz",undefined,undefined);
+
 
         this.button=new DButton(this.wind, this.wind.width-30, +2, 'X',function(){
             self.active=false
             if(self.fun)self.fun("active",false)
         })
         this.button.width=this.button.height=28
+
     }
+
 
     set index(value) {
         if(this._index!=value){
             this._index = value;
             for (var i = 0; i < this.array.length; i++) {
                 this.array[i].active=value==i ? true : false
-            }
+            }     
+
             if(self.fun)self.fun("index",value)
-        }       
-    }   
+        }
+    }
     get index() { return  this._index;}
 
+
     set active(value) {
+        trace(value)
         if(this._active!=value){
             this._active = value;
             this.visible=this._active
             this.wind.x=0;
             this.wind.y=0;
-            
         }       
     }   
     get active() { return  this._active;} 
 }
 
-
-
-
-export class DXBasa {
-    constructor(par, idArr, _text, fun) {
-        //this.dCont=new DCont();
-        this._active = false
-        
+export class GronXZ{
+    constructor(par, objPar, dCont, name, w, h, fun) {  
+        this.type="GronXZ"
         var self=this
-        this.idArr=idArr;
-        trace(par,"   ",par.wind)
+        this.par=par;
+        this.objPar=objPar;
+        this.dCont=dCont;
+        this.name=name;
+        this.w=w;
+        this.h=h;
+        this.fun=fun;
+        this._idArr=-1;
 
-        this.button=new DButton(par.wind.content, 2+idArr*102,2,_text,function(){
-            par.index=self.idArr
+        var ss = 50 + 32 
+        this.par.wind.width = w > this.par.wind.width + ss ? w + 2 : this.par.wind.width + ss
+        this.par.wind.height = h > this.par.wind.height + ss? h + 2 : this.par.wind.height + ss
+        this.par.panBut.width = this.par.wind.width
+
+
+        if(dCont){
+            par.dCont.add(dCont) 
+        }   
+
+
+        this.button=new DButton(null, this.xx, 0, name, function(){              
+            if(self.fun)self.fun("index",self._idArr)
         })
+        this.button.width=50 
 
-        this.panel=new DPanel(par.wind.content, 0, 34);
-        this.panel.width=150+Math.random()*200
-        this.panel.visible=this._active
 
-        this.panel.width=516
-        this.panel.height=356.5
+        this.dddd=function(){
+            if(this.dCont!=undefined){
+                this.dCont.visible=this._active;
+            }
+            if(this.objPar!=undefined){
+                if(this.objPar._active!=undefined){
+                    this.objPar.active=this._active;
+                }                
+            }
+
+        }   
     }
+    set idArr(value) {
+        if(this._idArr!=value){
+            this._idArr = value;
+            this.button.x=this._idArr*(this.button.width+2)
+        }       
+    }   
+    get idArr() { return  this._idArr;} 
 
     set active(value) {
         if(this._active!=value){
             this._active = value;
-            this.panel.visible=this._active
-            this.button.alpha=value?0.5:1
+            this.dddd()
         }       
     }   
-    get active() { return  this._active;} 
+    get active() { return  this._active;}       
 }
 
 
-export class DXBasa0 extends DXBasa{
-    constructor(par, idArr, _text, fun) {
-        super(par, idArr, _text, fun);      
-        var a = new DCreatIcon(this.panel, 0, 0,null,function(s,p) {})
+export class DXFTP{
+    constructor(dC) {
+        this.type="DXFTP"
+        var self=this;
 
-        // par.wind.width=this.panel.width=a.fullW
-        // par.wind.height=this.panel.height=a.fullH
+        this.dC=dC
+        this._active = false        
+        this.dCont = new DCont(this.dC)
 
-    }   
-}
+        this.dCont.visible = this.active
+        var stats1
+        var stats=undefined
+        this.init=function(){
+            if(stats!=undefined)return
 
+            stats=new Stats() 
+            stats.setMode(0)
+            stats.domElement.style.position = 'fixed';
+            stats.domElement.style.top = '5px';
+            stats.domElement.style.left = '5px'; 
 
-export class DXBasa1 extends DXBasa{
-    constructor(par, idArr, _text, fun) {
-        super(par, idArr, _text, fun);
-        
-        var stats=new Stats()
+            stats1=new Stats()           
+            stats1.setMode(1)
+            stats1.domElement.style.position = 'fixed';
+            stats1.domElement.style.top = '5px';
+            stats1.domElement.style.left =  '70px';
 
-        if (stats)stats.update();        
-        stats.setMode(0)
-        stats.domElement.style.position = 'fixed';
-        stats.domElement.style.top = '5px';
-        stats.domElement.style.left = '5px';
-        var a = stats.domElement.style.width+50
-        var stats1=new Stats()
+            this.dCont.div.appendChild(stats.domElement);
+            this.dCont.div.appendChild(stats1.domElement); 
+            animate()  
+        }
 
-        if (stats1)stats1.update();  
-        stats1.setMode(1)
-        stats1.domElement.style.position = 'fixed';
-        stats1.domElement.style.top = '5px';
-        stats1.domElement.style.left =  '70px';
-
-
-        this.panel.div.appendChild(stats.domElement);
-        this.panel.div.appendChild(stats1.domElement);  
 
         function animate() {            
             requestAnimationFrame( animate );
             if(self._active ==false)return
             stats.update();
+            stats1.update();
         }
-        animate()    
-
+        
     }
 
-   
+    set active(value) {
+        if(this._active!=value){
+            this._active = value;
+            this.init()
+            this.dCont.visible = this.active
+        }       
+    }   
+    get active() { return  this._active;} 
 }
 
 
+
+
+// export class DWStenColiz{
+//     constructor(dC) {
+//         this.type="DWStenColiz"
+//         var self=this;
+
+//         this.dC=dC
+//         this._active = false 
+//         this._otstup = 5
+//         this._valueSlider;
+//         this._valueSlider1;
+
+
+//         this.pan = new DPanel (this.dC)
+//         this.pan.width = 670
+//         this.pan.height = 670
+//         this.pan.visible = this.active
+
+
+//         this.panSG = new DPanel (this.pan, 0 , 0)
+//         this.panSG.width = 200
+//         this.panSG.height = 500
+
+//         this.panCont = new DPanel (this.pan, this.panSG.width + this._otstup , 0)
+//         this.panCont.width = 300
+//         this.panCont.height = 300
+
+//         this.slider = new DSliderBig (this.panSG, this._otstup, this._otstup, function(){self.valueSlider=this.value;})
+//         this.slider1 = new DSliderBig (this.panSG, this._otstup, this.slider.height + this._otstup * 2, function(){self.valueSlider1=this.value;})
+        
+//         // function(){self.lineSah=this.value;}
+
+
+//     }
+
+//     set active(value) {
+//         if(this._active!=value){
+//             this._active = value;
+//             this.pan.visible = this.active
+//         }       
+//     }   
+//     get active() { return  this._active;} 
+
+//     set valueSlider(value) { 
+//         if(this.valueSlider!=value){
+//             this.valueSlider=value;
+//             this.slider.value = value;
+//         }
+//     }   
+//     get valueSlider() { return  this._valueSlider}
+
+
+//     set valueSlider1(value) { 
+//         if(this.valueSlider1!=value){
+//             this.valueSlider1=value;
+//             this.slider.value = value;
+//         }
+//     }   
+//     get valueSlider1() { return  this._valueSlider1}
+// }
