@@ -1194,8 +1194,9 @@ export class DButton extends DCont {
 
 
 
-
-        this.mousedown=function(){ 
+        this.eventOriginal=undefined
+        this.mousedown=function(e){ 
+        	self.eventOriginal=e
         	if(self._activMouse==false )return        	
             if (self.file != undefined) {            	
                 self.file.value = null;

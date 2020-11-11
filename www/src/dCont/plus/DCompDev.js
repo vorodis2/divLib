@@ -24,18 +24,36 @@ export class DCompDev extends DCont{
         this.fun=_fun;
         this.array=[]
         this._index=-1
-
+        this._width=516;
+        this._height=356.5;
+        this._notSize=600
        //npm run build
         this.wind=new DWindow(this,50,50,this.text);
         this.wind.width=516
-        this.wind.height=356.5
+        this.wind.height=356
+
 
 
         this.array[0]=new DXBasa0(this,0,"Icon")
         this.array[1]=new DXBasa1(this,1,"FTP")
 
+        this.arrObjPar=[]
+        this.arrDCont=[]
+        this.arrButName=[]
+        this.arrW=[]
+        this.arrH=[]
+        this.addCont=function(objPar, dCont,name,w,h){
+            this.arrObjPar.push(objPar)
+            this.arrDCont.push(dCont)
+            this.arrButName.push(new DButton(this.wind,content,0,0,name))
+            this.arrW.push(w);
+            this.arrH.push(h);
+        }
         this.index=0;
 
+
+        var oo=new DXBasa0(this,0,"Icon")
+        this.addCont(oo,panel,"Iconxz",516,356);
 
         this.button=new DButton(this.wind, this.wind.width-30, +2, 'X',function(){
             self.active=false
@@ -50,6 +68,7 @@ export class DCompDev extends DCont{
             for (var i = 0; i < this.array.length; i++) {
                 this.array[i].active=value==i ? true : false
             }
+            if(self.fun)self.fun("index",value)
         }       
     }   
     get index() { return  this._index;}
@@ -60,7 +79,7 @@ export class DCompDev extends DCont{
             this.visible=this._active
             this.wind.x=0;
             this.wind.y=0;
-          
+            
         }       
     }   
     get active() { return  this._active;} 
