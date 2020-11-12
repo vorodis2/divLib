@@ -31,12 +31,12 @@ export class DCompDev extends DCont{
 
         this.wind=new DWindow(this,50,50,this.text);
 
-        this.panBut = new DPanel(this.wind.content,0, 0)
+        this.panBut = new DPanel(this.wind.content, this._otstup, this._otstup)
         this.panBut.height = 32 + (this._otstup*2)
 
         this.dCont=new DCont(this.wind.content);
         this.dCont.x=this._otstup;
-        this.dCont.y=this.panBut.height + this._otstup;
+        this.dCont.y=this.panBut.height + this._otstup*2;
 
         this.sob=function(s,p,p1){
             trace(s,p,p1)
@@ -71,8 +71,8 @@ export class DCompDev extends DCont{
         this.reDrag=function(){
             // trace(w,h)
             this.wind.width=this._width+this._otstup*2
-            this.wind.height=this._height+38+this.panBut.height+this._otstup
-            this.panBut.width=this.wind.width
+            this.wind.height=this._height+38+this.panBut.height+this._otstup*2
+            this.panBut.width=this.wind.width-this._otstup*2
             this.button.x=this.wind.width-30
         }
         this.index=0
