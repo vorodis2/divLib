@@ -343,7 +343,7 @@ export class DHole extends DCont {
                 point=self.arrPoint[0]
                 console.log(point)
                 self.start(point)
-                return
+                return;
             }
 
             point=self.arrPoint[this.idArr]
