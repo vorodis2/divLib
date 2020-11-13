@@ -114,7 +114,7 @@ export function DDragPic(dC) {
 
     //постояно весит в слушатели
     //можно грохнуть и перехвать, гляю мобилы с окончанием евента
-    this.mousemove = function(e){    
+    this.mousemove = function(e){   
         if(sp==undefined){
             if(self.devas==false){
                 sp={

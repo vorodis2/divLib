@@ -1,7 +1,7 @@
 
 import { DCont } from './DCont.js';
 
-export class DHole extends DCont {
+export class DHoleOld extends DCont {
     constructor(dCont, _x, _y, _rect, _fun) {
         super(dCont);
 
@@ -37,12 +37,10 @@ export class DHole extends DCont {
         this.arrBut1=[];//грани
         this.arrBut2=[];//грани
 
-        this.arrCC=[]
-
         this._colorAct = dcmParam.color//"#ff0000";
         this._colorButton = dcmParam.color//"#ff0000";
         this._borderRadius=0;
-        this._lineSize=20;
+        this._borderThickness=1;
         this.oca=undefined;
     
     
@@ -51,23 +49,24 @@ export class DHole extends DCont {
         this.canvas
         this.ctx
 
+        this.btn={x:0,y:0,width:this.rect.width/10,heigt:this.rect.height/10};
+
+
         this.init=function () { 
             this.canvas = document.createElement('canvas'); // канвас для картинки
             this.ctx = this.canvas.getContext('2d');
             this.canvas.style.position = 'fixed';
-        
-            this.canvas.height=this._height+this._lineSize;
-            this.canvas.width=this._width+this._lineSize; 
-            this.canvas.style.top = -this._lineSize/2+'px';
-            this.canvas.style.left = -this._lineSize/2+'px';
-
+            this.canvas.style.top = '0px';
+            this.canvas.style.left = '0px';
+            this.canvas.width=this._width;
+            this.canvas.height=this._height;
             this.dCont1.div.appendChild(this.canvas);
 
 
             this.button=new DButton(this.dCont, 0, 0, "", null);
             this.button.idArr=0;
             this.button.tip=2;
-            this.button.alpha=0.25;
+            this.button.alpha=0.0//25;
             this.button.fun_mousedown=this.sobBut 
 
             this.canvas.rect
@@ -75,24 +74,21 @@ export class DHole extends DCont {
             for (var i = 0; i < 4; i++) {
 
                 let dC=new DCont(this.dCont);
-                //this.arrCC.push(dC)
-                this.arrCC.push({x:0, y:0})
-
-                //this.arrPoint.push({x:0,y:0})
+                this.arrPoint.push(dC)
                 
-                /*button=new DButton(dC, 0, 0, "", null);
+                button=new DButton(dC, 0, 0, "", null);
                 button.idArr=i;
                 button.tip=0;
-                button.alpha=0.20//025;
+                button.alpha=0.00//025;
                 button.fun_mousedown=this.sobBut 
-                this.arrBut1.push(button);*/
+                this.arrBut1.push(button);
 
-                // button=new DButton(dC, 0, 0, "", null);
-                // button.idArr=i;
-                // button.tip=0;
-                // button.alpha=0.5//025;
-                // button.fun_mousedown=this.sobBut 
-                // this.arrBut2.push(button);           
+                button=new DButton(dC, 0, 0, "", null);
+                button.idArr=i;
+                button.tip=0;
+                button.alpha=0.5//025;
+                button.fun_mousedown=this.sobBut 
+                this.arrBut2.push(button);           
 
 
                 button=new DButton(dC, -this.radBut/2, -this.radBut/2, "", null);
@@ -101,28 +97,12 @@ export class DHole extends DCont {
                 button.width= button.height=this.radBut; 
                 button.fun_mousedown=this.sobBut              
                 this.arrBut.push(button);
-            }      
-            
-            console.log(this.arrPoint)
+            }            
         }
 
         var whh=4
 
         this.drag=function () {
-       /*     this.border={
-                x:this.rect.x,
-                y:this.rect.y - this._lineSize/2,
-                width:this.rect.width + this._lineSize,
-                height:this.rect.height + this._lineSize,
-            }
-
-            if(this.border.x<0)this.rect.x=0+this._lineSize;
-            if(this.border.y<0)this.rect.y=0+this._lineSize;
-
-            if(this.border.width+this.border.x>this._width)this.border.width=this._width-this.border.x;
-            if(this.border.height+this.border.y>this._height)this.border.height=this._height-this.border.y;
-
-*/
             if(this.rect.x<0)this.rect.x=0;
             if(this.rect.y<0)this.rect.y=0;
 
@@ -131,7 +111,8 @@ export class DHole extends DCont {
 
             let ww=this.radBut/2;
 
-        
+            
+           
             this.arrPoint[0].x=this.rect.x;
             this.arrPoint[0].y=this.rect.y;
 
@@ -145,92 +126,74 @@ export class DHole extends DCont {
             this.arrPoint[3].y=this.rect.y+this.rect.height;
         
             //
-            // this.arrBut1[0].x=this.radBut/2;
-            // this.arrBut1[0].width=this.rect.width - this.radBut;
-            // this.arrBut1[0].y=-this.radBut/2;
-            // this.arrBut1[0].height=this.radBut;
+            this.arrBut1[0].x=this.radBut/2;
+            this.arrBut1[0].width=this.rect.width - this.radBut;
+            this.arrBut1[0].y=-this.radBut/2;
+            this.arrBut1[0].height=this.radBut;
 
 
-            // this.arrBut1[1].x=-this.radBut/2;
-            // this.arrBut1[1].width= this.radBut;
-            // this.arrBut1[1].y=this.radBut/2;
-            // this.arrBut1[1].height=this.rect.height- this.radBut;
+            this.arrBut1[1].x=-this.radBut/2;
+            this.arrBut1[1].width= this.radBut;
+            this.arrBut1[1].y=this.radBut/2;
+            this.arrBut1[1].height=this.rect.height- this.radBut;
 
-            // this.arrBut1[2].x=this.radBut/2-this.rect.width;
-            // this.arrBut1[2].width= this.rect.width - this.radBut;
-            // this.arrBut1[2].y=-this.radBut/2;
-            // this.arrBut1[2].height=this.radBut;
+            this.arrBut1[2].x=this.radBut/2-this.rect.width;
+            this.arrBut1[2].width= this.rect.width - this.radBut;
+            this.arrBut1[2].y=-this.radBut/2;
+            this.arrBut1[2].height=this.radBut;
 
 
-            // this.arrBut1[3].x=-this.radBut/2;
-            // this.arrBut1[3].width=  this.radBut;
-            // this.arrBut1[3].y=this.radBut/2-this.rect.height;
-            // this.arrBut1[3].height=this.rect.height-this.radBut;
+            this.arrBut1[3].x=-this.radBut/2;
+            this.arrBut1[3].width=  this.radBut;
+            this.arrBut1[3].y=this.radBut/2-this.rect.height;
+            this.arrBut1[3].height=this.rect.height-this.radBut;
             //
 
 
-            // this.arrBut2[0].x=this.radBut/2;
-            // this.arrBut2[0].width=this.rect.width - this.radBut;
-            // this.arrBut2[0].y=-whh/2;
-            // this.arrBut2[0].height=whh;
+            this.arrBut2[0].x=this.radBut/2;
+            this.arrBut2[0].width=this.rect.width - this.radBut;
+            this.arrBut2[0].y=-whh/2;
+            this.arrBut2[0].height=whh;
 
 
-            // this.arrBut2[1].x=-whh/2;
-            // this.arrBut2[1].width= whh;
+            this.arrBut2[1].x=-whh/2;
+            this.arrBut2[1].width= whh;
 
-            // this.arrBut2[1].y=this.radBut/2;
-            // this.arrBut2[1].height=this.rect.height- this.radBut;
-
-
-            // this.arrBut2[2].x=this.radBut/2-this.rect.width;
-            // this.arrBut2[2].width= this.rect.width - this.radBut;
-            // this.arrBut2[2].y=-whh/2;
-            // this.arrBut2[2].height=whh;  
+            this.arrBut2[1].y=this.radBut/2;
+            this.arrBut2[1].height=this.rect.height- this.radBut;
 
 
-            // this.arrBut2[3].x=-whh/2;
-            // this.arrBut2[3].width=  whh;
-            // this.arrBut2[3].y=this.radBut/2-this.rect.height;
-            // this.arrBut2[3].height=this.rect.height-this.radBut;
-            for (var i = 0; i < this.arrCC.length; i++) {
-                this.arrCC[i].x=this.arrPoint[i].x
-                this.arrCC[i].y=this.arrPoint[i].y
-            }
+            this.arrBut2[2].x=this.radBut/2-this.rect.width;
+            this.arrBut2[2].width= this.rect.width - this.radBut;
+            this.arrBut2[2].y=-whh/2;
+            this.arrBut2[2].height=whh;  
+
+
+            this.arrBut2[3].x=-whh/2;
+            this.arrBut2[3].width=  whh;
+            this.arrBut2[3].y=this.radBut/2-this.rect.height;
+            this.arrBut2[3].height=this.rect.height-this.radBut;
+
 
             this.button.x=this.rect.x;
             this.button.y=this.rect.y;
             this.button.width=this.rect.width;
             this.button.height=this.rect.height;
 
-            this.ctx.clearRect(0, 0, this._width+this._lineSize, this._height+this._lineSize);
-            
+            this.ctx.clearRect(0, 0, this._width, this._height);
+
             var alpha=0.2;
-            let p=this._lineSize/2
+
             if(this._boolFont==true){
-             
                 this.ctx.fillStyle ="rgba("+this._oca.r+", "+this._oca.g+", "+this._oca.b+", "+alpha+")";
-                // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                this.ctx.fillRect(p, p, this.rect.x, this._height);
-                this.ctx.fillRect(this.rect.x + p, p, this.rect.width, this.rect.y);
-                this.ctx.fillRect(this.rect.x+p, this.rect.y+this.rect.height, this.rect.width, this._height-(this.rect.y+this.rect.height-p));
-                this.ctx.fillRect(this.rect.x+this.rect.width+p, p, this._width-this.rect.width-this.rect.x, this._height);
 
-                
-                this.ctx.lineWidth=this._lineSize;
-                this.ctx.strokeStyle=this._colorButton;
-                this.ctx.strokeRect(this.rect.x + p, this.rect.y+p, this.rect.width, this.rect.height);
+                this.ctx.fillRect(0, 0, this.rect.x, this._height);
+                this.ctx.fillRect(this.rect.x, 0, this.rect.width, this.rect.y);
+                this.ctx.fillRect(this.rect.x, this.rect.y+this.rect.height, this.rect.width, this._height-(this.rect.y+this.rect.height));
+
+                this.ctx.fillRect(this.rect.x+this.rect.width, 0, this._width-this.rect.width-this.rect.x, this._height);
+
                 this.ctx.fill();
-
-            
-                /*trace("Border: ", {
-                    x:this.rect.x - this._lineSize/2,
-                    y:this.rect.y - this._lineSize/2,
-                    width:this.rect.width + this._lineSize,
-                    height:this.rect.height + this._lineSize,
-                });
-                console.log("Rect: ", this.rect)
-                console.warn("Rect: ", this.rect)
-                console.error("Rect: ", this.rect)*/
             }
 
             this.fun("drag");
@@ -461,11 +424,6 @@ export class DHole extends DCont {
            // self.drag(sx/(scale*scale1),sy/(scale*scale1));                       
         }
 
-        this.drawBorder = function(xPos, yPos, width, height, color){
-            this.ctx.fillStyle=color;
-            this.ctx.strokeRect(xPos - this._borderThickness, yPos - this._borderThickness, width + (this._borderThickness * 2), height + (this._borderThickness * 2));
-        }
-
         this.start = function(obj){            
             document.body.style.pointerEvents="none";  
             this.appPoint()           
@@ -521,26 +479,6 @@ export class DHole extends DCont {
         if(dcmParam.borderRadius!=0)this.borderRadius=dcmParam.borderRadius
     }
 
-    // setLineSize
-
-    set lineSize(value) {
-        let vv=Math.round(value / 2)*2
-
-
-        if (this._lineSize != vv) {
-            
-                this._lineSize = vv;
-                this.canvas.style.top = -this._lineSize/2+'px';
-                this.canvas.style.left = -this._lineSize/2+'px';
-                this.canvas.height=this._height+this._lineSize;
-                this.canvas.width=this._width+this._lineSize; 
-                this.drag(); 
-            
-        }
-    }
-
-    get lineSize() { return this._lineSize }
-
     set borderRadius(value) {
         if (this._borderRadius != value) {
             this._borderRadius = value;
@@ -591,8 +529,6 @@ export class DHole extends DCont {
                 this.arrBut[i].color= this._colorButton
                 // this.arrBut2[i].color= this._colorButton
             }
-            
-            this.drag() 
         }           
     }
     get colorButton() { return this._colorButton; }
@@ -632,10 +568,7 @@ export class DHole extends DCont {
     set width(value) {
         if (this._width != value) {
             this._width = value; 
-           
-            this.canvas.height=this._height+this._lineSize;
-            this.canvas.width=this._width+this._lineSize; 
-            // this.canvas.style.left = -this._lineSize/2+'px';          
+            this.canvas.width=this._width;            
             this.drag();
         }           
     }
@@ -644,9 +577,7 @@ export class DHole extends DCont {
     set height(value) {
         if (this._height != value) {
             this._height = value;            
-            this.canvas.height=this._height+this._lineSize;
-            this.canvas.width=this._width+this._lineSize; 
-            // this.canvas.style.top = -this._lineSize/2+'px';         
+            this.canvas.height=this._height*1;           
             this.drag(); 
         }           
     }
