@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>testAdmin1</title>
+
+
+<script src="build/divLib.js"></script>
+
+
+<style type="text/css">
+	#stats { position: absolute; top:0; left: 200px; }
+</style>
+
+</head>
+<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<body>
+
+<script  type="module">
+	window.trace = window.console.log.bind(window.console);
+	import { DCreatIcon } from "./src/dCont/plus/DCreatIcon.js";
+	import { DCompDev } from "./src/dCont/plus/DCompDev.js";
+
+	var dcmParam, scane, content;
+
+	
+	function init () {
+		document.addEventListener('contextmenu', event => event.preventDefault());
+		dcmParam=new DCM();
+
+		scane= new DCont(document.body);
+		
+
+		scane= new DCont(document.body);
+		content= new DCont(scane);
+
+		var pObject=new DParamObject(content,2,2,function(){			
+			
+		});
+
+
+		let d=new DCompDev(content, 222,22, "testxz")
+
+
+		pObject.addObject(d)
+	}
+
+	init()
+</script>
+
+	
+</body ></html>

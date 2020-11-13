@@ -5,9 +5,9 @@ e.id="msGraph";e.style.cssText="position:relative;width:57px;height:27px;backgro
 Date.now();g=b-n;q=Math.min(q,g);r=Math.max(r,g);m.textContent=g+" MS ("+q+"-"+r+")";var a=Math.min(25,25-g/200*25);e.appendChild(e.firstChild).style.height=a+"px";v++;b>p+1E3&&(h=Math.round(1E3*v/(b-p)),t=Math.min(t,h),u=Math.max(u,h),k.textContent=h+" FPS ("+t+"-"+u+")",a=Math.min(25,25-h/100*25),c.appendChild(c.firstChild).style.height=a+"px",p=b,v=0);return b},update:function(){n=this.end()}}};
 
 
+///Окно дебагера
 
 import { DCont } from '../DCont.js';
-
 import { DCreatIcon } from './DCreatIcon.js';
 
 export class DCompDev extends DCont{
@@ -27,38 +27,21 @@ export class DCompDev extends DCont{
         this._width=516;
         this._height=356.5;
         this._notSize=600
-        this._otstup=5
+        this._otstup=5        
 
         this.wind=new DWindow(this,50,50,this.text);
-        this.wind.width=516
-        this.wind.height=356
 
-
-        this.panBut = new DPanel(this.wind.content,0, 0)
-        this.panBut.width = this.wind.width
-        this.panBut.height = 38
-
-        // this.array[0]=new DXBasa0(this,0,"Icon")
-        // this.array[1]=new DXBasa1(this,1,"FTP")
+        this.panBut = new DPanel(this.wind.content, this._otstup, this._otstup)
+        this.panBut.height = 32 + (this._otstup*2)
 
         this.dCont=new DCont(this.wind.content);
         this.dCont.x=this._otstup;
-        this.dCont.y=this._otstup+32;
-
-        this.arrObjPar=[]
-        this.arrDCont=[]
-        this.arrButName=[]
-        this.arrW=[]
-        this.arrH=[]
-        this.arrID=[]
-        this.xx = 0
-        this.index=-1;
+        this.dCont.y=this.panBut.height + this._otstup*2;
 
         this.sob=function(s,p,p1){
             trace(s,p,p1)
             if(s=="index")self.index=p
         }
-
 
         this.addCont=function(objPar, dCont, name, w, h){
             w = w != undefined ? w : this._notSize;
@@ -68,36 +51,16 @@ export class DCompDev extends DCont{
             gron.idArr=this.array.length
             gron.fun=this.sob
             this.array.push(gron);
-
             this.panBut.add(gron.button)
-
-
-            /*
-
-            this.arrObjPar.push(objPar) 
-            this.arrDCont.push(dCont)
-            this.arrButName.push(new DButton(this.wind.content, this.xx, 0, name, function(){              
-                self.index=this.idArr
-            }))
-            this.arrButName[this.arrButName.length-1].idArr = this.arrButName.length-1;
-
-            this.arrW.push(w);
-            this.arrH.push(h);
-
-            this.xx += this.arrButName[0].width + this._otstup
-            this.arrID.push(this.arrID[this.arrID.length])
-        */
         }
 
         var oo1 = new DCreatIcon(null, 0, 0, null,function(s,p) {})
         var o1=new DXFTP(this.dCont)
         // var ooo1 = new DWStenColiz(this.dCont)
 
-
         this.addCont(oo1,oo1,"Icon",516,356);
-        this.addCont(o1, o1.dCont,"FTP",undefined,undefined);
-        // this.addCont(ooo1, ooo1.dCont,"DWStenColiz",undefined,undefined);
-
+        this.addCont(o1, o1.dCont,"FTP",200,150);
+        // this.addCont(ooo1, ooo1.dCont,"DWS",undefined,undefined);
 
         this.button=new DButton(this.wind, this.wind.width-30, +2, 'X',function(){
             self.active=false
@@ -105,6 +68,14 @@ export class DCompDev extends DCont{
         })
         this.button.width=this.button.height=28
 
+        this.reDrag=function(){
+            // trace(w,h)
+            this.wind.width=this._width+this._otstup*2
+            this.wind.height=this._height+38+this.panBut.height+this._otstup*2
+            this.panBut.width=this.wind.width-this._otstup*2
+            this.button.x=this.wind.width-30
+        }
+        this.index=0
     }
 
 
@@ -112,10 +83,12 @@ export class DCompDev extends DCont{
         if(this._index!=value){
             this._index = value;
             for (var i = 0; i < this.array.length; i++) {
-                this.array[i].active=value==i ? true : false
-            }     
-
-            if(self.fun)self.fun("index",value)
+                this.array[i].active= value==i ? true : false
+                this.array[i].button.alpha= this.array[i].idArr==value ? 0.5 : 1
+            }
+            this.width = this.array[value].w
+            this.height = this.array[value].h
+            if(self.fun)self.fun("index",value) 
         }
     }
     get index() { return  this._index;}
@@ -131,8 +104,28 @@ export class DCompDev extends DCont{
         }       
     }   
     get active() { return  this._active;} 
+
+    set width(value) {
+        trace(value)
+        if(this._width!=value){
+            this._width = value;
+            this.reDrag()
+        }       
+    }   
+    get width() { return  this._width;}   
+
+    set height(value) {
+        if(this._height!=value){
+            this._height = value;
+            this.reDrag()
+        }       
+    }   
+    get height() { return  this._height;}   
 }
 
+
+/// Получает объект, контент для объекта, нейм, ширину, высоту, функцию 
+/// Генерирует экземпляр класса с задаными парамметрами и передает в основное окно
 export class GronXZ{
     constructor(par, objPar, dCont, name, w, h, fun) {  
         this.type="GronXZ"
@@ -145,22 +138,17 @@ export class GronXZ{
         this.h=h;
         this.fun=fun;
         this._idArr=-1;
-
-        var ss = 50 + 32 
-        this.par.wind.width = w > this.par.wind.width + ss ? w + 2 : this.par.wind.width + ss
-        this.par.wind.height = h > this.par.wind.height + ss? h + 2 : this.par.wind.height + ss
-        this.par.panBut.width = this.par.wind.width
-
+        this._otstup=this.par._otstup
 
         if(dCont){
-            par.dCont.add(dCont) 
+            this.par.dCont.add(dCont) 
         }   
 
-
-        this.button=new DButton(null, this.xx, 0, name, function(){              
+        this.button=new DButton(null, 0, this._otstup, name, function(){              
             if(self.fun)self.fun("index",self._idArr)
         })
-        this.button.width=50 
+        this.button.width=50
+        this.button.height=32
 
 
         this.dddd=function(){
@@ -170,18 +158,28 @@ export class GronXZ{
             if(this.objPar!=undefined){
                 if(this.objPar._active!=undefined){
                     this.objPar.active=this._active;
-                }                
+                }
+                if(objPar.funDrwgWG==null){
+                    objPar.funDrwgWG=this.funDrwgWG
+                }
             }
+        } 
 
-        }   
+        this.funDrwgWG=function(w,h){
+            self.w=w
+            self.w=w
+            self.par.width = w;
+            self.par.height = h;
+        }
     }
+
     set idArr(value) {
         if(this._idArr!=value){
             this._idArr = value;
             this.button.x=this._idArr*(this.button.width+2)
         }       
     }   
-    get idArr() { return  this._idArr;} 
+    get idArr() { return  this._idArr;}
 
     set active(value) {
         if(this._active!=value){
@@ -225,14 +223,12 @@ export class DXFTP{
             animate()  
         }
 
-
         function animate() {            
             requestAnimationFrame( animate );
             if(self._active ==false)return
             stats.update();
             stats1.update();
-        }
-        
+        }        
     }
 
     set active(value) {
@@ -256,29 +252,23 @@ export class DXFTP{
 //         this.dC=dC
 //         this._active = false 
 //         this._otstup = 5
-//         this._valueSlider;
-//         this._valueSlider1;
-
+//         this._width=600
+//         this._height=600
 
 //         this.pan = new DPanel (this.dC)
-//         this.pan.width = 670
-//         this.pan.height = 670
+//         this.pan.width = this._width
+//         this.pan.height = this._height
 //         this.pan.visible = this.active
 
+//         this.slider = new DSliderBig (this.pan, this._otstup, this._otstup, function(){self.width=this.value;}, 'width', 300, 800)
+//         this.slider.value = this._width
+//         this.slider1 = new DSliderBig (this.pan, this._otstup, this.slider.height + this._otstup * 2, function(){self.height=this.value;}, 'height', 300, 800)
+//         this.slider1.value = this._height
 
-//         this.panSG = new DPanel (this.pan, 0 , 0)
-//         this.panSG.width = 200
-//         this.panSG.height = 500
-
-//         this.panCont = new DPanel (this.pan, this.panSG.width + this._otstup , 0)
-//         this.panCont.width = 300
-//         this.panCont.height = 300
-
-//         this.slider = new DSliderBig (this.panSG, this._otstup, this._otstup, function(){self.valueSlider=this.value;})
-//         this.slider1 = new DSliderBig (this.panSG, this._otstup, this.slider.height + this._otstup * 2, function(){self.valueSlider1=this.value;})
-        
-//         // function(){self.lineSah=this.value;}
-
+//         this.funDrwgWG=null
+//         this.funxz=function(){
+//             if(this.funDrwgWG!=undefined)this.funDrwgWG(this._width,this._height)
+//         }
 
 //     }
 
@@ -290,20 +280,23 @@ export class DXFTP{
 //     }   
 //     get active() { return  this._active;} 
 
-//     set valueSlider(value) { 
-//         if(this.valueSlider!=value){
-//             this.valueSlider=value;
+//     set width(value) { 
+//         if(this._width!=value){
+//             this._width=value;
+//             this.pan.width=value
 //             this.slider.value = value;
+//            this.funxz();
 //         }
 //     }   
-//     get valueSlider() { return  this._valueSlider}
+//     get width() { return  this._width}
 
-
-//     set valueSlider1(value) { 
-//         if(this.valueSlider1!=value){
-//             this.valueSlider1=value;
-//             this.slider.value = value;
+//     set height(value) { 
+//         if(this._height!=value){
+//             this._height=value;
+//             this.pan.height=value
+//             this.slider1.value = value;
+//             this.funxz();
 //         }
 //     }   
-//     get valueSlider1() { return  this._valueSlider1}
+//     get height() { return  this._height}
 // }
