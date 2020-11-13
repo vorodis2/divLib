@@ -2,7 +2,7 @@
 import { DCont } from './DCont.js';
 
 export class DHole extends DCont {
-    constructor(dCont, _x, _y, _rect, _fun) {
+    constructor(dCont, _x, _y, _rect, _fun,_bool) {
         super(dCont);
 
         this.type="DHole";
@@ -34,15 +34,14 @@ export class DHole extends DCont {
       
         this.arrPoint=[];//кнопри
         this.arrBut=[];//кнопри
-        this.arrBut1=[];//грани
-        this.arrBut2=[];//грани
-
+        // this.arrBut1=[];//грани
+        // this.arrBut2=[];//грани
         this.arrCC=[]
 
         this._colorAct = dcmParam.color//"#ff0000";
         this._colorButton = dcmParam.color//"#ff0000";
         this._borderRadius=0;
-        this._lineSize=20;
+        this._lineSize=2;
         this.oca=undefined;
     
     
@@ -67,7 +66,7 @@ export class DHole extends DCont {
             this.button=new DButton(this.dCont, 0, 0, "", null);
             this.button.idArr=0;
             this.button.tip=2;
-            this.button.alpha=0.0;//25
+            this.button.alpha=0.0//25
             this.button.fun_mousedown=this.sobBut 
 
             this.canvas.rect
@@ -181,10 +180,10 @@ export class DHole extends DCont {
             }
 
 
-            this.button.x=this.rect.x;
-            this.button.y=this.rect.y;
-            this.button.width=this.rect.width;
-            this.button.height=this.rect.height;
+            this.button.x=this.rect.x - 10;
+            this.button.y=this.rect.y - 10;
+            this.button.width=this.rect.width + (2 * 10);
+            this.button.height=this.rect.height + (2 * 10);
 
             this.ctx.clearRect(0, 0, this._width+this._lineSize, this._height+this._lineSize);
             
@@ -238,7 +237,7 @@ export class DHole extends DCont {
                 if(bx)point.x=this.pointStart.x+self.point.x
                 if(by)point.y=this.pointStart.y+self.point.y 
                 if(point.x<0)point.x=0
-                if(point.y<0)point.y=0    
+                if(point.y<0)point.y=0
             }
             
             
@@ -259,7 +258,8 @@ export class DHole extends DCont {
                         return
                     }
                 }
-            }            
+            }    
+                 
             if(point1.by==true){
                 point1.y=point.y
                 if(point1.bxn>0){
@@ -335,12 +335,13 @@ export class DHole extends DCont {
 
         this.tip
         this.idArr
-        this.sobBut=function () {        
+        this.sobBut=function() {
             self.tip=this.tip;
             self.idArr=this.idArr;
 
             if(self.tip==2){
                 point=self.arrPoint[0]
+                console.log(point)
                 self.start(point)
                 return
             }
@@ -349,7 +350,7 @@ export class DHole extends DCont {
             point1=self.arrPoint[(this.idArr+1)%4]
             point2=self.arrPoint[(this.idArr+3)%4]
             point3=self.arrPoint[(this.idArr+2)%4]
-            
+
             if(point.x==point1.x){
                 point1.bx=true;
                 point1.by=false;
@@ -392,7 +393,7 @@ export class DHole extends DCont {
         this.scaleStart=1;
 
         var sx,sy,sNum,scale,scale1;
-        this.mousemove = function(e){       
+        this.mousemove = function(e){    
             if(dcmParam.mobile==false){
                 if(sp==undefined){
                     sp={
@@ -422,7 +423,7 @@ export class DHole extends DCont {
            // self.drag(sx/(scale*scale1),sy/(scale*scale1));                       
         }
 
-        this.start = function(obj){          
+        this.start = function(obj){   
             document.body.style.pointerEvents="none";  
             this.appPoint()           
             sp=undefined
@@ -431,6 +432,7 @@ export class DHole extends DCont {
                 this.pointStart.x=obj.x;
                 this.pointStart.y=obj.y; 
             }
+            
             this.scaleDrag.s=this.object.scale;
             this.testScale(this.object,this.scaleDrag)
 

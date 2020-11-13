@@ -37,6 +37,8 @@ export class DHoleOld extends DCont {
         this.arrBut1=[];//грани
         this.arrBut2=[];//грани
 
+        this.arrCC=[];
+
         this._colorAct = dcmParam.color//"#ff0000";
         this._colorButton = dcmParam.color//"#ff0000";
         this._borderRadius=0;
@@ -74,7 +76,10 @@ export class DHoleOld extends DCont {
             for (var i = 0; i < 4; i++) {
 
                 let dC=new DCont(this.dCont);
-                this.arrPoint.push(dC)
+                // this.arrPoint.push(dC);
+
+                this.arrPoint.push({x:0, y:0, scale:1})
+                this.arrCC.push(dC)
                 
                 button=new DButton(dC, 0, 0, "", null);
                 button.idArr=i;
@@ -180,6 +185,11 @@ export class DHoleOld extends DCont {
             this.button.width=this.rect.width;
             this.button.height=this.rect.height;
 
+            for (let i = 0; i < this.arrCC.length; i++) {
+                this.arrCC[i].x = this.arrPoint[i].x;
+                this.arrCC[i].y = this.arrPoint[i].y;
+            }
+
             this.ctx.clearRect(0, 0, this._width, this._height);
 
             var alpha=0.2;
@@ -237,7 +247,6 @@ export class DHoleOld extends DCont {
                 if(point.x<0)point.x=0
                 if(point.y<0)point.y=0    
             }
-            
             
             if(point1.bx==true){                
                 point1.x=point.x
@@ -320,7 +329,6 @@ export class DHoleOld extends DCont {
             this.fun("dragXY");
 
             this.drag() 
-
         }
 
 
