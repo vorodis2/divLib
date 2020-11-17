@@ -9,6 +9,7 @@ import { DThree} from './dCont/DThree.js';
 import { DButtonDrag, DAroundButton} from './dCont/DPlus.js';
 import {DDragPic} from './dCont/DDragPic.js';
 import {DHole} from './dCont/DHole.js';
+import {DHoleOld} from "./dCont/DHoleOld.js";
 
 global.DDragPic = DDragPic;
 global.DButton = DButton;
@@ -31,9 +32,7 @@ global.DAroundButton=DAroundButton
 
 global.DCM = DCM;
 global.DCont = DCont;
-
 //global.DAroundButton=DAroundButton
-
 global.DSettings=DSettings
 global.DParamObject=DParamObject
 
@@ -47,5 +46,6 @@ global.DHelp=DHelp
 global.DThree=DThree
 global.DGlow=DGlow
 global.DHole=DHole
+global.DHoleOld=DHoleOld
 
-export { DCont, DCM,DDragPic, DButton,DGlow,DComboBox, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree,DHole};
+export { DCont, DCM,DDragPic, DButton,DGlow,DComboBox, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree,DHole,DHoleOld};
