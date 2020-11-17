@@ -2,7 +2,6 @@
 <meta charset="UTF-8">
 <title>divLib</title>	
 <script src="build/divLib.js"></script>
-<script src="build/divLibPlus.js"></script>
 <script>
 	var trace = window.console.log.bind(window.console);
 	var array=[];
@@ -20,7 +19,7 @@
 			if(dinamik.type!=undefined)pObject.window.title=dinamik.type			
 			pObject.addObject(dinamik);
 		}
-		
+
 	}
 
 
@@ -33,8 +32,8 @@
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
-		// content.scale=0.65
-		content.position.x=320;
+		//content.scale=0.65
+		content.position.x=420;
 
 		
 
@@ -79,7 +78,7 @@
 		let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
 		pObject.addObject(c);
 
-		/*var rrr=new DCheckBox(scane,250,300,"gfh",function(){
+		var rrr=new DCheckBox(scane,250,300,"gfh",function(){
 			cd.visible=this.value
 			trace(this.index+"   "+this.value)
 		})	
@@ -89,16 +88,9 @@
 			
            
 
-		})*/
-		/*var compDev=new DCompDev(content,55,55,"test33",function(){			
-			
-           
-
-		}) 
-
-
-		pObject.addObject(compDev);*/
-			
+		})
+		pObject.addObject(b);
+//return				
 
 		//
 
@@ -121,14 +113,11 @@
 
 
 		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-		let dHole=new DHole(scane, 333,100,null,function(){
-
-		}, false)
-		pObject.addObject(dHole); 
+		/*let dHole=new DHole(scane, 333,100,null,function(){
+		})
+		pObject.addObject(dHole);
 		
-		return
-	
-
+		return*/
 
 		/////////////////////////////
 		
@@ -145,7 +134,7 @@
 		
 		plus(new DSlider(null,0,0,downMy));
 		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
-		plus(new DInput(null,0,0,"DInput",downMy));
+		plus(new DInput(null,0,0,"DInputttt",downMy));
 
 		array[array.length-1].obj.setNum(0.1);
 
@@ -260,7 +249,7 @@
 
 	function drahHH () {
 		for (var i = 0; i < array.length; i++) {
-
+			
 			array[i].height=array[i].obj.height+12;
 			array[i].panel.height=array[i].obj.height+6;
 			array[i].label.y=array[i].obj.height-8

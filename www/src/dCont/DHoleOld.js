@@ -350,13 +350,11 @@ export class DHoleOld extends DCont {
                 return
             }
 
-            
             point=self.arrPoint[this.idArr]
             point1=self.arrPoint[(this.idArr+1)%4]
             point2=self.arrPoint[(this.idArr+3)%4]
             point3=self.arrPoint[(this.idArr+2)%4]
 
-            
             if(point.x==point1.x){
                 point1.bx=true;
                 point1.by=false;
@@ -377,8 +375,6 @@ export class DHoleOld extends DCont {
             point2.bxn=point2.x-point.x;
             point2.byn=point2.y-point.y; 
 
-
-            
 
             self.start(point)
         }
