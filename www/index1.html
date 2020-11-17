@@ -1,0 +1,279 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>divLib</title>	
+<script src="build/divLib.js"></script>
+<script>
+	var trace = window.console.log.bind(window.console);
+	var array=[];
+	var pObject,content,dinamik
+	var ww=150
+	var dcmParam;
+	function downMy(s) {
+		//trace(this)
+		//setDin(this)			
+	}
+
+	function setDin(o) {
+		if(dinamik.uuid!=o.uuid){					
+			dinamik=o;			
+			if(dinamik.type!=undefined)pObject.window.title=dinamik.type			
+			pObject.addObject(dinamik);
+		}
+
+	}
+
+
+	function init () {
+		window.onresize = sizeWindow;
+		dinamik = dcmParam=new DCM();
+
+		scane= new DCont(document.body);
+		
+
+		scane= new DCont(document.body);
+		content= new DCont(scane);
+		//content.scale=0.65
+		content.position.x=420;
+
+		
+
+		
+
+
+		
+
+		this.bmpPic=new DBitmapData(2,2); 
+		var dragPic=new DDragPic(scane);
+	
+
+
+		//b.textAlign="center"//
+
+		
+		/*b.fun_mousedown=function(){
+			//dragPic.testDrag(20);
+			trace()
+			var o={sss:"dfgsdfgdsf"}
+			var l="resources/pic/3.png";            
+            dragPic.start(32, l, o);
+		};*/
+
+
+
+
+		pObject=new DParamObject(scane,2,2,function(){			
+			sizeWindow()
+		});
+
+
+
+		
+
+
+
+		let cd= new DCont(scane);
+		cd.x=250
+		cd.y=250
+		cd.visible=false;
+		let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
+		pObject.addObject(c);
+
+		var rrr=new DCheckBox(scane,250,300,"gfh",function(){
+			cd.visible=this.value
+			trace(this.index+"   "+this.value)
+		})	
+
+
+		var b= new DButton(content,55,0,"test33",function(){			
+			
+           
+
+		})
+		pObject.addObject(b);
+//return				
+
+		//
+
+
+
+		//var dHelp=new DHelp(content)
+
+
+		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
+
+		plus(new DButton(null,0,0,"ButtonLoad",function(base64){
+			trace(base64,this)
+		}));
+		array[array.length-1].obj.startFile()
+		
+
+		plus(new DPanel(null,0,0));
+
+		this._vusot=20
+
+
+		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+		/*let dHole=new DHole(scane, 333,100,null,function(){
+		})
+		pObject.addObject(dHole);
+		
+		return*/
+
+		/////////////////////////////
+		
+
+
+		plus(new DImage(null,0,0,"resources/pic/0.png"));
+		plus(new DLabel(null,0,0,"text My"));
+
+		plus(new DGlow(null,0,0));
+
+		//plus(new DHelp(null,0,0,"Buttonaasdasdasd ascasd","resources/pic/0.png"));
+
+		
+		
+		plus(new DSlider(null,0,0,downMy));
+		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
+		plus(new DInput(null,0,0,"DInputttt",downMy));
+
+		array[array.length-1].obj.setNum(0.1);
+
+		plus(new DTextArea(null,0,0,"DTextArea",downMy));
+		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
+		
+		
+		
+		plus(new DWindow(null,0,0,"DWindow",downMy));
+		plus(new DColor(null,0,0,"#0000ff",downMy));
+		plus(new DScrollBarV(content,677,133,downMy))
+		plus(new DScrollBarH(content,677,133,downMy))
+		var g= new DGallery(content,800,300,downMy);
+		var a=[]
+		for (var i = 0; i < 10; i++) {
+			a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
+		}
+		g.start(a);
+		g.kolII=2
+		plus(g);
+
+
+		new DButton(content,200,22,"ttt",function(){
+			var a=[]
+			var k=10+Math.random()*33;
+			for (var i = 0; i < k; i++) {
+				a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
+			}
+			g.start(a);
+		})
+
+
+
+
+		var bd= new DButtonDrag(content, 0, 0, "resources/pic/0.png", "resources/pic/1.png",function(){
+			trace(this.value)
+		});
+
+
+
+
+
+
+		var rrr=new DComboBox(null,0,0,["DComboBox","xz"],function(){
+			trace(this.index+"   "+this.value)
+		})		
+		rrr.array=["xz1","xz2","xz3","xz4"]
+		rrr.valueS=[1,"xz2",22,33]
+		rrr.value=33
+		plus(rrr)
+
+		var three=new DThree(null,0,0,function(){
+			
+		})
+		three.mouseUpFun=function(o){
+	        
+	        
+	        trace("mouseUpFun",o)
+	    }
+	    three.mouseOverFun=function(o){
+	        trace("mouseOverFun",o)
+	    }
+
+	    three.mouseOutFun=function(o){
+	    	trace("mouseOutFun",o)
+	    }
+		
+
+		plus(three)
+		pObject.addObject(array[array.length-1].obj);
+
+		three.setObj(g,"children","type")
+
+		/**/
+		
+	}
+		
+	function plus (obj) {		
+		var p=new DPanel(content,0,0);
+		var p1=new DPanel(p,ww,2);
+		p.width=ww*2+10;
+		p1.width=ww+6;
+		p.height=obj.height+12;
+		p1.height=obj.height+6;
+		obj.x=2;
+		obj.y=2;
+		p1.add(obj);
+		p.object=obj
+		p.panel=p1
+		obj.width=ww;
+
+		p.obj=obj;
+
+		var l1=new DLabel(p,24,2,obj.type);
+		var l=new DLabel(p,2,p1.height-8,"height:"+obj.height);
+		p.label=l
+		l.alpha=0.75;
+		l.fontSize=10;
+		array.push(p)
+
+
+		var b=new DButton(p,2,2,">",function(){
+			setDin(this.obj)
+		});
+		b.obj=obj;
+		b.width=16;
+		b.height=16;
+		b.color="#dddddd";
+
+		sizeWindow();
+	}
+
+	function drahHH () {
+		for (var i = 0; i < array.length; i++) {
+			
+			array[i].height=array[i].obj.height+12;
+			array[i].panel.height=array[i].obj.height+6;
+			array[i].label.y=array[i].obj.height-8
+			array[i].label.text="height:"+array[i].obj.height
+		}
+	}
+	
+
+	function sizeWindow () {
+		drahHH()			
+		var h = document.documentElement.clientHeight;
+		var y=36;
+		var x=0;
+		for (var i = 0; i < array.length; i++) {
+			array[i].y=y;
+			array[i].x=x;
+			y+=array[i].height+2;
+			if(y>h){
+				y=2;
+				x+=ww*2+12
+				array[i].y=y;
+				array[i].x=x;
+				y+=array[i].height+2;	
+			}
+		}
+	}
+</script></head><body onload="init()"></body></html>
