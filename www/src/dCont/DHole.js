@@ -23,7 +23,8 @@ export class DHole extends DCont {
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this); 
         this.dCont=new DCont(this)
         this.dCont1=new DCont(this.dCont)
-
+        
+        this._scale = dCont._scale;
         this._width=500;
         this._height=500; 
         this._boolFont=true;
@@ -32,6 +33,8 @@ export class DHole extends DCont {
 
         this._radius=10;
         this.radBut=this._radius*2; //20
+
+        this._alpha=0.2;
 
         this.arrPoint=[];//кнопри
         this.arrBut=[];//кнопри
@@ -70,8 +73,6 @@ export class DHole extends DCont {
             this.button.alpha=0.00//25
             this.button.fun_mousedown=this.sobBut 
 
-
-
             this.canvas.rect
 
             for (var i = 0; i < 4; i++) {
@@ -102,15 +103,12 @@ export class DHole extends DCont {
                 button.tip=1; 
                 button.width=button.height=this.radBut; 
                 button.fun_mousedown=this.sobBut
-                if (i % 2 == 0) this.arrBut.push(button)
-                else this.arrBut.unshift(button)        
-                
+                this.arrBut.push(button)    
             }   
         }
 
         
         this.drag=function () {
-            var whh = 4;
             if(this.rect.x<0)this.rect.x=0;
             if(this.rect.y<0)this.rect.y=0;
 
@@ -238,10 +236,9 @@ export class DHole extends DCont {
 
             this.ctx.clearRect(0, 0, this._width+this._lineSize, this._height+this._lineSize);
             
-            var alpha=0.2;
             let p=this._lineSize/2
             if(this._boolFont==true){
-                this.ctx.fillStyle ="rgba("+this._oca.r+", "+this._oca.g+", "+this._oca.b+", "+alpha+")";
+                this.ctx.fillStyle ="rgba("+this._oca.r+", "+this._oca.g+", "+this._oca.b+", "+this._alpha+")";
                 // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 this.ctx.fillRect(p, p, this.rect.x, this._height);
                 this.ctx.fillRect(this.rect.x + p, p, this.rect.width, this.rect.y);
@@ -444,8 +441,8 @@ export class DHole extends DCont {
 
         this.mousedown = function(e) {
             var cnv = self.canvas.getBoundingClientRect();
-            var x = e.clientX - cnv.left - self.arrPoint[0].x + self.radBut/2 - self._lineSize/2;
-            var y = e.clientY - cnv.top - self.arrPoint[0].y + self.radBut/2 - self._lineSize/2;
+            var x = (e.clientX/self._scale - cnv.left/self.scale - self.arrPoint[0].x + self.radBut/2 - self._lineSize/2);
+            var y = (e.clientY/self._scale - cnv.top/self.scale - self.arrPoint[0].y + self.radBut/2 - self._lineSize/2);
 
             var idArr;
 
@@ -469,7 +466,7 @@ export class DHole extends DCont {
                 self.start(point)
                 return;
             }
-
+            
             point=self.arrPoint[self.idArr]
             point1=self.arrPoint[(self.idArr+1)%4]
             point2=self.arrPoint[(self.idArr+3)%4]
@@ -556,7 +553,7 @@ export class DHole extends DCont {
                 this.pointStart.y=obj.y; 
             }
             
-            this.scaleDrag.s=this.object.scale;
+            this.scaleDrag.s=this._scale;
             this.testScale(this.object,this.scaleDrag)
 
             if(dcmParam.mobile==false){                 
@@ -570,7 +567,7 @@ export class DHole extends DCont {
             if(c.scale)o.s*=c.scale;
             if(c.parent){
                 self.testScale(c.parent,o);
-            }
+            }   
         }
         this.scaleDrag={s:1}
 
@@ -717,13 +714,32 @@ export class DHole extends DCont {
     }
     get boolFont() { return this._boolFont; }
 
-   /* set radius(value) {
-        if (this._radius != value) {
-            this._radius = value; 
+    set alpha(value) {
+        if (this._alpha != value) {
+            this._alpha = value;
             this.drag();
+        }
+    }
+
+    get alpha() {return this._alpha}
+
+    set radius(value) {
+        if (this._radius != value) {
+            this._radius = value;
+            this.radBut = this._radius*2
+            
+            for (let i = 0; i < 4; i++) {
+                this.arrBut[i].width = this.radBut;
+                this.arrBut[i].height = this.radBut;
+
+                this.arrBut[i].x = -this.radBut/2
+                this.arrBut[i].y = -this.radBut/2
+            }
+
+            this.drag()
         }           
     }
-    get radius() { return this._radius; }*/
+    get radius() { return this._radius; }
 
     set width(value) {
         if (this._width != value) {

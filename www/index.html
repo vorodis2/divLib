@@ -20,7 +20,7 @@
 			if(dinamik.type!=undefined)pObject.window.title=dinamik.type			
 			pObject.addObject(dinamik);
 		}
-
+		
 	}
 
 
@@ -33,7 +33,7 @@
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
-		//content.scale=0.65
+		// content.scale=0.65
 		content.position.x=320;
 
 		
@@ -123,7 +123,7 @@
 		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 		let dHole=new DHole(scane, 333,100,null,function(){
 
-		}, true)
+		}, false)
 		pObject.addObject(dHole); 
 		
 		return
@@ -260,7 +260,7 @@
 
 	function drahHH () {
 		for (var i = 0; i < array.length; i++) {
-			
+
 			array[i].height=array[i].obj.height+12;
 			array[i].panel.height=array[i].obj.height+6;
 			array[i].label.y=array[i].obj.height-8

@@ -2136,7 +2136,6 @@ export class DPanel extends DCont {
 
 
 
-
 	set activMouse(value) {		
 		if(this._activMouse!=value){
 		    this._activMouse = value;		    
