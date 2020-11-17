@@ -6,7 +6,7 @@
 <script>
 	var trace = window.console.log.bind(window.console);
 	var array=[];
-	var pObject,content,dinamik
+	var pObject,content,dinamik, testContent
 	var ww=150
 	var dcmParam;
 	function downMy(s) {
@@ -33,7 +33,7 @@
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
-		// content.scale=0.65
+		content.scale=0.65
 		content.position.x=320;
 
 		
@@ -119,9 +119,12 @@
 
 		this._vusot=20
 
-
 		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-		let dHole=new DHole(scane, 333,100,null,function(){
+		let dHole=new DHole(content, 333,100,null,function(){
+
+		}, true)
+
+		let dHoleNotMy=new DHole(content, 999,100,null,function(){
 
 		}, false)
 		pObject.addObject(dHole); 
