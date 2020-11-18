@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="divLib.js"></script>
+    <script type="module">
+        import {CamZI} from "./CamZI.js"
+
+        var trace = window.console.log.bind(window.console);
+        var dCont,scane,aa,dcmParam,camZI
+        var aa=[]
+        function open (url) {
+            
+            for(var i=0;i<aa.length;i++){
+                
+                if(aa[i].text==url)aa[i].alpha=0.5
+                else aa[i].alpha=1
+
+            }
+
+            camZI.load(url)
+
+	    }
+        
+        function init() {
+            var otstup=2      
+            var scale = 0.5   
+            dcmParam=new DCM();
+            scane= new DCont(document.body);
+            dCont = new DCont(scane);
+            var yy=otstup
+            aa.push(new DButton(scane,otstup,yy,"images.jpg",function(){open(this.text)}))
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"img1.jpg",function(){open(this.text)}))
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"0.png",function(){open(this.text)}))
+
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"test-image-1.jpg",function(){open(this.text)}))
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"test-image-2.jpg",function(){open(this.text)}))
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"test-image-3.jpg",function(){open(this.text)}))
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"test-image-4.jpg",function(){open(this.text)}))
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"test-image-5.png",function(){open(this.text)}))
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"test-image-6.jpg",function(){open(this.text)}))
+
+            yy+=32+otstup
+            yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"Glue",function(){
+                let b = camZI.isSI()
+                trace(b)
+            }))
+            yy+=32+otstup
+
+            camZI=new CamZI(function(s,p,p1){
+                trace(s,p,p1);
+            })
+            dCont.div.appendChild(camZI.bmp.canvas)
+            
+            camZI.bmp.canvas.style.position = 'fixed';
+		    camZI.bmp.canvas.style.top = '0px';
+		    camZI.bmp.canvas.style.left = '0px';
+            dCont.scale=scale
+            dCont.x=300
+            open(aa[0].text)
+        }
+        
+        setTimeout(function(){init()},100)
+    </script>
+</head>
+<body">  
+</body>
+</html>
