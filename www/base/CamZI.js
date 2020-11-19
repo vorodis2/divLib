@@ -11,6 +11,10 @@ export class CamZI {
             self.fun("complite");
         });
 
+        this.bmpDist = new DBitmapData(770, 385,null,function(){
+            self.fun("complite dist");
+        });
+
         this.load=function(url){
             this.bmp.load(url, true);
         }
@@ -59,6 +63,63 @@ export class CamZI {
             return true
         }
 
+        this.createTest = function() {
+            const w = this.bmp._width;
+ 
+            this.fish2Sphere(0, w);
+            this.fish2Sphere(w/2, w);
+        }
+
+        this.fish2Sphere = function(minX, maxX) {
+
+            const aperture = 195 * Math.PI / 180;
+
+            const wDist = this.bmp._width;
+            const hDist = this.bmp._height;
+
+            const wSrc = maxX;
+            const hSrc = hDist;
+ 
+            for (let y = hSrc; y > 0; y--) {
+                const yNorm = this.lerp(-1, 1, 0, hDist, y);
+                
+                for (let x = minX; x < wSrc; x++) {
+                    const xNorm = this.lerp(-1, 1, 0, wDist, x);
+                    
+                    const longitude = xNorm * Math.PI;
+                    const latitude = yNorm * Math.PI/2;
+
+                    const px = Math.cos(latitude) * Math.cos(longitude);
+                    const py = Math.cos(latitude) * Math.sin(longitude);
+                    const pz = Math.sin(latitude);
+
+                    const pxy = Math.sqrt(Math.pow(px, 2) + Math.pow(pz, 2));
+                    const r = 2 * Math.atan2(pxy, py) / aperture;
+                    const theta = Math.atan2(pz, px);
+
+                    const xSrcNorm = r * Math.cos(theta);
+                    const ySrcNorm = r * Math.sin(theta);
+
+                    const xSrc = this.lerp(0, wSrc, -1, 1, xSrcNorm);
+                    const ySrc = this.lerp(0, hSrc, -1, 1, ySrcNorm);
+
+                    const xRect = Math.min(wSrc - 1, Math.floor(xSrc));
+                    const yRect = Math.min(hSrc - 1, Math.floor(ySrc));
+                    
+
+                    this.bmpDist.setPixel(xRect, yRect, [...this.bmp.getPixel(x, y)]);
+                }
+            }
+
+            this.bmpDist.upDate();
+        }
+
+        this.lerp = function(y0, y1, x0, x1, x) {
+            const m = (y1 - y0) / (x1 - x0);
+            const b = y0;
+            return m * (x - x0) + b;
+        }
+
 
         var arr=[]
         var c,n,n1;
@@ -72,7 +133,7 @@ export class CamZI {
 
                 arr.length=0;
                 n=Math.abs(j/jj*2-1)
-                n1=Math.sin(n*Math.PI/2)
+                n1=Math.cos(n*Math.PI/2)
 
                 for (let i = 0; i < ii; i++) {
                     c=this.bmp.getPixel(i, j);
@@ -93,9 +154,9 @@ export class CamZI {
             //this.bmp.ctx.clearRect(0, 0, this.bmp.canvas.width, this.bmp.canvas.height);
             //this.bmp.ctx.fillStyle = '#568777'
             //this.bmp.ctx.fillRect(0, 0, 200, 200);
-            
-
         }
+
+
         var aa,aa1
         this.create1 = function(arr,num,_j) {
             
@@ -112,6 +173,8 @@ export class CamZI {
 
             
         }
+
+
         this.debag=undefined
         var a1=[]
         var a2=[]
@@ -159,10 +222,6 @@ export class CamZI {
             },3000)*/
 
         }
-
-        
-      
-
     }
 }
 

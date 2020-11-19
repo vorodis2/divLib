@@ -9,7 +9,7 @@
         import {CamZI} from "./CamZI.js"
 
         var trace = window.console.log.bind(window.console);
-        var dCont,scane,aa,dcmParam,camZI,ddCont,aaaa,wh
+        var dCont,scane,aa,dcmParam,camZI,ddCont,aaaa,wh,dCont2
         var aa=[]
         function open (url) {
             
@@ -26,29 +26,32 @@
         
         function init() {
             var otstup=2      
-            var scale = 0.5   
+            var scale = 1   
             dcmParam=new DCM();
             scane= new DCont(document.body);
             dCont = new DCont(scane);
+            dCont2 = new DCont(scane);
             var yy=otstup
-            aa.push(new DButton(scane,otstup,yy,"images.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"img1.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"0.png",function(){open(this.text)}))
+            // aa.push(new DButton(scane,otstup,yy,"images.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"img1.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"0.png",function(){open(this.text)}))
 
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-1.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-2.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-3.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-4.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-5.png",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-6.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"test-image-1.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"test-image-2.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"test-image-3.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"test-image-4.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"test-image-5.png",function(){open(this.text)}))
+            // yy+=32+otstup
+            // aa.push(new DButton(scane,otstup,yy,"test-image-6.jpg",function(){open(this.text)}))
+            // yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"image-good-2.png",function(){open(this.text)}))
 
             yy+=32+otstup
             yy+=32+otstup
@@ -62,20 +65,35 @@
                 
             }))
             yy+=32+otstup
+            aa.push(new DButton(scane,otstup,yy,"createTest",function(){
+                let b = camZI.createTest()
+            }))
+            yy+=32+otstup
             
             camZI=new CamZI(function(s,p,p1){
                 trace(s,p,p1);
             })
-            dCont.div.appendChild(camZI.bmp.canvas)
+            dCont.div.appendChild(camZI.bmp.canvas);
+            dCont2.div.appendChild(camZI.bmpDist.canvas);
             
-            scane.add(camZI.dCont)
+            scane.add(camZI.dCont2)
+            scane.add(camZI.dCont);
             camZI.debag=dddddd;
 
             camZI.bmp.canvas.style.position = 'fixed';
 		    camZI.bmp.canvas.style.top = '0px';
-		    camZI.bmp.canvas.style.left = '0px';
-            dCont.scale=scale
-            dCont.x=300
+            camZI.bmp.canvas.style.left = '0px';
+            
+            camZI.bmpDist.canvas.style.position = 'fixed';
+		    camZI.bmpDist.canvas.style.top = '0px';
+            camZI.bmpDist.canvas.style.left = '0px';
+
+            dCont2.scale=scale;
+            dCont2.x=200;
+            dCont2.y=400;
+
+            dCont.scale=scale;
+            dCont.x=200;
             open(aa[0].text)
 
             init2();
