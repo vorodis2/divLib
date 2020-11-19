@@ -3059,10 +3059,12 @@ export class DSliderBig extends DCont {
 		if(this._width!=v){
 			this._width = v;				
 			this.slider.width=(this._width-dcmParam._otstup)*0.7
+			this.label.width=this.slider.width
 			this.input.width=(this._width-dcmParam._otstup)*0.3-4
 			this.input.x=this.slider.width+dcmParam._otstup;
 
 			this.label2.x=this.input.x-4*this.label2.text.length;
+
 		}		
 	}	
 	get width() { return  this._width;}

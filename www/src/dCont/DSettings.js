@@ -295,6 +295,16 @@ export function DSettings (_cont) {
 		}
 	};
 
+
+	this.isComp=function(s,s1){		
+		for (var i = 0; i < this.arrComp.length; i++) {
+			if(this.arrComp[i].type==s){
+				if(this.arrComp[i].name==s1)return true
+			}		
+		}
+		return false
+	}
+
 	var bbb;
 	
 	//Скрытие компонентов.
@@ -342,7 +352,6 @@ export function DSettings (_cont) {
 
 	this.object;
 	this.setObj = function (_obj) {
-
 		this.object = _obj;
 		this._value = _obj;
 		this.korektObj();
@@ -351,6 +360,8 @@ export function DSettings (_cont) {
 	};
 
 	this.korektObjParam = function () {
+
+
 		if (this.object != undefined && this.object.param != undefined) {
 			for (var i = 0; i < this.arrComp2.length; i++) {
 				if (this.object.param[this.arrComp2[i].param] != undefined) {
