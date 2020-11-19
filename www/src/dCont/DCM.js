@@ -3768,11 +3768,6 @@ export class DBitmapData  {
 	    };
 
 
-
-
-
-
-
 	    this.getData = function () {        
 	        return this.canvas.toDataURL();
 	    };

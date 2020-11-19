@@ -6,109 +6,79 @@
     <title>Document</title>
     <script src="divLib.js"></script>
     <script type="module">
-        import {CamZI} from "./CamZI.js"
+        import {CamZI} from "./CamZI.js";
+        import {Debag} from "./Debag.js";
 
         var trace = window.console.log.bind(window.console);
-        var dCont,scane,aa,dcmParam,camZI,ddCont,aaaa,wh
-        var aa=[]
-        function open (url) {
-            
+        var dCont, scane, ddCont, dCont2, dContBtn;
+        var dcmParam, camZI;
+        var aa=[];
+
+        async function open (url) {
             for(var i=0;i<aa.length;i++){
-                
-                if(aa[i].text==url)aa[i].alpha=0.5
-                else aa[i].alpha=1
-
+                if(aa[i].text==url)aa[i].alpha=0.5;
+                else aa[i].alpha=1;
             }
-
-            camZI.load(url)
-
+            camZI.load(url);
 	    }
         
         function init() {
-            var otstup=2      
-            var scale = 0.5   
+            var otstup=2;     
+            var scale = 1;
             dcmParam=new DCM();
             scane= new DCont(document.body);
             dCont = new DCont(scane);
-            var yy=otstup
-            aa.push(new DButton(scane,otstup,yy,"images.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"img1.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"0.png",function(){open(this.text)}))
+            dContBtn = new DCont(document.body);
+            ddCont=new DCont(scane);
 
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-1.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-2.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-3.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-4.jpg",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-5.png",function(){open(this.text)}))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"test-image-6.jpg",function(){open(this.text)}))
+            camZI=new CamZI(function(s,p,p1){trace(s,p,p1)});
+            camZI.debag = new Debag(ddCont, otstup, 600, 10);
+            camZI.debag1 = new Debag(ddCont, otstup, 700, 10);
 
-            yy+=32+otstup
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"isZI",function(){
-                let b = camZI.isSI()
-                trace(b)
-            }))
-            yy+=32+otstup
-            aa.push(new DButton(scane,otstup,yy,"create",function(){
-                let b = camZI.create()
+            var yy=otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"path.jpg",function(){open(this.text)}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"norm.jpg",function(){open(this.text)}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"mini.jpg",function(){open(this.text)}));
+            yy+=32*2+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"isZI",function(){camZI.isSI()}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"create",function(){camZI.create()}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"normal",function(){
+                let ar;
                 
-            }))
-            yy+=32+otstup
+                ar = camZI.getArr(0, 0, camZI.bmp._width/2, camZI.bmp._height);
+                camZI.mirroX(0, 0, ar, true);
+                ar = camZI.getArr(0, 0, camZI.bmp._width/2, camZI.bmp._height);
+                camZI.mirroY(0, 0, ar, true);
+            }));
+            yy+=32+otstup;
             
-            camZI=new CamZI(function(s,p,p1){
-                trace(s,p,p1);
-            })
-            dCont.div.appendChild(camZI.bmp.canvas)
-            
-            scane.add(camZI.dCont)
-            camZI.debag=dddddd;
+            dCont.div.appendChild(camZI.bmp.canvas);
+            scane.add(camZI.dCont);
 
             camZI.bmp.canvas.style.position = 'fixed';
 		    camZI.bmp.canvas.style.top = '0px';
-		    camZI.bmp.canvas.style.left = '0px';
-            dCont.scale=scale
-            dCont.x=300
-            open(aa[0].text)
-
-            init2();
-        }
-        function init2() {
-            aaaa=[]
-            
-            ddCont=new DCont(scane)            
-            wh=10
-            ddCont.x=255
-            ddCont.y=55 
-            
-        }
+            camZI.bmp.canvas.style.left = '0px';
         
-        function dddddd(arr) {
-           
-            for (let i = 0; i < aaaa.length; i++) {
-                aaaa[i].visible=false
-            }
-            for (let i = 0; i < arr.length; i++) {
-                if(aaaa[i]==undefined){
-                    aaaa[i]=new DPanel(ddCont,wh*i,0)
-                    aaaa[i].width=wh
-                    aaaa[i].height=wh
-                }
-                aaaa[i].visible=true;
-                let c="#"+dcmParam.compToHex(arr[i][0])+dcmParam.compToHex(arr[i][1])+dcmParam.compToHex(arr[i][2])//Math.floor(arr[i][0] / (256 * 256))//parseInt(arr[i][0], 16)//+parseInt(arr[i][1], 16)+parseInt(arr[i][2], 16)
-                aaaa[i].color=c
-            }
+            dCont.scale=scale;
+            dCont.x=200;
+
+            open(aa[0].text);
+
+            // setTimeout(function(){
+                // let ar;
+                
+                // ar = camZI.getArr(0, 0, camZI.bmp._width/2, camZI.bmp._height);
+                // camZI.mirroX(0, 0, ar, true);
+                // ar = camZI.getArr(0, 0, camZI.bmp._width/2, camZI.bmp._height);
+                // camZI.mirroY(0, 0, ar, true);
+            // }, 50)
         }
 
-
-        setTimeout(function(){init()},100)
+        setTimeout(function(){init()},100);
     </script>
 </head>
 <body">  
