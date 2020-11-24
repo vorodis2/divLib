@@ -2136,7 +2136,7 @@ export class DCheckBox extends DCont {
 	get fontSize() { return  this._fontSize;}
 
 	set value(v) {
-		if(this._value!=v){
+		if(this._value!=v && this._activMouse != false){
 			this._value = v;
 	   		this.reDrag()
 		}
@@ -2157,10 +2157,16 @@ export class DCheckBox extends DCont {
 		    this._activMouse = value;		    
 		    if(value==true){
 				this.alpha=1;
-				this.object.style.pointerEvents=null;	
+				this.label.div.style.cursor="null";
+				this.panel3.div.style.cursor="null";
+			    this.image0.div.style.cursor="null";
+				this.image1.div.style.cursor="null";
 		    }else{
 		    	this.alpha=0.7;		    	
-		    	this.object.style.pointerEvents="none";	
+				this.label.div.style.cursor="auto";
+				this.panel3.div.style.cursor="auto";
+			    this.image0.div.style.cursor="auto";
+				this.image1.div.style.cursor="auto";
 		    }		        
 		}		
 	}
