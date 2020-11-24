@@ -4,6 +4,7 @@ export class Debag {
         this._x = _x;
         this._y = _y;
         this._wh = _wh;
+        this.wh = _wh;
 
         this.dCont = new DCont(dCont);
         
@@ -14,9 +15,15 @@ export class Debag {
 
         this.dCont.y = this._y;
         this.dCont.x = this._x;
+        
+        this.panel=new DPanel(this.dCont, 0, -this.wh);
+        this.panel.width=this._wh;
+        this.panel.height=this._wh;
+        this.panel.color="#ff0000";
+        this.panel.visible=false
 
         this.setArr = function(arr, isNeedReverse) {
-
+            this.panel.visible=false
             for (let i = 0; i < this.arr.length; i++) {
                 this.arr[i].visible=false;
             }
@@ -31,6 +38,11 @@ export class Debag {
                 let c="#"+dcmParam.compToHex(arr[i][0])+dcmParam.compToHex(arr[i][1])+dcmParam.compToHex(arr[i][2]);
                 this.arr[i].color=c;
             }
+        }
+
+        this.setNum = function(x) {
+            this.panel.visible=true
+            this.panel.x=x;
         }
     }
 }
