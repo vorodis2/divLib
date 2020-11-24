@@ -675,16 +675,16 @@ export function DSettings (_cont) {
 		
 	
 
-		// if (_type == 'PLButton') {
-		// 	component = new PLButton(this.content, 1, 0, '', this.down);
-		// 	component.setStile(1, 64, 64);
-		// 	if (_param != undefined) {
-		// 		if (_param.title != undefined) component.text = _param.title;
-		// 		if (_param.link != undefined) component.loadImeg(_param.link);
-		// 		if (_param.file != undefined) component.startFile('.jpg, .png, .bmp, .jpeg');
-		// 	}
-		// 	component.width = this._width - 2;
-		// }
+		if (_type == 'DButton') {
+			component = new DButton(this.content, 1, 0, '', this.down);
+			//component.setStile(1, 64, 64);
+			if (_param != undefined) {
+				if (_param.title != undefined) component.text = _param.title;
+				if (_param.link != undefined) component.loadImeg(_param.link);
+				if (_param.file != undefined) component.startFile('.jpg, .png, .bmp, .jpeg');
+			}
+			component.width = this._width - 2;
+		}
 
 		
 

@@ -33,7 +33,7 @@
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
-		content.scale=0.65
+		//content.scale=0.65
 		content.position.x=320;
 
 		
@@ -67,7 +67,7 @@
 		});
 
 
-
+		trace("this.pObject.usingShablon",pObject.usingShablon)
 		
 
 
@@ -105,6 +105,46 @@
 
 
 		//var dHelp=new DHelp(content)
+		// var ccld = new DButton(content, 100, 200, "олд", function(){
+		// 	pObject.addObject(this)
+
+		// }) 
+
+
+		var ccOld = new DCheckBoxOld(content, 100, 100, "олд", function(){
+			pObject.addObject(this)
+
+		})
+
+		var cc1 = new DPanel(content, 100, 150) 
+		
+		
+
+
+		var cc = new DCheckBox(content, 100, 150, "нев", function(){
+			pObject.addObject(this)
+		}, "resources/pic/cat1.png") 
+		pObject.addObject(cc);	
+
+		cc1.width=cc.width
+		cc1.height=cc.height
+
+
+		var c1 = new DCheckBox(content, 100, 200, "нев", function(){
+			pObject.addObject(this)
+		}, "resources/pic/3.png", "resources/pic/2.png") 
+		pObject.addObject(c1);	
+
+		// var ii = new DImage(content, 400, 100, "resources/pic/2.png") 
+		// pObject.addObject(ii);	
+
+		// var i1 = new DImage(content, 600, 100, "resources/pic/3.png") 
+		// pObject.addObject(i1);	
+
+
+		// var p1 = new DPanel(content, 250, 100) 
+		// pObject.addObject(p1);	
+		return
 
 
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
@@ -119,17 +159,20 @@
 
 		this._vusot=20
 
+
+
 		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-		let dHole=new DHole(content, 333,100,null,function(){
+		/*let dHole=new DHole(content, 333,100,null,function(){
 
 		}, true)
 
 		let dHoleNotMy=new DHole(content, 999,100,null,function(){
 
 		}, false)
-		pObject.addObject(dHole); 
+		pObject.addObject(dHole);*/ 
 		
-		return
+
+		
 	
 
 
