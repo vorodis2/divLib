@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WASM Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    
+    <h1>WASM Demo</h1>
+
+    <h2>C++</h2>
+    <input id="inp1" type="text">
+    <input type="button" value="Button" onclick="alert(check(wasm.fib, inp1.value, 'c++'))"> 
+    
+    <h2>JS</h2>
+    <input id="inp2" type="text">
+    <input type="button" value="Button" onclick="alert(check(fib, inp2.value, 'js'))">    
+
+    <script src="script.js"></script>
+</body>
+</html>
