@@ -11,7 +11,7 @@ export class CamZI {
         });
 
         
-        this.load = async function(url){
+        this.load = function(url){
             this.bmp.load(url, true);
             this.url = url;
         }
@@ -103,9 +103,10 @@ export class CamZI {
         }
 
 
-        this.normal=function(){
+        this.normal=function(wh){
             let ar;                
-            ar = this.getArr(0, 0, this.bmp._width/2, this.bmp._height);
+            ar = this.getArr(0, 0, wh, wh);
+            
             this.mirroX(ar);
             this.mirroY(ar); 
             this.setArr(0, 0, ar);
@@ -148,9 +149,18 @@ export class CamZI {
        
 
         this.sahWH=100
-
+        var trace = window.console.log.bind(window.console);
         
         this.create = function() {
+
+            /*if (this.bmp._height % 2 !== 0) this.bmp.height = this.bmp._height - 1;
+            if (this.bmp._width % 4 !== 0) {
+                let it = this.bmp._width;
+                while (it % 4 !== 0) {
+                    it -= 1;
+                }
+                this.bmp.width = it;
+            }*/
 
             this.aaxz=[]
             this.aaxzIJ=[[],[]]
@@ -162,22 +172,29 @@ export class CamZI {
                     this.aaxz[sss].ii=i;
                     this.aaxz[sss].jj=j;
                     this.aaxz[sss].ot=this._ot;
-                    this.aaxzIJ[j][i]=this.aaxz[sss]
+                    this.aaxzIJ[j][i]=this.aaxz[sss];
                     sss++;
                     
                 }
             }
+            var wh=Math.floor(this.bmp._height/2)
+            if(wh>Math.floor(this.bmp._width/4))wh=Math.floor(this.bmp._width/4)
+            
+            
+            
+            this.normal(wh*2)
 
-            this.normal()
+
             var sss=0
-            var sahWH=(this.bmp._height/2)-this._ot
+            var sahWH=wh-this._ot
             this.sahWH=sahWH
+           // trace(wh,this.bmp._width,this.bmp._height,sahWH)
+           
             for (let j= 0; j < 2; j++) {
                 for (let i = 0; i < 4; i++) {
                     this.aaxz[sss].wh=sahWH;
                     this.aaxz[sss].upArr()
                     sss++
-
                 }                 
             }
             //////////////////////////////
