@@ -40,6 +40,8 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	this.typeNotArray = null;
 	this.typeYesArray = null;
 
+	this.usingShablon=[];
+
 	this.hhhhh=this._height
 
 	if (this._bWindow) {
@@ -88,9 +90,15 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 
 	this.addObject = function (obj, tipRide) {
 		
+
 		if (tipRide != undefined) this.tipRide = tipRide;
 		this.oP = obj;
 		this.oShablon = [];
+
+		if(this.usingShablon.length!=0){//Шаблон от юзера
+			this.creatUsingShablon();
+			return
+		}
 
 		// for( item of this.arrType) this.oShablon[item] = [];
 		// замена для минимизации
@@ -435,6 +443,8 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	};
 
 	this.korektObjParamMinMax = function () {
+		if(this.usingShablon.length!=0)return
+
 		if (this.object != undefined && this.object.param != undefined) {
 			for (var i = 0; i < this.arrComp2.length; i++) {
 				if (this.object.param[this.arrComp2[i].param] != undefined) {
@@ -471,6 +481,7 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 
 	var zz = 1;
 	this.diapozon = function (_num) {
+		if(this.usingShablon.length!=0)return
 		this.pointObject.min = 0;
 		this.pointObject.max = 10;
 		for (var i = 1; i < this.arrayNum.length - 1; i++) {
@@ -494,7 +505,8 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 
 	this.omm;
 	this.funDragSlider = function (slider) {		
-		if (!slider) return;	
+		if (!slider) return;
+		if(this.usingShablon.length!=0)return	
 		
 		if (slider.type == 'DSliderBig') {
 			if (slider.isDinamMinMax === false) return;
@@ -640,8 +652,7 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 				}
 			}
 			o.arrComp=aa;
-		}
-		
+		}	
 		
 		o.param = this.oP;
 		o.fun = this.funDrag;
@@ -650,6 +661,26 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 		if(this.funKorektObj!=undefined)this.funKorektObj(o);
 		this.setObj(o);
 	};
+
+
+	//от шаблона юзера
+	this.creatUsingShablon= function () {
+		for (var i = 0; i < this.usingShablon.length; i++) {
+			if(this.isComp(this.usingShablon[i].tipe,this.usingShablon[i].name)==false){
+				this.addComponent(this.usingShablon[i].tipe, this.usingShablon[i].name);
+			}
+		}
+		var o = {};
+		o.arrComp = this.usingShablon;
+		
+		o.param = this.oP;
+		o.fun = this.funDrag;
+		o.funComplit = this.funComplit;
+		if(this.funKorektObj!=undefined)this.funKorektObj(o);
+		this.setObj(o);
+	}
+
+
 
 	this.funWH = function () {
 		if (this.w) this.w.width = this.width;

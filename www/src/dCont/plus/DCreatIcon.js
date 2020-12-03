@@ -932,26 +932,20 @@ export class DCDrow {
 
         this.get=function(type,p,p1,p2,param,param1,param2){
             res=null
-            // trace(res)
             for (var i = 0; i < this.arrayCehs.length; i++) {
-                trace(this.arrayCehs[i].active)
-                trace(this.arrayCehs[i])
                 if(this.arrayCehs[i].active==false){
-                    trace('active')
                     this.arrayCehs[i].active=true;
                     this.array.push(this.arrayCehs[i]);
                     res=this.arrayCehs[i]
                     break
                 }
             }
-            // trace(res)
             if(res==null){
                 this.arrayCehs.push(new DCBody());
                 this.arrayCehs[this.arrayCehs.length-1].idArr= this.arrayCehs.length-1;
                 this.array.push(this.arrayCehs[this.arrayCehs.length-1]);
                 res= this.arrayCehs[this.arrayCehs.length-1];   
             }
-            // trace(res)
             if(type!=undefined){
                 res.type=type;
                 if(p)res.position.setPoint(p)
@@ -962,7 +956,6 @@ export class DCDrow {
                 if(param1)res.param1=param1
                 if(param2)res.param2=param2     
             }
-            // trace(res)
             return res
         }    
 

@@ -295,6 +295,16 @@ export function DSettings (_cont) {
 		}
 	};
 
+
+	this.isComp=function(s,s1){		
+		for (var i = 0; i < this.arrComp.length; i++) {
+			if(this.arrComp[i].type==s){
+				if(this.arrComp[i].name==s1)return true
+			}		
+		}
+		return false
+	}
+
 	var bbb;
 	
 	//Скрытие компонентов.
@@ -342,7 +352,6 @@ export function DSettings (_cont) {
 
 	this.object;
 	this.setObj = function (_obj) {
-
 		this.object = _obj;
 		this._value = _obj;
 		this.korektObj();
@@ -351,6 +360,8 @@ export function DSettings (_cont) {
 	};
 
 	this.korektObjParam = function () {
+
+
 		if (this.object != undefined && this.object.param != undefined) {
 			for (var i = 0; i < this.arrComp2.length; i++) {
 				if (this.object.param[this.arrComp2[i].param] != undefined) {
@@ -664,16 +675,16 @@ export function DSettings (_cont) {
 		
 	
 
-		// if (_type == 'PLButton') {
-		// 	component = new PLButton(this.content, 1, 0, '', this.down);
-		// 	component.setStile(1, 64, 64);
-		// 	if (_param != undefined) {
-		// 		if (_param.title != undefined) component.text = _param.title;
-		// 		if (_param.link != undefined) component.loadImeg(_param.link);
-		// 		if (_param.file != undefined) component.startFile('.jpg, .png, .bmp, .jpeg');
-		// 	}
-		// 	component.width = this._width - 2;
-		// }
+		if (_type == 'DButton') {
+			component = new DButton(this.content, 1, 0, '', this.down);
+			//component.setStile(1, 64, 64);
+			if (_param != undefined) {
+				if (_param.title != undefined) component.text = _param.title;
+				if (_param.link != undefined) component.loadImeg(_param.link);
+				if (_param.file != undefined) component.startFile('.jpg, .png, .bmp, .jpeg');
+			}
+			component.width = this._width - 2;
+		}
 
 		
 

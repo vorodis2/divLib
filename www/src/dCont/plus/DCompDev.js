@@ -39,7 +39,6 @@ export class DCompDev extends DCont{
         this.dCont.y=this.panBut.height + this._otstup*2;
 
         this.sob=function(s,p,p1){
-            trace(s,p,p1)
             if(s=="index")self.index=p
         }
 
@@ -69,7 +68,6 @@ export class DCompDev extends DCont{
         this.button.width=this.button.height=28
 
         this.reDrag=function(){
-            // trace(w,h)
             this.wind.width=this._width+this._otstup*2
             this.wind.height=this._height+38+this.panBut.height+this._otstup*2
             this.panBut.width=this.wind.width-this._otstup*2
@@ -95,7 +93,6 @@ export class DCompDev extends DCont{
 
 
     set active(value) {
-        trace(value)
         if(this._active!=value){
             this._active = value;
             this.visible=this._active
@@ -106,7 +103,6 @@ export class DCompDev extends DCont{
     get active() { return  this._active;} 
 
     set width(value) {
-        trace(value)
         if(this._width!=value){
             this._width = value;
             this.reDrag()
