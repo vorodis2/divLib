@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="divLib.js"></script>
+    <script type="module">
+        import {CamZI} from "./CamZI.js";
+        import {Debag} from "./Debag.js";
+
+        var trace = window.console.log.bind(window.console);
+        var dCont, scane, ddCont, dCont2, dContBtn;
+        var dcmParam, camZI, debag, debag1,dP;
+        var aa=[];
+
+        function open (url) {
+            for(var i=0;i<aa.length;i++){
+                if(aa[i].text==url)aa[i].alpha=0.5;
+                else aa[i].alpha=1;
+            }
+            camZI.load(url);
+        }
+        
+        
+        function init() {
+            var otstup=2;     
+            var scale = 1;
+            dcmParam=new DCM();
+            scane= new DCont(document.body);
+            dCont = new DCont(scane);
+            dContBtn = new DCont(document.body);
+            ddCont=new DCont(scane);
+
+            camZI=new CamZI(function(s,p,p1){trace(s,p,p1)});
+
+            camZI.debag = new Debag(ddCont, otstup, 600, 10);
+            camZI.debag1 = new Debag(ddCont, otstup, 620, 10);
+
+
+            debag = new Debag(ddCont, otstup, 400, 5);
+            debag1 = new Debag(ddCont, otstup, 420, 5);
+           
+
+
+            var yy=otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"path.jpg",function(){open(this.text)}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"norm.jpg",function(){open(this.text)}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"images.jpg",function(){open(this.text)}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"mini.jpg",function(){open(this.text)}));
+            yy+=32*2+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"img-good-1.JPG",function(){open(this.text)}));
+            yy+=32*2+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"isZI",function(){camZI.isSI()}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"create",function(){camZI.create()}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"submit",function(){
+                trace(camZI.submit())
+            }));
+            yy+=32*2+otstup;
+            var slider = new DSliderBig(dContBtn, otstup,yy, () => {
+                
+            },"Otstup",0,50)
+            slider.funChange=function(){
+                slider.value= Math.round(slider.value)
+                camZI.otstup = Math.round(slider.value)
+
+            }
+
+            slider.width = 180;
+            slider.value = camZI._ot
+            
+            dCont.div.appendChild(camZI.bmp.canvas);
+            scane.add(camZI.dCont);
+
+            camZI.bmp.canvas.style.position = 'fixed';
+		    camZI.bmp.canvas.style.top = '0px';
+            camZI.bmp.canvas.style.left = '0px';
+        
+            dCont.scale=scale;
+            dCont.x=200;
+            dP = new DPanel(dCont, 0, 0);
+            dP.width=10
+            dP.height=10
+            dP.color="#00ff00"
+            dP.div.style.pointerEvents='none'
+            open(aa[0].text);
+            var xx,yy
+            camZI.bmp.canvas.addEventListener("mousemove", (e) => {
+                xx=Math.floor(e.clientX*dCont.scale-dCont.x)
+                yy=Math.floor(e.clientY*dCont.scale)
+                testxz(camZI,xx,yy)
+
+               /* const arr = [];
+                for (let i = 0; i < this.bmp._width; i++) {
+                arr.push([...this.bmp.getPixel(i, e.clientY)]); 
+                }
+                this.debag.setArr(arr, false);*/
+            })
+
+
+            // setTimeout(function(){
+                // let ar;
+                
+                // ar = camZI.getArr(0, 0, camZI.bmp._width/2, camZI.bmp._height);
+                // camZI.mirroX(0, 0, ar, true);
+                // ar = camZI.getArr(0, 0, camZI.bmp._width/2, camZI.bmp._height);
+                // camZI.mirroY(0, 0, ar, true);
+            // }, 50)
+        }
+        var pp={x:0,y:0}
+        var pp1={x:0,y:0}
+        var ppN={x:0,y:0}
+        function testxz(c,x,y) {
+            if(y>c.bmp._width)y=c.bmp._width
+            return
+            /*//
+            let p1=1-y/c.bmp._height
+            let p = p1*Math.PI/2;
+
+            pp1.x=x;
+            pp1.y=y;
+            let ang=c.getAngle(ppN, pp1)
+            trace(ang,p)
+            c.getVector(c.bmp._width, ang, pp)*/
+            
+            let ab=c.bmp._width//-y
+            let bc=c.bmp._width-y
+            let ac=Math.sqrt(Math.pow(ab,2)-Math.pow(bc,2))
+            pp.x=c.getKat(c.bmp._width,y);
+            pp.y=y;
+           // dP.x=c.bmp._width-ac//p*c.bmp._width
+           // dP.y=y;
+            //trace(y,ac,ab,bc)
+/*
+return
+            c.getVector(c.bmp._width, p, pp)
+            pp.x=c.bmp._width-pp.x
+            pp.y=Math.round(c.bmp._width-pp.y)*/
+            dP.x=pp.x//p*c.bmp._width
+            dP.y=pp.y;
+
+            pp.x=pp.x/c.bmp._width
+
+            var a=c.getArr(0,pp.y,c.bmp._width,1);
+            debag.setArr(a[0])
+            debag.setNum(pp.x*debag.wh*c.bmp._width);
+
+            var b=c.korArr(a[0],pp.x);            
+            debag1.setArr(b);
+
+           // trace(p,p1)            
+        }
+
+
+
+        setTimeout(function(){init()},100);
+    </script>
+</head>
+<body">  
+</body>
+</html>

@@ -33,7 +33,7 @@
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
-		content.scale=0.65
+		//content.scale=0.65
 		content.position.x=320;
 
 		
@@ -59,7 +59,7 @@
             dragPic.start(32, l, o);
 		};*/
 
-
+		dcmParam.color1	="#cccccc"
 
 
 		pObject=new DParamObject(scane,2,2,function(){			
@@ -67,7 +67,7 @@
 		});
 
 
-
+		trace("this.pObject.usingShablon",pObject.usingShablon)
 		
 
 
@@ -75,9 +75,20 @@
 		let cd= new DCont(scane);
 		cd.x=250
 		cd.y=250
-		cd.visible=false;
-		let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
-		pObject.addObject(c);
+		
+		//let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
+
+		let w =new DWindow(cd,0,0,"DWindow",function(s,p,p1){
+			trace(s,p,p1)
+		})
+		
+
+		pObject.addObject(w);
+
+
+
+
+		return
 
 		/*var rrr=new DCheckBox(scane,250,300,"gfh",function(){
 			cd.visible=this.value
@@ -105,6 +116,46 @@
 
 
 		//var dHelp=new DHelp(content)
+		// var ccld = new DButton(content, 100, 200, "олд", function(){
+		// 	pObject.addObject(this)
+
+		// }) 
+
+
+		var ccOld = new DCheckBoxOld(content, 100, 100, "олд", function(){
+			pObject.addObject(this)
+
+		})
+
+		var cc1 = new DPanel(content, 100, 150) 
+		
+		
+
+
+		var cc = new DCheckBox(content, 100, 150, "нев", function(){
+			pObject.addObject(this)
+		}, "resources/pic/cat1.png") 
+		pObject.addObject(cc);	
+
+		cc1.width=cc.width
+		cc1.height=cc.height
+
+
+		var c1 = new DCheckBox(content, 100, 200, "нев", function(){
+			pObject.addObject(this)
+		}, "resources/pic/3.png", "resources/pic/2.png") 
+		pObject.addObject(c1);	
+
+		// var ii = new DImage(content, 400, 100, "resources/pic/2.png") 
+		// pObject.addObject(ii);	
+
+		// var i1 = new DImage(content, 600, 100, "resources/pic/3.png") 
+		// pObject.addObject(i1);	
+
+
+		// var p1 = new DPanel(content, 250, 100) 
+		// pObject.addObject(p1);	
+		return
 
 
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
@@ -116,20 +167,31 @@
 		
 
 		plus(new DPanel(null,0,0));
-
+/*
 		this._vusot=20
 
+<<<<<<< HEAD
+=======
+
+
 		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-		let dHole=new DHole(content, 333,100,null,function(){
+		/*let dHole=new DHole(content, 333,100,null,function(){
+>>>>>>> d7f6325e10880532201752eb2d6f1fb113151675
 
-		}, true)
-
-		let dHoleNotMy=new DHole(content, 999,100,null,function(){
+	
+		let dHole=new DHole(scane, 333,100,null,function(){
 
 		}, false)
-		pObject.addObject(dHole); 
+<<<<<<< HEAD
+		pObject.addObject(dHole); */
 		
-		return
+		//return
+=======
+		pObject.addObject(dHole);*/ 
+		
+
+		
+>>>>>>> d7f6325e10880532201752eb2d6f1fb113151675
 	
 
 
