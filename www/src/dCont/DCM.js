@@ -495,7 +495,7 @@ export class DWindow extends DCont {
   		this.button.color= c; 
   		this.button.object.style.textAlign = 'left';
 
-
+  		this.fubUp=undefined
   		this.fubDrag=undefined
   		var sp=undefined;	
   		this.scaleBig=1
@@ -507,7 +507,8 @@ export class DWindow extends DCont {
   				document.removeEventListener("touchend", self.mouseup);
   		
   			}  
-  			dcmParam.removeFunMove(self.mousemove);		
+  			dcmParam.removeFunMove(self.mousemove);	
+  			if(self.fubUp!=undefined)self.fubUp();	
   		}
 
   		this.mousemove = function(e){  			
@@ -2345,7 +2346,7 @@ export class DLabel extends DCont {
   		this.y=_y||0;
    		
 
-
+  		
 
 
   		this._width=100;
