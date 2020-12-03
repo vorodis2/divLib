@@ -24,7 +24,6 @@ export class DHole extends DCont {
         this.dCont=new DCont(this)
         this.dCont1=new DCont(this.dCont)
         
-        this._scale = dCont._scale;
         this._width=500;
         this._height=500; 
         this._boolFont=true;
@@ -441,8 +440,8 @@ export class DHole extends DCont {
 
         this.mousedown = function(e) {
             var cnv = self.canvas.getBoundingClientRect();
-            var x = (e.clientX/self._scale - cnv.left/self.scale - self.arrPoint[0].x + self.radBut/2 - self._lineSize/2);
-            var y = (e.clientY/self._scale - cnv.top/self.scale - self.arrPoint[0].y + self.radBut/2 - self._lineSize/2);
+            var x = (e.clientX/self.scaleDrag.s - cnv.left/self.scaleDrag.s - self.arrPoint[0].x + self.radBut/2 - self._lineSize/2);
+            var y = (e.clientY/self.scaleDrag.s - cnv.top/self.scaleDrag.s - self.arrPoint[0].y + self.radBut/2 - self._lineSize/2);
 
             var idArr;
 
@@ -553,8 +552,8 @@ export class DHole extends DCont {
                 this.pointStart.y=obj.y; 
             }
             
-            this.scaleDrag.s=this._scale;
-            this.testScale(this.object,this.scaleDrag)
+            this.scaleDrag.s=this.object.scale;
+            this.testScale(self,this.scaleDrag)
 
             if(dcmParam.mobile==false){                 
                 document.addEventListener("mouseup", self.mouseup);
