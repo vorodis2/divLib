@@ -14,7 +14,7 @@
         var dcmParam, camZI, debag, debag1,dP;
         var aa=[];
 
-        async function open (url) {
+        function open (url) {
             for(var i=0;i<aa.length;i++){
                 if(aa[i].text==url)aa[i].alpha=0.5;
                 else aa[i].alpha=1;
@@ -47,6 +47,8 @@
             aa.push(new DButton(dContBtn,otstup,yy,"path.jpg",function(){open(this.text)}));
             yy+=32+otstup;
             aa.push(new DButton(dContBtn,otstup,yy,"norm.jpg",function(){open(this.text)}));
+            yy+=32+otstup;
+            aa.push(new DButton(dContBtn,otstup,yy,"images.jpg",function(){open(this.text)}));
             yy+=32+otstup;
             aa.push(new DButton(dContBtn,otstup,yy,"mini.jpg",function(){open(this.text)}));
             yy+=32*2+otstup;
@@ -81,7 +83,7 @@
         
             dCont.scale=scale;
             dCont.x=200;
-             dP = new DPanel(dCont, 0, 0);
+            dP = new DPanel(dCont, 0, 0);
             dP.width=10
             dP.height=10
             dP.color="#00ff00"
