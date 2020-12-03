@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="../../build/divLib.js"></script>
+    <script type="module">
+        import {DSliderBigNew} from "./DSliderBigNew.js"
+
+        var trace = window.console.log.bind(window.console);
+        var scane,pObject;
+
+        function init() {
+            dcmParam=new DCM();
+            scane = new DCont(document.body);
+
+            pObject=new DParamObject(scane,2,2,function(){			
+		});
+            var marginLeft = 300;
+            var marginTop = 10;
+
+            marginTop += 50
+            var sliderOld = new DSliderBig(scane, marginLeft, marginTop, function(){
+                pObject.addObject(this);
+            }, "Slider Old", 0, 150);
+            sliderOld.width = 300;
+
+            marginTop += 50;
+            var sliderNew = new DSliderBigNew(scane, marginLeft, marginTop,function(){
+                pObject.addObject(this);
+            }, "Slider New", 0, 150);
+            sliderNew.width = 300;
+            pObject.addObject(sliderNew);
+
+            // marginTop += 150;
+            // var checkBox = new DCheckBox(scane, marginLeft, marginTop, "Mobile", function() {sliderNew.mobile = this.value});
+            // checkBox.value = sliderNew.mobile;
+        }
+
+
+        setTimeout(function(){init()},100);
+    </script>
+</body>
+</html>
