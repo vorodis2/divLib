@@ -18,7 +18,6 @@
             scane = new DCont(document.body);
 
             pObject=new DParamObject(scane,2,2,function(){			
-			
 		});
             var marginLeft = 300;
             var marginTop = 10;
@@ -27,19 +26,18 @@
             var sliderOld = new DSliderBig(scane, marginLeft, marginTop, function(){
                 pObject.addObject(this);
             }, "Slider Old", 0, 150);
-            sliderOld.width = 300
+            sliderOld.width = 300;
 
             marginTop += 50;
             var sliderNew = new DSliderBigNew(scane, marginLeft, marginTop,function(){
                 pObject.addObject(this);
             }, "Slider New", 0, 150);
             sliderNew.width = 300;
-            sliderNew.height = 80;
             pObject.addObject(sliderNew);
 
-            marginTop += 150;
-            var checkBox = new DCheckBox(scane, marginLeft, marginTop, "Mobile", function() {sliderNew.mobile = this.value});
-            checkBox.value = sliderNew.mobile
+            // marginTop += 150;
+            // var checkBox = new DCheckBox(scane, marginLeft, marginTop, "Mobile", function() {sliderNew.mobile = this.value});
+            // checkBox.value = sliderNew.mobile;
         }
 
 

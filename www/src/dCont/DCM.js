@@ -44,7 +44,7 @@ export function DCM () {
 	this.borderRadius=0;
 	
 	this.mobile=false;
-
+	this.mobileVisi=undefined;
 	this.dragNotEvent=false;
 
 	this.array=[]
@@ -454,20 +454,22 @@ export class DWindow extends DCont {
   		this.y=_y||0;
    		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);	
   		this._width=100;
-  		this._height=100;
+		this._height=100;
   		this._color=dcmParam._color;
   		this._color1=dcmParam._color1;
   		this._wh=dcmParam.wh;
 
-  		this._borderRadius = dcmParam._fontSize;
+  		this._borderRadius = dcmParam.borderRadius;
 
  		this._minimize = false; // спрятать низ или открыть по ум открыто	
 	    this._hasMinimizeButton = false; // кнопочка для спрятать
 	    this._dragBool = true;	
-	    this._activMouse = true; 
+		this._activMouse = true; 
+		this._dragBoolWH = false;
   		this._text="nullMMy";
   		this._title="nullMMy";
-  		this.textPlus="";  		
+		this.textPlus="";  	
+		this.min = 100;	// определяет минимальный размер DWindow
   		this.panel=new DPanel(this,0,0)
 
   		this.button=new DButton(this,0,0," ");
@@ -475,7 +477,8 @@ export class DWindow extends DCont {
   			if( self._dragBool != false){
   				self.startDrag();
   			}
-  		}
+		  }
+		  
 
   		this.buttonMin=new DButton(this,0,0," ",function(){  			
   			self.minimize=!self.minimize;
@@ -493,19 +496,36 @@ export class DWindow extends DCont {
 		this.buttonMin.alpha=0
 		var c=dcmParam.compToHexArray(dcmParam.hexDec(this._color), -50);  		
   		this.button.color= c; 
-  		this.button.object.style.textAlign = 'left';
+		this.button.object.style.textAlign = 'left';
+		
+		
+		// Кнопка лоя растягивания окна
+		this.buttonScale=new DButton(this,0,0,"")
+		this.buttonScale.visible = this._dragBoolWH;
+		this.buttonScale.tip = 0;
+	
+		this.buttonScale.width = this._wh/2;
+		this.buttonScale.height = this._wh/2;
+
+		this.buttonScale.x = this._width - this._wh/2;
+		this.buttonScale.y = this._height - this._wh/2;
+
+		this.buttonScale.fun_mousedown=function(){
+			self.startDrag(this.tip)
+		}
+		////////////////////////////////
 
 
   		this.fubDrag=undefined
   		var sp=undefined;	
   		this.scaleBig=1
   		this.mouseup = function(e){
+			if (self.startScale) self.startScale = false;
   			sp=undefined;
   			if(dcmParam.mobile==false){  				
   				document.removeEventListener("mouseup", self.mouseup);
   			}else{  				
   				document.removeEventListener("touchend", self.mouseup);
-  		
   			}  
   			dcmParam.removeFunMove(self.mousemove);		
   		}
@@ -519,11 +539,19 @@ export class DWindow extends DCont {
 	  					x1:self.x,
 	  					y1:self.y
 	  				};
-	  			}
-	  			var ss=sp.x1+(e.clientX-sp.x)/self.scaleDrag.s;  			
-	  			self.x=ss;
-	  			var ss=sp.y1+(e.clientY-sp.y)/self.scaleDrag.s; 			
-	  			self.y=ss;
+				  }
+				  
+				var ss=sp.x1+(e.clientX-sp.x)/self.scaleDrag.s;  	 
+				if (self.startScale) {
+					self.width = self.startScaleW + ss;	
+					if (self.width < self.min) self.width = self.min;
+				} else self.x=ss;
+			
+				var ss=sp.y1+(e.clientY-sp.y)/self.scaleDrag.s; 
+				if (self.startScale) {
+					self.height = self.startScaleH + ss;
+					if (self.height < self.min) self.height = self.min;
+				} else self.y=ss;	
 	  		}else{
 	  			if(sp==undefined){
 	  				sp={
@@ -534,15 +562,28 @@ export class DWindow extends DCont {
 	  				};
 	  			}
 	  			var ss=sp.x1+(e.targetTouches[0].clientX-sp.x)/self.scaleDrag.s;  			
-	  			self.x=ss;
+	  			if (self.startScale) {
+					self.width = self.startScaleW + ss;	
+					if (self.width < self.min) self.width = self.min;
+				} else self.x=ss;
 	  			var ss=sp.y1+(e.targetTouches[0].clientY-sp.y)/self.scaleDrag.s;  			
-	  			self.y=ss;	  			
-	  		}
+	  			if (self.startScale) {
+					self.height = self.startScaleH + ss;
+					if (self.height < self.min) self.height = self.min;
+				} else self.y=ss;	  			
+			}
+			
 	  		
-	  		if(self.fubDrag!=undefined)self.fubDrag();
+	  		if(self.fubDrag!=undefined){self.fubDrag();}
   		}
 
-  		this.startDrag = function(){
+  		this.startDrag = function(tip){
+			if (tip === 0) {
+				this.startScale = true;
+			}
+			this.startScaleW = this._width - this.x;
+			this.startScaleH = this._height - this.y;
+
   			this.scaleDrag.s=this.scale
   			this.testScale(this,this.scaleDrag)
   			if(dcmParam.mobile==false){  				
@@ -578,6 +619,7 @@ export class DWindow extends DCont {
 			this.buttonMin.borderRadius = value;
 			this.button.borderRadius = value;
 			this.panel.borderRadius = value;
+			this.buttonScale.borderRadius = value;
 		}
 	}	
 	get borderRadius() {return  this._borderRadius;}
@@ -589,6 +631,7 @@ export class DWindow extends DCont {
 			this._width = value;
 			this.panel.width = value;
 			this.button.width = value;
+			this.buttonScale.x = value - this._wh/2;
 		}		
 	}	
 	get width() { return  this._width;}
@@ -597,6 +640,7 @@ export class DWindow extends DCont {
 		if(this._height!=value){
 			this._height = value;
 			this.panel.height = this._height;
+			this.buttonScale.y = value - this._wh/2;
 		}		
 	}	
 	get height() { return  this._height;}
@@ -635,10 +679,19 @@ export class DWindow extends DCont {
 				this.text=this._text;
 			}			
 			this.content.visible=!this._minimize;
-			this.panel.visible=!this._minimize;			
+			this.panel.visible=!this._minimize;		
+			this.buttonScale.visible = this._dragBoolWH && !this._minimize;
 		}
 	}	
 	get minimize() { return  this._minimize;}
+
+	set dragBoolWH(v) {
+		this._dragBoolWH = v;
+
+		this.buttonScale.visible = !this._minimize && this._dragBoolWH
+	}
+
+	get dragBoolWH() { return this._dragBoolWH }
 
 	set hasMinimizeButton(value) {
 		if(this._hasMinimizeButton!=value){
@@ -648,7 +701,7 @@ export class DWindow extends DCont {
 				if(this._minimize==true){
 					this.textPlus="►  ";
 				}else{
-					this.textPlus="▼  ";
+					this.textPlus="▼   ";
 				}
 				
 			}else{
@@ -2677,7 +2730,7 @@ export class DLabel extends DCont {
 
 
 
-
+/*
 export class DSlider extends DCont {
   	constructor(dCont, _x, _y, fun) {
   		super();
@@ -2700,7 +2753,7 @@ export class DSlider extends DCont {
   		this._max=100;
   		this._otstup=2
   		this._value = 0; // округление value
-  		this._okrug = 100; // округление value
+		this._okrug = 100; // округление value
 	
 
 		this.mm=10000000000000000000000;
@@ -2861,6 +2914,7 @@ export class DSlider extends DCont {
 
 
 
+
 		this._width++;
   		this.width=this._width-1;  		
   	} 
@@ -2927,10 +2981,7 @@ export class DSlider extends DCont {
 		this.value=	this._value;		
 	}	
 	get okrug() { return  this._okrug;}	
-	
 
-
-	
 	set min(v) {
 		if(this._min!=v){
 			this._min = v;	
@@ -2967,8 +3018,8 @@ export class DSlider extends DCont {
 
 }
 
-
-
+*/
+/*
 export class DSliderBig extends DCont {
   	constructor(dCont, _x, _y, fun, _text, _min, _max) {
   		super();
@@ -3134,8 +3185,519 @@ export class DSliderBig extends DCont {
 	get text() { return  this._text;}		
 
 }
+*/
+
+export class DSlider extends DCont {
+    constructor(dCont, _x, _y, fun) {
+        super();
+        this.type="DSlider";
+        if(dcmParam==undefined)dcmParam=new DCM();
+        dcmParam.add(this);
+        var self=this;
+        this.x=_x||0;	
+        this.y=_y||0;
+         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);	
+        this._width=100;  		
+        this._height=20;
+
+        this.fun=fun
+        this.funChange=undefined;
+        this._borderRadius=0
+        this._color=dcmParam._color;//"#008CBA";
+
+        this._min=0;
+        this._max=100;
+        this._otstup=2
+        this._value = 0; // округление value
+      this._okrug = 100; // округление value
+  
+
+      this.mm=10000000000000000000000;
+      
+      this.pan=new DPanel(this,0,this._otstup)
+      this.pan.width=this._width;
+      this.pan.height=this._height-this._otstup*2;
+      this.pan.color1=dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color1),-20)    
+      this.pan.tip = 0;    
+
+      this.panel=new DPanel(this,0,0);
+      this.panel.width=this.panel.height=this._height;
+      this.panel.color1=this._color;
+      this.panel.div.style.cursor="pointer";
+      this.panel.tip = 1;
 
 
+      //this.panel.borderRadius = 50;
+          
+      //this.pan.borderRadius = 50;
+      
+        this.borderRadius = dcmParam.borderRadius;
+
+
+      var xx,xxx;
+      this.naValue = function (n) {
+          xx=((n*((this._height+self._width)/self._width)-this._height/2)/self._width)
+          xxx=this._max-this._min;
+          this.value=this._min+xxx*xx;
+      }	
+
+
+
+
+      var sp;
+      this.mouseup = function(e){
+          document.body.style.pointerEvents='auto'
+
+            sp=undefined;
+            if(dcmParam.mobile==false){
+                
+                document.removeEventListener("mouseup", self.mouseup);
+            }else{
+                
+                document.removeEventListener("touchend", self.mouseup);
+                
+            }
+            dcmParam.removeFunMove(self.mousemove);	
+
+
+            if(self.funChange) self.funChange() 			
+        }
+
+      var ss,sss;
+        this.mousemove = function(e){  			
+            
+            if(dcmParam.mobile==false){
+                if(sp==undefined){
+                    sp={
+                        x:e.clientX,	  					
+                        value:self.panel.x,
+                        b:false
+                    };
+                }	  			
+                ss=(e.clientX-sp.x)/self.scaleDrag.s 		
+            }else{
+                if(sp==undefined){
+                    sp={
+                        x:e.targetTouches[0].clientX,	  					
+                        value:self.panel.x,
+                    };
+                }	  			
+                ss=(e.targetTouches[0].clientX-sp.x)/self.scaleDrag.s   			  			
+            }
+
+            self.naValue(sp.value+ss+self._height/2)
+            if(self.fun)self.fun();		  		
+        }
+
+
+
+        this.testScale = function (c,o) {  			
+            if(c.scale)o.s*=c.scale;
+            if(c.parent){
+                self.testScale(c.parent,o)
+            }
+      }
+
+
+        this.scaleDrag={s:1}
+
+        this.xyp={x:0,y:0}
+        this.getPosGlob = function (c2){
+            var rx=c2.x;
+            var scal=1
+            if(c2.scale)scal=c2.scale
+            
+            if(c2.parent){
+                rx+=this.getPosGlob(c2.parent)*scal
+            }
+            return rx
+         }
+
+
+      this.mousedown = function (e) {	
+
+        if (this.tip === 0) {
+            self.naValue(e.offsetX)
+            if(self.fun)self.fun();	
+        }
+
+          self.scaleDrag.s=1;			
+          self.testScale(self, self.scaleDrag)
+
+          if(e.target.xz!=undefined){	
+              
+              
+              
+              if(e.offsetX!=undefined)self.naValue(e.offsetX)
+              else{
+                  if(e.targetTouches)if(e.targetTouches[0]){
+                      //var rr=self.getPosGlob(self.pan)
+                      
+                      self.xyp.x=0
+                      self.xyp.y=0
+                      self.funXYP(self.pan, self.xyp)	
+                      let coords = e.targetTouches[0].target.getBoundingClientRect();
+                      let rr=self.xyp.x
+                      let rr1=(e.targetTouches[0].clientX-coords.x)/self.scaleDrag.s
+                      
+                      self.naValue(rr1)
+                  }					
+              }
+              if(self.fun)self.fun();	
+              
+          }
+          
+          
+          document.body.style.pointerEvents="none";
+
+
+          if(dcmParam.mobile==false){	 				
+                document.addEventListener("mouseup", self.mouseup);
+            }else{  				
+                document.addEventListener("touchend", self.mouseup);
+                
+            }
+            dcmParam.addFunMove(self.mousemove);	
+      }
+
+
+      if(dcmParam.mobile==false){			
+          this.panel.div.addEventListener("mousedown", self.mousedown.bind(this.panel));
+          this.pan.div.addEventListener("mousedown", self.mousedown.bind(this.pan));
+          this.pan.div.xz=true;
+      }else{
+          this.panel.div.addEventListener("touchstart", self.mousedown.bind(this));
+          this.pan.div.addEventListener("touchstart", self.mousedown.bind(this));
+          this.pan.div.xz=true;
+      }
+
+
+
+
+
+
+
+
+      this._width++;
+        this.width=this._width-1;  		
+    } 
+
+    set x(v) {this.position.x = v;}	get x() { return  this.position.x;}
+  set y(v) {this.position.y = v;}	get y() { return  this.position.y;}
+  set width(v) {
+      if(this._width!=v){
+          this._width = v;
+          this.pan.width=this._width;
+          this.value=this._value			
+
+      }		
+  }	
+  get width() { return  this._width;}
+
+
+  set height(v) {
+      if(this._height!=v){
+          this._height = v;
+
+          this.pan.height=this._height-this._otstup*2;
+          this.panel.height=this.panel.width=this._height;
+
+          
+
+      }		
+  }		
+  get height() { return  this._height;}
+
+
+  set borderRadius(value) {
+      if(this._borderRadius!=value){				
+          this._borderRadius = value;			
+          this.panel.borderRadius = value;			
+          this.pan.borderRadius = value;
+                  
+      }
+  }	
+  get borderRadius() { 		
+      return  this._borderRadius;
+  }
+
+  
+  set value(v) {
+      v = Math.round(v*this._okrug)/this._okrug;
+      if(v>this._max)	v=this._max
+      if(v<this._min)	v=this._min	
+      this._value = v;
+      
+      
+      var xx=v-this._min;
+      var xxx=xx/(this._max-this._min)
+
+      this.panel.x=(this.pan.width-this._height)*xxx
+
+      
+              
+  }	
+  get value() { return  this._value;}	
+
+  set okrug(v) {		
+      this._okrug = v;
+      this.value=	this._value;		
+  }	
+  get okrug() { return  this._okrug;}	
+
+  set min(v) {
+      if(this._min!=v){
+          this._min = v;	
+          this.value=	this._value;	
+          //this.object.value=(this._value-this._min)/(this._max-this._min)*this.mm
+      }		
+  }	
+  get min() { return  this._min;}	
+
+  
+  set max(v) {
+      if(this._max!=v){
+          this._max = v;
+          this.value=	this._value;			
+          //this.object.value=(this._value-this._min)/(this._max-this._min)*this.mm
+
+      }		
+  }	
+  get max() { return  this._max;}	
+
+  set activMouse(value) {		
+      if(this._activMouse!=value){
+          this._activMouse = value;		    
+          if(value==true){
+              this.alpha=1;
+              this.div.style.pointerEvents=null;	
+          }else{
+              this.alpha=0.7;		    	
+              this.div.style.pointerEvents="none";	
+          }		        
+      }		
+  }
+    get activMouse() { return  this._activMouse;}	
+
+}
+export class DSliderBig extends DCont {
+    constructor(dCont, _x, _y, fun, _text, _min, _max) {
+        super();
+        this.type="DSliderBig";
+        if(dcmParam==undefined)dcmParam=new DCM();
+        dcmParam.add(this);
+        var self=this;
+        this.x=_x||0;	
+        this.y=_y||0;
+        if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);	
+        this._width=100;
+        this._height=dcmParam.wh+12;
+        this.fun=fun
+        this.funChange=undefined;
+
+        this._min=-2357845745434785894;
+        this._max=3567567856787967889;
+        this._value = 0; // округление value
+        this._okrug = 100; // округление value
+        this._okrug1  = 1;
+        this._text=_text||"null";
+
+        this._mobile = dcmParam.mobile;
+        if(dcmParam.mobileVisi!=undefined)this._mobile = dcmParam.mobileVisi;
+
+        this._borderRadius = dcmParam.borderRadius;	
+
+        this.input=new DInput(this,0,0,"0", function(){  			
+            var vv= this.text-1+1;  			
+            self.value =vv;
+            if(self.fun)self.fun();
+            if(self.funChange)self.funChange();	
+        })
+
+        this.slider=new DSlider(this,0,0, function(){  			
+            self.value=this.value;
+            if(self.fun)self.fun();	
+        })
+
+        this.slider.funChange=function(){
+            if(self.funChange)self.funChange();	
+        }
+
+        this.slider.y=dcmParam.wh/2-2;
+        
+        this.label=new DLabel(null,0,0, this._text);
+        this.label.fontSize=this.label.fontSize*2/3;
+
+        this.label1=new DLabel(this,0,0, this._min+"");
+        this.label1.fontSize=this.label.fontSize*2/3;
+        this.label1.y=37
+
+        this.label2=new DLabel(this,0,0, this._max+"");
+        this.label2.fontSize=this.label.fontSize*2/3;
+        this.label2.y=37;
+
+        if(this._mobile==true){
+            this.slider.height=this.input.height;
+            this.slider.y=0;
+            this.label.y =(this._height - (this._height - this.input.height)) / 2 - dcmParam._otstup * 3;
+            this.label.x=10;
+            this.label.div.style.pointerEvents="none";
+            this.label.alpha=0.5;
+        }
+
+        this.add(this.label)
+
+        this.label.testVisi(true);
+
+        this._width++;
+        this.width=this._width-1;  
+
+        this.min=_min||0;
+        this.max=_max||100;
+
+        this.mousedown = function(e) {}
+
+        if(dcmParam.mobile==false){			
+			this.div.addEventListener("mousedown", self.mousedown);
+			this.div.addEventListener("mousedown", self.mousedown);
+		}else{
+			this.div.addEventListener("touchstart", self.mousedown);
+			this.div.addEventListener("touchstart", self.mousedown);
+		}
+    } 
+
+  set x(v) {this.position.x = v;}	get x() { return  this.position.x;}
+  set y(v) {this.position.y = v;}	get y() { return  this.position.y;}
+  set width(v) {
+      if(this._width!=v){
+          this._width = v;				
+          this.slider.width=(this._width-dcmParam._otstup)*0.7
+          this.input.width=(this._width-dcmParam._otstup)*0.3-4
+          this.input.x=this.slider.width+dcmParam._otstup;
+
+          this.label2.x=this.input.x-4*this.label2.text.length;
+      }		
+  }	
+  get width() { return  this._width;}
+
+
+  set height(v) {
+      if(this._height != v){
+          this._height = v;
+
+          this.input.height = this._height - dcmParam._otstup * 5;
+          this.slider.height = this._mobile 
+            ? this.input.height
+            : this._height - dcmParam._otstup * 11;
+
+          this.label.y = this._mobile 
+            ? (this._height - (this._height - this.input.height)) / 2 - dcmParam._otstup * 3
+            : 0
+
+          this.label1.y = this._height - dcmParam._otstup * 3
+          this.label2.y = this._height - dcmParam._otstup * 3
+
+          this.value = this._value;
+      }		
+  }		
+  get height() { return  this._height;}
+
+
+  set borderRadius(value) {
+      if(this._borderRadius!=value){				
+          this._borderRadius = value;			
+          this.input.borderRadius = value;	
+          this.slider.borderRadius = value;		
+      }
+  }	
+  get borderRadius() { 		
+      return  this._borderRadius;
+  }
+
+  set okrug1(v) {
+    this._okrug1 = v;
+  }
+
+  get okrug1() { return this._okrug1 }
+
+  set mobile(value) {
+      if (this._mobile != value) {
+        this._mobile = value;
+          
+          if (this._mobile) {
+            this.slider.height=this.input.height
+            this.slider.y=0;
+            this.label.y=(this._height - (this._height - this.input.height)) / 2 - dcmParam._otstup * 3
+            this.label.x=10
+            this.label.div.style.pointerEvents="none";
+            this.label.alpha=0.5;
+          } 
+
+          
+
+          if (!this._mobile) {
+            this.slider.height=this._height - dcmParam._otstup * 11;
+            this.slider.y=this._height - this.input.height;
+            this.label.x = 0;
+            this.label.y = 0;
+            this.label.div.style.pointerEvents="auto";
+            this.label.alpha = 1;
+          }
+      }
+  }
+
+  get mobile() { return this._mobile }
+  
+  set value(v) {   
+      let len = String(this._okrug).length - 1; 
+
+      this._value = v;
+      this._value -= (this._value % this.okrug1);
+      this._value = +this._value.toFixed(len);
+
+      if(this._value>this._max)this._value=this._max;
+      if(this._value<this._min)this._value=this._min;	
+      this.input.text=""+this._value	
+      this.slider.value=this._value;
+  }	
+  get value() { return  this._value;}	
+
+  set okrug(v) {		
+      this._okrug = v;
+      this.slider.okrug = this._okrug;
+      this.value = this._value;
+  }	
+  get okrug() { return  this._okrug;}	
+  
+  set min(v) {
+      if(this._min!=v){
+          this._min = v;	
+          this.label1.text=	this._min+"";
+          this.slider.min=this._min	
+      }		
+  }	
+  get min() { return  this._min;}	
+
+  
+  set max(v) {
+      if(this._max!=v){
+          this._max = v;			
+          this.label2.text=	this._max+"";	
+          this.slider.max=this._max;
+          this.label2.x=this.input.x-4*this.label2.text.length;	
+      }		
+  }	
+  get max() { return  this._max;}	
+
+  set text(v) {
+      if(this._text!=v){
+          this._text = v;			
+          this.label.text=this._text
+      }		
+  }	
+  get text() { return  this._text;}		
+
+}
 
 
 

@@ -1,5 +1,4 @@
-//import { DPanel } from "../dCont/DCM";
-
+import {DSlider} from "./DSlider.js"
 export class DSliderBigNew extends DCont {
     constructor(dCont, _x, _y, fun, _text, _min, _max) {
         super();
@@ -10,6 +9,7 @@ export class DSliderBigNew extends DCont {
         this.x=_x||0;	
         this.y=_y||0;
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);	
+        console.log(dcmParam);
         this._width=100;
         this._height=dcmParam.wh+12;
         this.fun=fun
@@ -19,17 +19,13 @@ export class DSliderBigNew extends DCont {
         this._max=3567567856787967889;
         this._value = 0; // округление value
         this._okrug = 100; // округление value
+        this._okrug1  = 1;
         this._text=_text||"null";
 
-        this._boolOkrug = false;
-        this._isMobile = dcmParam.mobile;
+        this._mobile = dcmParam.mobile;
+        if(dcmParam.mobileVisi!=undefined)this._mobile = dcmParam.mobileVisi;
 
         this._borderRadius = dcmParam.borderRadius;	
-
-        this.ppp=new DPanel(this)
-        this.ppp.width=this._width
-        this.ppp.height=this._height
-        this.ppp.color="#000000"
 
         this.input=new DInput(this,0,0,"0", function(){  			
             var vv= this.text-1+1;  			
@@ -38,17 +34,12 @@ export class DSliderBigNew extends DCont {
             if(self.funChange)self.funChange();	
         })
 
-
         this.slider=new DSlider(this,0,0, function(){  			
             self.value=this.value;
             if(self.fun)self.fun();	
         })
 
-
-
-
         this.slider.funChange=function(){
-            
             if(self.funChange)self.funChange();	
         }
 
@@ -57,35 +48,24 @@ export class DSliderBigNew extends DCont {
         this.label=new DLabel(null,0,0, this._text);
         this.label.fontSize=this.label.fontSize*2/3;
 
-      
-        
-
         this.label1=new DLabel(this,0,0, this._min+"");
         this.label1.fontSize=this.label.fontSize*2/3;
         this.label1.y=37
 
         this.label2=new DLabel(this,0,0, this._max+"");
         this.label2.fontSize=this.label.fontSize*2/3;
-        this.label2.y=37
+        this.label2.y=37;
 
-        this.sliderH = this.slider.height;
-
-        this.pc = {
-            sliderH: this.slider.height,
-            sliderY: this.slider.y,
-        }
-
-        if(this._isMobile==true){
-            this.slider.height=this.input.height
+        if(this._mobile==true){
+            this.slider.height=this.input.height;
             this.slider.y=0;
-            this.slider.pan.add(this.label)
-            this.label.y=7
-            this.label.x=10
+            this.label.y =(this._height - (this._height - this.input.height)) / 2 - dcmParam._otstup * 3;
+            this.label.x=10;
             this.label.div.style.pointerEvents="none";
             this.label.alpha=0.5;
-        }else{
-            this.add(this.label)
         }
+
+        this.add(this.label)
 
         this.label.testVisi(true);
 
@@ -94,9 +74,19 @@ export class DSliderBigNew extends DCont {
 
         this.min=_min||0;
         this.max=_max||100;
+
+        this.mousedown = function(e) {}
+
+        if(dcmParam.mobile==false){			
+			this.div.addEventListener("mousedown", self.mousedown);
+			this.div.addEventListener("mousedown", self.mousedown);
+		}else{
+			this.div.addEventListener("touchstart", self.mousedown);
+			this.div.addEventListener("touchstart", self.mousedown);
+		}
     } 
 
-    set x(v) {this.position.x = v;}	get x() { return  this.position.x;}
+  set x(v) {this.position.x = v;}	get x() { return  this.position.x;}
   set y(v) {this.position.y = v;}	get y() { return  this.position.y;}
   set width(v) {
       if(this._width!=v){
@@ -106,24 +96,28 @@ export class DSliderBigNew extends DCont {
           this.input.x=this.slider.width+dcmParam._otstup;
 
           this.label2.x=this.input.x-4*this.label2.text.length;
-
-         this.ppp.width=this._width
-          this.ppp.height=this._height
       }		
   }	
   get width() { return  this._width;}
 
 
   set height(v) {
-      if(this._height!=v){
+      if(this._height != v){
           this._height = v;
-          this.slider.height=this._height-dcmParam._otstup	
 
-          this.label1.y = this._height + dcmParam._otstup*8
-          this.label2.y = this._height + dcmParam._otstup*8
+          this.input.height = this._height - dcmParam._otstup * 5;
+          this.slider.height = this._mobile 
+            ? this.input.height
+            : this._height - dcmParam._otstup * 11;
 
-         this.ppp.width=this._width
-          this.ppp.height=this._height
+          this.label.y = this._mobile 
+            ? (this._height - (this._height - this.input.height)) / 2 - dcmParam._otstup * 3
+            : 0
+
+          this.label1.y = this._height - dcmParam._otstup * 3
+          this.label2.y = this._height - dcmParam._otstup * 3
+
+          this.value = this._value;
       }		
   }		
   get height() { return  this._height;}
@@ -140,31 +134,30 @@ export class DSliderBigNew extends DCont {
       return  this._borderRadius;
   }
 
-  set boolOkrug(v) {
-    if (this._boolOkrug != v) {
-        this._boolOkrug = v;
-        
-    }
+  set okrug1(v) {
+    this._okrug1 = v;
   }
 
-  get boolOkrug() { return this._boolOkrug }
+  get okrug1() { return this._okrug1 }
 
   set mobile(value) {
-      if (this._isMobile != value) {
-          this._isMobile = value;
+      if (this._mobile != value) {
+        this._mobile = value;
           
-          if (this._isMobile) {
+          if (this._mobile) {
             this.slider.height=this.input.height
             this.slider.y=0;
-            this.label.y=7
+            this.label.y=(this._height - (this._height - this.input.height)) / 2 - dcmParam._otstup * 3
             this.label.x=10
             this.label.div.style.pointerEvents="none";
             this.label.alpha=0.5;
           } 
 
-          if (!this._isMobile) {
-            this.slider.height=this.pc.sliderH;
-            this.slider.y=this.pc.sliderY;
+          
+
+          if (!this._mobile) {
+            this.slider.height=this._height - dcmParam._otstup * 11;
+            this.slider.y=this._height - this.input.height;
             this.label.x = 0;
             this.label.y = 0;
             this.label.div.style.pointerEvents="auto";
@@ -173,10 +166,15 @@ export class DSliderBigNew extends DCont {
       }
   }
 
-  get mobile() { return this._isMobile }
+  get mobile() { return this._mobile }
   
-  set value(v) {		
-      this._value = v;		
+  set value(v) {   
+      let len = String(this._okrug).length - 1; 
+
+      this._value = v;
+      this._value -= (this._value % this.okrug1);
+      this._value = +this._value.toFixed(len);
+
       if(this._value>this._max)this._value=this._max;
       if(this._value<this._min)this._value=this._min;	
       this.input.text=""+this._value	

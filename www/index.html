@@ -59,7 +59,7 @@
             dragPic.start(32, l, o);
 		};*/
 
-
+		dcmParam.color1	="#cccccc"
 
 
 		pObject=new DParamObject(scane,2,2,function(){			
@@ -75,9 +75,20 @@
 		let cd= new DCont(scane);
 		cd.x=250
 		cd.y=250
-		cd.visible=false;
-		let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
-		pObject.addObject(c);
+		
+		//let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
+
+		let w =new DWindow(cd,0,0,"DWindow",function(s,p,p1){
+			trace(s,p,p1)
+		})
+		
+
+		pObject.addObject(w);
+
+
+
+
+		return
 
 		/*var rrr=new DCheckBox(scane,250,300,"gfh",function(){
 			cd.visible=this.value
@@ -116,17 +127,17 @@
 		
 
 		plus(new DPanel(null,0,0));
-
+/*
 		this._vusot=20
 
 
-		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+	
 		let dHole=new DHole(scane, 333,100,null,function(){
 
 		}, false)
-		pObject.addObject(dHole); 
+		pObject.addObject(dHole); */
 		
-		return
+		//return
 	
 
 
