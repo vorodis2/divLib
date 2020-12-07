@@ -2070,6 +2070,7 @@ export class DCheckBox extends DCont {
 	   				this.sizeImg(this.image0)
 	   			}
 			}
+			
 		}
 
 		this.div.onclick=function(){			
@@ -2636,7 +2637,7 @@ export class DLabel extends DCont {
   		this.x=_x||0;	
   		this.y=_y||0;
    		
-
+  		this._activMouse=true
   		
 
 
@@ -2835,6 +2836,17 @@ export class DLabel extends DCont {
 
   	} 
 
+   	set activMouse(value) {  		
+  		if(this._activMouse!=value){
+  			this._activMouse=value
+  			if(value==true){
+  				this.div.style.pointerEvents="auto";
+  			}else{
+  				this.div.style.pointerEvents="none";
+  			}
+  		}
+  	}
+  	get activMouse() { return  this._activMouse;}	
 
 
 
@@ -3740,7 +3752,7 @@ export class DSliderBig extends DCont {
         this._max=3567567856787967889;
         this._value = 0; // округление value
         this._okrug = 100; // округление value
-        this._okrug1  = 1;
+        this._okrug1  = 0;
         this._text=_text||"null";
 
         this._mobile = dcmParam.mobile;
@@ -3891,9 +3903,8 @@ export class DSliderBig extends DCont {
   
   set value(v) {   
       let len = String(this._okrug).length - 1; 
-
       this._value = v;
-      this._value -= (this._value % this.okrug1);
+      if(this._okrug1!=0)this._value -= (this._value % this._okrug1);
       this._value = +this._value.toFixed(len);
 
       if(this._value>this._max)this._value=this._max;
