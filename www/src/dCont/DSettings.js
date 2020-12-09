@@ -203,8 +203,7 @@ export function DSettings (_cont) {
 
 					}else{
 						this.shagY = this.otstup;
-						if (this.arrComp2[i-1]) this.shagY = this.arrComp2[i-1].y + this.arrComp2[i-1].height;
-						
+						if (this.arrComp2[i-1]) this.shagY = this.arrComp2[i-1].y + this.arrComp2[i-1].height + this.otstup;
 						this.arrComp2[i].y = this.shagY;
 					}
 
