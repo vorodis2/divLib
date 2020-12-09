@@ -194,7 +194,7 @@ export function DSettings (_cont) {
 
 						if(this.width < this.shagX+this.arrComp2[i].width){
 							this.arrComp2[i].x = this.otstup;
-							this.arrComp2[i].y = this.shagY;
+							this.arrComp2[i].y = this.shagY+this.arrComp2[i].height + this.otstup;
 						}
 						if( this.width > this.shagX+this.arrComp2[i].width){
 							this.arrComp2[i].x = this.shagX;
@@ -202,6 +202,7 @@ export function DSettings (_cont) {
 						}
 
 					}else{
+						this.arrComp2[i].x = this.otstup;
 						this.shagY = this.otstup;
 						if (this.arrComp2[i-1]) this.shagY = this.arrComp2[i-1].y + this.arrComp2[i-1].height + this.otstup;
 						this.arrComp2[i].y = this.shagY;
