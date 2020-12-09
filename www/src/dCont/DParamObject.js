@@ -44,6 +44,11 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 
 	this.hhhhh=this._height
 
+
+	trace( 'DParamObject', this)
+	trace( 'DParamObject', self)
+
+
 	if (this._bWindow) {
 		this.w = new DWindow(this.cont, this._x, this._y, this._title, function () {
 			if (self.funMinimize) {
@@ -667,7 +672,8 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	this.creatUsingShablon= function () {
 		for (var i = 0; i < this.usingShablon.length; i++) {
 			if(this.isComp(this.usingShablon[i].tipe,this.usingShablon[i].name)==false){
-				this.addComponent(this.usingShablon[i].tipe, this.usingShablon[i].name);
+
+				this.addComponent(this.usingShablon[i].tipe, this.usingShablon[i].name,this.usingShablon[i]._param);
 			}
 		}
 		var o = {};

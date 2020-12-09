@@ -72,78 +72,108 @@
 
 
 
-		let cd= new DCont(scane);
-		cd.x=250
-		cd.y=250
-		cd.visible=false;
-		let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
-		pObject.addObject(c);
+		// let cd= new DCont(scane);
+		// cd.x=250
+		// cd.y=250
+		// cd.visible=false;
+		// let c =new DSliderBig(cd,0,0,downMy,"DSliderBig",50,150)
+		// pObject.addObject(c);
 
-		/*var rrr=new DCheckBox(scane,250,300,"gfh",function(){
-			cd.visible=this.value
-			trace(this.index+"   "+this.value)
-		})	
+		// var rrr=new DCheckBox(scane,250,300,"gfh",function(){
+		// 	cd.visible=this.value
+		// 	trace(this.index+"   "+this.value)
+		// })	
 
 
-		var b= new DButton(content,55,0,"test33",function(){			
+		// var b= new DButton(content,55,0,"test33",function(){			
 			
            
 
-		})*/
-		/*var compDev=new DCompDev(content,55,55,"test33",function(){			
+		// })
+		// var compDev=new DCompDev(content,55,55,"test33",function(){			
 			
            
-
-		}) 
-
-
-		pObject.addObject(compDev);*/
-			
-
-		//
-
-
-
-		//var dHelp=new DHelp(content)
-		// var ccld = new DButton(content, 100, 200, "олд", function(){
-		// 	pObject.addObject(this)
 
 		// }) 
 
 
-		var ccOld = new DCheckBoxOld(content, 100, 100, "олд", function(){
-			pObject.addObject(this)
+		// pObject.addObject(compDev);
+			
 
-		})
+		// //
 
-		var cc1 = new DPanel(content, 100, 150) 
+
+
+		// var dHelp=new DHelp(content)
+		// var ccld = new DButton(content, 100, 200, "олд", function(){
+		// 	pObject.addObject(this)
+
+		// }) 
+        
+		this.arShablon =[ 
+            {tipe:'DCheckBox', name: 'check1', param: 'activMouse', width:60, title: '0',link0: "resources/pic/cat1.png", link1: "resources/pic/cat1.png" },
+            {tipe:'DCheckBox', name: 'check2', param: 'boolLine', width:60, title: '1', _param:{boolX:true}},
+            {tipe:'DCheckBox', name: 'check3', param: 'value', width:60, title: '2'},
+            {tipe:'DCheckBox', name: 'check4', param: 'value', width:60, title: '3', _param:{boolX:true}},
+            {tipe:'DCheckBox', name: 'check5', param: 'value', width:60, title: '4'},
+            {tipe:'DSliderBig', name: 'DSliderBig1', param: 'borderRadius', name: 'borderRadius', width:60},
+            {tipe:'DSliderBig', name: 'DSliderBig2', param: 'fontSize', name:'fontSize', width: 60, _param:{boolX:true}},
+
+        ];
+        // this.pObject.usingShablon=this.arShablon;
+
+
+		// var ccOld = new DCheckBoxOld(content, 100, 100, "олд", function(){
+		// 	pObject.addObject(this)
+
+		// })
+
+		// var cc1 = new DPanel(content, 100, 150) 
 		
 		
 
 
-		var cc = new DCheckBox(content, 100, 150, "нев", function(){
-			pObject.addObject(this)
-		}, "resources/pic/cat1.png") 
-		pObject.addObject(cc);	
+		// var cc = new DCheckBox(content, 100, 150, "нев", function(){
+		// 	pObject.addObject(this)
+		// }, "resources/pic/cat1.png") 
+		// pObject.addObject(cc);	
 
-		cc1.width=cc.width
-		cc1.height=cc.height
+		// cc1.width=cc.width
+		// cc1.height=cc.height
 
 
-		var c1 = new DCheckBox(content, 100, 200, "нев", function(){
-			pObject.addObject(this)
-		}, "resources/pic/3.png", "resources/pic/2.png") 
-		pObject.addObject(c1);	
+		// var c1 = new DCheckBox(content, 100, 200, "нев", function(){
+		// 	pObject.addObject(this)
+		// }, "resources/pic/3.png", "resources/pic/2.png") 
+		// pObject.addObject(c1);	
 
-		// var ii = new DImage(content, 400, 100, "resources/pic/2.png") 
-		// pObject.addObject(ii);	
-
-		// var i1 = new DImage(content, 600, 100, "resources/pic/3.png") 
-		// pObject.addObject(i1);	
 
 
 		// var p1 = new DPanel(content, 250, 100) 
 		// pObject.addObject(p1);	
+
+
+
+
+		var p2 = new DPanel(content, 500, 100) 
+		pObject.addObject(p2);	
+
+
+		var ccc = new DCheckBox(p2, 2, 2, "невNew", function(){
+			pObject.addObject(this)
+		}, "resources/pic/cat1.png", 'resources/pic/4.png') 
+		pObject.addObject(ccc);	
+
+		ccc.width=ccc.width
+		ccc.height=100
+
+		// var ccc2 = new DCheckBox(p2, 2, 52, "нев", function(){
+		// 	pObject.addObject(this)
+		// }, "resources/pic/3.png", "resources/pic/2.png") 
+		// pObject.addObject(ccc2);
+
+
+
 		return
 
 

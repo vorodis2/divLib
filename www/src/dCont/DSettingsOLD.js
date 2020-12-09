@@ -9,8 +9,6 @@ export function DSettings (_cont) {
 	var self = this;
 	this.type = 'DSettings';
 
-
-
 	this.content=new DCont();
 	this.content.nameType="DSettings"
 	this.content.thisType=this
@@ -41,18 +39,10 @@ export function DSettings (_cont) {
 	this.debugRect = false;
 
 	this.shagY = 0;
-	
-
-///////////////////////////////////////////////////////////////////
-	this.shagX = 0;
-///////////////////////////////////////////////////////////////////
-
-
-
 
 	this.korectText = null;
 	var component;
-	// var shagX = 0;
+	var shagX = 0;
 	var mawH = 0;
 	var kolS;
 	var shaSlid;
@@ -61,9 +51,6 @@ export function DSettings (_cont) {
 	var startP = 0; // точки позиции фоновых панелей по Y
 	var miniOtstup = 2; // отсуп
 	
-
-
-
 	this.draw = function () {
 
 		this.getBigH();
@@ -72,12 +59,6 @@ export function DSettings (_cont) {
 
 		shaSlid = 0;
 		this.shagY = this._otstup;
-
-
-///////////////////////////////////////////////////////////////////
-		this.shagX = this._otstup;
-///////////////////////////////////////////////////////////////////
-
 
 		this.arrF = [];
 		this.arrF[0] = 0;
@@ -101,66 +82,52 @@ export function DSettings (_cont) {
 					if (this.arrComp2[i].funDrag(this, i) === true) continue;
 				}
 
-			
-
-				
-
-				
-// -------------------------------PLColorPalette--------------------------------------
-		
-	
-				var boolX=false;
-				if(this.arrComp2[i].boolX){
-					boolX=this.arrComp2[i].boolX
-									
+				if (this.arrComp2[i].type === 'PLCheckBoxImage') {
+					if (this.arrComp2[i + 1] != undefined) {
+						if (this.arrComp2[i + 1].type == 'PLCheckBoxImage') {
+							bbwidth = false;
+						}
+					}
 				}
 
-				/*if (isCPa || isCPaPiv) {
+				if (this.arrComp2[i].type === 'SliderImg') {
+					if (this.arrComp2[i + 1] != undefined && (++shaSlid) % 2 != 0) {
+						if (this.arrComp2[i + 1].type == 'SliderImg') {
+							bbwidth = false;
+						}
+					}
+				}
+
+				if (this.arrComp2[i].type === 'SliderImg') {
+					this.arrComp2[i].x = this._otstup + this._otstup / 2;
+
+					if (i !== 0) {
+						if (this.arrComp2[i - 1].type === 'SliderImg' && shaSlid % 2 === 0) {
+							this.arrComp2[i].x = this._width / 2 + this._otstup + this._otstup / 2;
+							this.addDividingLine(
+								this._width / 2,
+								this.shagY - this._otstup + 2,
+								this.arrComp2[i].height + this._otstup * 2 - 4
+							);
+						}
+					}
+				}
+
+				if (this.arrComp2[i].type === 'PLButSwitch') {
+					this.shagY -= this._otstup - miniOtstup;
+				}
+// -------------------------------PLColorPalette--------------------------------------
+				var isCPa = (this.arrComp2[i].type === 'PLColorPalette');
+				var isCPaPiv = (this.arrComp2[i].type === 'MColorPalettePicker');
+
+				if (isCPa || isCPaPiv) {
 					this.shagY -= this._otstup;
-				}*/
+				}
 // ------------------------------------------------------------------------------------------------
-				// this.arrComp2[i].x=this._otstup;
+
 				if (bbwidth) {
 					// позиции и высота фонов компонентам
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-					/*var bbb = false
-					if (boolX === 435) {
-
-
-						if (this.arrComp2[i].type === 'DCheckBox' && predComp !== 'DCheckBox' ){
-							this.shagX = this.otstup
-							this.fixPY = this.shagY;
-							this.arrComp2[i].y = this.fixPY;
-							this.arrComp2[i].x = this.shagX;
-						} else {
-
-							if ( this.arrComp2[i].type === 'DCheckBox'){
-								trace('this.shagX', this.shagX)
-								trace(this.shagX + this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize/1.6)) + this.otstup)
-							}
-
-							if (this.arrComp2[i].type === 'DCheckBox' && predComp === 'DCheckBox' && this.width > this.shagX + this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize)) + this.otstup) {
-								let dcbSize = this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize/1.6)) + this.otstup
-								this.shagX += dcbSize + this._otstup;
-								this.arrComp2[i].x = this.shagX;
-								this.arrComp2[i].y = this.fixPY;
-								bbb = true
-							} else {
-								if (this.arrComp2[i].type === 'DCheckBox' && predComp === 'DCheckBox' && this.width < this.shagX + this.arrComp2[i].width + this._otstup){
-									this.shagX = this.otstup
-									this.arrComp2[i].x = this.shagX;
-									this.arrComp2[i].y = this.shagY;
-								bbb = false
-								}
-							}
-						}
-					}*/
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-					/*if (predComp === this.arrComp2[i].type || this.arrComp2[i].type.indexOf(predComp) !== -1) {
+					if (predComp === this.arrComp2[i].type || this.arrComp2[i].type.indexOf(predComp) !== -1) {
 						compPH += this.arrComp2[i].height + this._otstup;
 						this.arrF[this.arrF.length - 1] = compPH;
 					} else {
@@ -175,44 +142,12 @@ export function DSettings (_cont) {
 
 						compPH = this.arrComp2[i].height + this._otstup;
 					}
-					predComp = this.arrComp2[i].type;*/
-
+					predComp = this.arrComp2[i].type;
 					// шаг компонентов по Y
-					//if (this.arrComp2[i].type !== 'DCheckBox' || this.arrComp2[i].type === 'DCheckBox' && this.boolMoving !== true) this.arrComp2[i].y = this.shagY;
-					//if (bbb != true)this.shagY += this.arrComp2[i].height + this._otstup;
-					
-
-
-
-					// шаг компонентов по Y
-					if(boolX==true){
-						this.shagX = this.otstup;
-						if (this.arrComp2[i-1]) this.shagX = this.arrComp2[i-1].x + this.arrComp2[i-1].width + this.otstup;
-
-						this.shagY = this.otstup;
-						if (this.arrComp2[i-1]) this.shagY = this.arrComp2[i-1].y;
-
-						if(this.width < this.shagX+this.arrComp2[i].width){
-							this.arrComp2[i].x = this.otstup;
-							this.arrComp2[i].y = this.shagY;
-						}
-						if( this.width > this.shagX+this.arrComp2[i].width){
-							this.arrComp2[i].x = this.shagX;
-							this.arrComp2[i].y = this.shagY;
-						}
-
-					}else{
-						this.shagY = this.otstup;
-						if (this.arrComp2[i-1]) this.shagY = this.arrComp2[i-1].y + this.arrComp2[i-1].height;
-						
-						this.arrComp2[i].y = this.shagY;
-					}
-
-					predComp = this.arrComp2[i].type
-
+					this.arrComp2[i].y = this.shagY;
+					this.shagY += this.arrComp2[i].height + this._otstup;
 				} else {
 					this.arrComp2[i].y = this.shagY;
-					//if (this.arrComp2[i].type !== 'DCheckBox' || this.arrComp2[i].type === 'DCheckBox' && this.boolMoving !== true) this.arrComp2[i].y = this.shagY;
 				}
 
 				if (this.debugRect) this.drawDebugRect(this.arrComp2[i].y, this.arrComp2[i].height);
@@ -225,7 +160,12 @@ export function DSettings (_cont) {
 						this.arrF[this.arrF.length - 1] += miniOtstup;
 					}
 				}
-
+// -------------------------------PLColorPalette--------------------------------------
+				if (isCPa || isCPaPiv) {
+					this.arrF[this.arrF.length - 1] -= this._otstup;
+					this.shagY -= this._otstup;
+				}
+// ------------------------------------------------------------------------------------------------
 
 			}
 
@@ -233,7 +173,7 @@ export function DSettings (_cont) {
 		// добавляем массив с точками для отрисовки фона компонентам
 		// if (this.drawArrFon == true) this.arrayFon.setArrFon(this.arrF);
 		// высота менюшки
-		this.shagY = this.arrComp2[this.arrComp2.length-1].y + this.arrComp2[this.arrComp2.length-1].height + this.otstup
+
 		this.finalHeight = this.shagY;
 
 		this.draw2();
@@ -719,12 +659,8 @@ export function DSettings (_cont) {
 
 		if (_type == 'DCheckBox') {
 			component = new DCheckBox(this.content, 0, 0, _name, this.down);
-			// component.x = this._otstup;
+			component.x = this._otstup;
 			//component.funUp = this.funComplit;
-			trace(" $$$$ ",_name,_param)
-			if (_param != undefined) {
-				
-			}
 		}
 
 		if (_type == 'DLabel') {
@@ -790,7 +726,7 @@ export function DSettings (_cont) {
 			
 			
 			component.okrug = okrug;
-			component.x = this._otstup;
+			component.x = this._otstup;			
 			component.width = this._width - this._otstup * 2;
 
 			component.funChange = this.funComplit;
@@ -802,7 +738,6 @@ export function DSettings (_cont) {
 			if (component != null) {
 				if (_param.funDrag != undefined)component.funDrag = _param.funDrag;
 			}
-			if (_param.boolX != undefined) component.boolX = _param.boolX;
 		}
 
 		this.component = component;
