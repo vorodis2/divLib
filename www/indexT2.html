@@ -32,12 +32,14 @@
 		scane= new DCont(document.body);
 		content= new DCont(scane);
 
-		var pObject=new DParamObject(content,2,2,function(){			
-			
+		var pObject=new DParamObject(content,2,2,function(s){			
+			trace(s)
 		});
+		pObject.width=222;
 
-
-		let d=new DCompDev(content, 222,22, "testxz")
+		let d=new DCompDev(content, pObject.width,0, "testxz",function(s,p,p1){	
+			trace(s,p,p1)
+		},true);
 
 
 		pObject.addObject(d)

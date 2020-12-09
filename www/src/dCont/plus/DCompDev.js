@@ -11,7 +11,7 @@ import { DCont } from '../DCont.js';
 import { DCreatIcon } from './DCreatIcon.js';
 
 export class DCompDev extends DCont{
-    constructor(dCont, _x, _y, _text, _fun) {
+    constructor(dCont, _x, _y, _text, _fun, bool) {
         super();
         var self=this
         this.type="DCompDev"
@@ -27,9 +27,28 @@ export class DCompDev extends DCont{
         this._width=516;
         this._height=356.5;
         this._notSize=600
-        this._otstup=5        
+        this._otstup=5 
 
-        this.wind=new DWindow(this,50,50,this.text);
+        this._minimize=false
+        this.wind=new DWindow(this,0,0,this.text,function(){
+            self.minimize=this.minimize;           
+            if(self.fun)self.fun("minimize",this.minimize); 
+
+        });
+        
+
+        this.fubDrag=undefined
+        this.wind.fubDrag=function(){
+            if(self.fubDrag)self.fubDrag("drag",self.x+self.wind.x,self.y+self.wind.y);         
+        }
+        this.wind.fubUp=function(){
+            self.x+=self.wind.x
+            self.y+=self.wind.y
+            self.wind.x=0;
+            self.wind.y=0;
+            if(self.fun)self.fun("up",self.x,self.y); 
+        }
+
 
         this.panBut = new DPanel(this.wind.content, this._otstup, this._otstup)
         this.panBut.height = 32 + (this._otstup*2)
@@ -39,7 +58,12 @@ export class DCompDev extends DCont{
         this.dCont.y=this.panBut.height + this._otstup*2;
 
         this.sob=function(s,p,p1){
-            if(s=="index")self.index=p
+            if(s=="index"){
+                self.index=p
+                if(self.fun)self.fun(s,p,p1)
+            }
+
+            
         }
 
         this.addCont=function(objPar, dCont, name, w, h){
@@ -52,14 +76,17 @@ export class DCompDev extends DCont{
             this.array.push(gron);
             this.panBut.add(gron.button)
         }
+        
+        if(bool!=false){
+            var oo1 = new DCreatIcon(null, 0, 0, null,function(s,p) {})
+            var o1=new DXFTP(this.dCont)
+   
 
-        var oo1 = new DCreatIcon(null, 0, 0, null,function(s,p) {})
-        var o1=new DXFTP(this.dCont)
-        // var ooo1 = new DWStenColiz(this.dCont)
-
-        this.addCont(oo1,oo1,"Icon",516,356);
-        this.addCont(o1, o1.dCont,"FTP",200,150);
-        // this.addCont(ooo1, ooo1.dCont,"DWS",undefined,undefined);
+            this.addCont(oo1,oo1,"Icon",516,356);
+            this.addCont(o1, o1.dCont,"FTP",200,150);
+       
+        }
+        
 
         this.button=new DButton(this.wind, this.wind.width-30, +2, 'X',function(){
             self.active=false
@@ -73,7 +100,10 @@ export class DCompDev extends DCont{
             this.panBut.width=this.wind.width-this._otstup*2
             this.button.x=this.wind.width-30
         }
-        this.index=0
+        if(bool!=false)this.index=0
+
+           
+            
     }
 
 
@@ -86,10 +116,20 @@ export class DCompDev extends DCont{
             }
             this.width = this.array[value].w
             this.height = this.array[value].h
-            if(self.fun)self.fun("index",value) 
+            
         }
     }
     get index() { return  this._index;}
+
+    set minimize(value) {
+        if(this._minimize!=value){
+            this._minimize = value;            
+            this.wind.minimize=this._minimize;
+        }       
+    }   
+    get minimize() { return  this._minimize;} 
+
+  
 
 
     set active(value) {
@@ -232,6 +272,7 @@ export class DXFTP{
             this._active = value;
             this.init()
             this.dCont.visible = this.active
+
         }       
     }   
     get active() { return  this._active;} 

@@ -1148,6 +1148,7 @@ export function DBox(_cont, _x, _y, _fun) {
 			this.arIE[3]=0
 			this.arIE[1]=this._height+(sy1-sy)			
 		}
+		
 		this.content.div.style.clip = "rect("+Math.round(this.arIE[0])+"px "+Math.round(this.arIE[1])+"px "+Math.round(this.arIE[2])+"px "+Math.round(this.arIE[3])+"px)";
 	}
 
