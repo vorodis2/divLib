@@ -2483,6 +2483,8 @@ export class DImage extends DCont {
 		this._link = null;
 		this.fun=_fun;
 
+		this.sahLoad=0;
+
 		this._glowColor="#000000";
 		this.aC=[1,1,1]
 		this._glowSah=0;
@@ -2514,6 +2516,7 @@ export class DImage extends DCont {
        	 	self._height++;       	 	
        	 	self.width=self._width-1;
         	self.height=self._height-1;
+        	self.sahLoad++;
         	self.dragCanvas()
            	if (self.fun) self.fun();
   		}
