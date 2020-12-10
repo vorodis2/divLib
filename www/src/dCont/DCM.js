@@ -1177,6 +1177,7 @@ export class DButton extends DCont {
         this.funReDrag=undefined;
         this._activMouse=true
         this._textAlign = "center";
+        this._link="null";
 
 		this._glowColor="#000000";
 		this.aC=[1,1,1]
@@ -1192,6 +1193,7 @@ export class DButton extends DCont {
         this._borderRadius=0;
         this._boolLine=dcmParam._boolLine;
         this._boolFond=true;
+
 
         this.alphaTeni=0.1;
 
@@ -1455,7 +1457,7 @@ export class DButton extends DCont {
         };
         
         this.funLoadImag=undefined;
-        this._link="null";
+        
         this.loadImeg=function(s){
             this._link=s;
             if(this.image==undefined){
@@ -1534,6 +1536,15 @@ export class DButton extends DCont {
 
     set x(value) {this.position.x = value;} get x() { return  this.position.x;}
     set y(value) {this.position.y = value;} get y() { return  this.position.y;}
+
+
+    set link(value) {
+		if(this._link!=value){
+			this._link = value;
+			this.loadImeg(value)
+		}		
+	}	
+	get link() { return  this._link;}
 
 
 
