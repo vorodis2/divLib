@@ -551,6 +551,7 @@ export class DCScane{
         this.dCont=new DCont(par.dCont)        
         this.panel=new DPanel(this.dCont);
         this.panel.width=this.panel.height=this._wh;
+        this.panel.color = "#eeeeee"
 
         this.dcDrow=new DCDrow(this);
         this.dcDrow._lineColor = this._lineColor = this.par._lineColor
@@ -567,7 +568,9 @@ export class DCScane{
         this.arrayPoint=[new DCPosition(),new DCPosition(),new DCPosition(),new DCPosition()];
 
         this.startP = {x: 0, y: 0};
+        this.startP1 = {x: 0, y: 0};
         this.endP = {x: 0, y: 0};
+        this.endP1 = {x: 0, y: 0};
         this.globStart = {x: 0, y: 0};
         this.centre = {x: 0, y: 0};
 
@@ -593,17 +596,23 @@ export class DCScane{
 
         var positOld=new DCPosition()
         var b
+
+        var tempPosit = 0
+        var bb
         self.mousemove = function(e) {
             self.endP.x = -(self.globStart.x - dcmParam.globXY.x)+ positOld.x
             self.endP.y = -(self.globStart.y - dcmParam.globXY.y)+ positOld.y
 
+            self.endP1.x = -(self.globStart.x - dcmParam.globXY.x)+ positOld.x
+            self.endP1.y = -(self.globStart.y - dcmParam.globXY.y)+ positOld.y
+
+            // if (self.globStart.x - dcmParam.globXY.x > 10 || self.globStart.y - dcmParam.globXY.y)
+
+
             self.distance(self.endP, self.startP);
             self.distance(positOld, self.startP);
 
-           
-            if(self.dcDrow.body.type=="Pxz"){
-                self.dcDrow.body.adddPPP(self.endP)
-            }
+
 
 
             if(self.dcDrow.body.type=="Line"||self.dcDrow.body.type=="LineCurved"){
@@ -645,6 +654,21 @@ export class DCScane{
                 self.dcDrow.body.position1.setPoint(self.endP);
             }
 
+            if(self.dcDrow.body.type=="Brush"){
+                self.dcDrow.body.position1.setPoint(self.endP1); 
+                if(self.dcDrow.body.array.length==0){                
+                    self.dcDrow.body.addPoint(new DCPosition(self.dcDrow.body.position1.x,self.dcDrow.body.position1.y),false)
+                    self.dcDrow.body.addPoint(self.dcDrow.body.position1,false);
+                }else{                    
+                    self.dcDrow.body.addPoint(new DCPosition(self.dcDrow.body.position1.x,self.dcDrow.body.position1.y),true)
+                    self.dcDrow.body.addPoint(self.dcDrow.body.position1,false);
+                }
+
+
+                self.dcDrow.draw()
+                self.save()
+                return
+            }
 
             self.dcDrow.draw()
         }
@@ -653,6 +677,9 @@ export class DCScane{
 
             self.endP.x = -(self.globStart.x - dcmParam.globXY.x)+ positOld.x;
             self.endP.y = -(self.globStart.y - dcmParam.globXY.y)+ positOld.y;
+
+            self.endP1.x = -(self.globStart.x - dcmParam.globXY.x)+ positOld.x
+            self.endP1.y = -(self.globStart.y - dcmParam.globXY.y)+ positOld.y
 
             self.distance(self.endP, self.startP);
             self.centre.x = ((positOld.x + self.endP.x)) / 2
@@ -676,10 +703,10 @@ export class DCScane{
             }
 
             if(self.dcDrow.body.type=="LineFilled"){
-                if(self.dcDrow.body.array.length==0){
+                if(self.dcDrow.body.array.length==0){                    
                     self.dcDrow.body.addPoint(new DCPosition(self.dcDrow.body.position1.x,self.dcDrow.body.position1.y),false)
                     self.dcDrow.body.addPoint(self.dcDrow.body.position1,false);
-                }else{
+                }else{                
                     self.dcDrow.body.addPoint(new DCPosition(self.dcDrow.body.position1.x,self.dcDrow.body.position1.y),true)
                     self.dcDrow.body.addPoint(self.dcDrow.body.position1,false);
                 }
@@ -697,10 +724,12 @@ export class DCScane{
                 self.dcDrow.body.active=false;
             }
 
-            if(self.dcDrow.body.type=="Pxz"){
-                self.dcDrow.body.adddPPP(self.startP)
-
-            }
+            if(self.dcDrow.body.type=="Brush"){
+                let body=self.dcDrow.get();
+                self.dcDrow.body.position1.setPoint(self.endP1);
+                body.setBody(self.dcDrow.body);
+                self.dcDrow.body.active=false;
+            }    
 
             self.dcDrow.draw()
             self.save()
@@ -731,6 +760,9 @@ export class DCScane{
             self.startP.x = e.offsetX;
             self.startP.y = e.offsetY;
 
+            self.startP1.x = e.offsetX;
+            self.startP1.y = e.offsetY;
+
             positOld.x = e.offsetX;
             positOld.y = e.offsetY;
 
@@ -755,11 +787,7 @@ export class DCScane{
                 }
             }
 
-            self.dcDrow.body.active=true;
-            self.dcDrow.body.bool=true;
-            self.dcDrow.body.position.setPoint(self.startP);
-            self.dcDrow.body.position1.setPoint(self.startP);
-            self.dcDrow.body.position2.setPoint(self.startP);
+
 
             if (self._indexMetod == 0)self.dcDrow.body.type="Line";
             if (self._indexMetod == 1)self.dcDrow.body.type="LineCurved";
@@ -769,12 +797,19 @@ export class DCScane{
                 self._indexMetod = -2
             }
             if (self._indexMetod == 3)self.dcDrow.body.type="Point";
-            if (self._indexMetod == 4)self.dcDrow.body.type="Pxz";
-
-            if(self.dcDrow.body.type=="Pxz"){
-                self.dcDrow.body.adddPPP(self.startP)
-                self.dcDrow.body.param1 = self._lineSah
+            if (self._indexMetod == 4){
+                self.dcDrow.body.type="Brush";
+                self.dcDrow.body.array.length=0;
             }
+
+
+            if (self.dcDrow.body.type=="Brush") self.startP = self.startP1
+            self.dcDrow.body.active=true;
+            self.dcDrow.body.bool=true;
+            self.dcDrow.body.position.setPoint(self.startP);
+            self.dcDrow.body.position1.setPoint(self.startP);
+            self.dcDrow.body.position2.setPoint(self.startP);
+
             
             self.dcDrow.body.param = self._lineColor
             dcmParam.addFunMove(self.mousemove);
@@ -1065,9 +1100,11 @@ export class DCDrow {
                     this.ctx.beginPath();
                     this.ctx.strokeStyle = body.param;
                     this.ctx.lineWidth = body.param2;
+                    this.ctx.lineCap = "round"
+                    this.ctx.lineJoin = "round"
                     this.ctx.moveTo(body.position.x, body.position.y);
                     this.ctx.lineTo(body.position1.x, body.position1.y);
-                    this.ctx.closePath();
+                    // this.ctx.closePath();
                     this.ctx.stroke();
                 }
 
@@ -1076,6 +1113,8 @@ export class DCDrow {
                     this.ctx.beginPath();
                     this.ctx.strokeStyle = body.param;
                     this.ctx.lineWidth = body.param2;
+                    this.ctx.lineCap = "round"
+                    this.ctx.lineJoin = "round"
                     this.ctx.moveTo(body.position.x, body.position.y);
                     this.ctx.quadraticCurveTo(body.position2.x, body.position2.y, body.position1.x, body.position1.y);
                     this.ctx.stroke();
@@ -1086,13 +1125,15 @@ export class DCDrow {
                     this.ctx.beginPath();
                     this.ctx.strokeStyle = this.ctx.fillStyle = body.param;  
                     this.ctx.lineWidth = body.param2;
+                    this.ctx.lineCap = "round"
+                    this.ctx.lineJoin = "miter"
                     if(body.array.length>=2){
                         this.ctx.moveTo(body.array[0].x, body.array[0].y)
                         for (var i = 1; i < body.array.length; i++) {
                             this.ctx.lineTo(body.array[i].x, body.array[i].y);
                         } 
                     }                 
-                    this.ctx.closePath();
+                    if (body.checkBoxBool != false) this.ctx.closePath();
                     this.ctx.stroke();
                     if (body.checkBoxBool != false) this.ctx.fill()
                 }
@@ -1115,35 +1156,41 @@ export class DCDrow {
                     if (body.checkBoxBool != false) this.ctx.fill()
                 }
 
-                if(body.type=="Pxz"){
+                if(body.type=="Brush"){
                     this.ctx.beginPath();
-                    this.ctx.strokeStyle = this.ctx.fillStyle = body.param;                    
-                    if(body.array.length!=0){              
-                        if(body.array.length==1)this.dragC(this.ctx,body.array[0].x,body.array[0].y, body.param1);
-                        else{
-                            for (var j = 0; j < body.array.length-1; j++) {
-                                this.dragCLine(this.ctx,body.array[j],body.array[j+1], body.param1);
-                            }
-                        }
-                    } 
-                    this.ctx.stroke();                        
+                    this.ctx.strokeStyle = this.ctx.fillStyle = body.param;  
+                    this.ctx.lineWidth = body.param2;
+                    this.ctx.lineCap = "round"
+                    this.ctx.lineJoin = "round"
+                    if(body.array.length>=2){
+                        this.ctx.moveTo(body.array[0].x, body.array[0].y)
+                        for (var i = 1; i < body.array.length; i++) {
+                            if (body.array[i].x != body.array[i-1].x && body.array[i].y != body.array[i-1].y ) this.ctx.lineTo(body.array[i].x, body.array[i].y);
+                        } 
+                    }                 
+                    if (body.checkBoxBool != false) this.ctx.closePath();
+                    this.ctx.stroke();
+                    if (body.checkBoxBool != false) this.ctx.fill()
                 }
-
 
             // тени
             }else{
                 if(body.type=="Line"){
                     this.ct1.beginPath();
                     this.ct1.lineWidth = body.param2;
+                    this.ct1.lineCap = "round"
+                    this.ct1.lineJoin = "round"
                     this.ct1.moveTo(body.position.x, body.position.y);
                     this.ct1.lineTo(body.position1.x, body.position1.y);
-                    this.ct1.closePath();
+                    // this.ct1.closePath();
                     this.ct1.stroke();
                 }
 
                 if(body.type=="LineCurved"){
                     this.ct1.beginPath();
                     this.ct1.lineWidth = body.param2;
+                    this.ct1.lineCap = "round"
+                    this.ct1.lineJoin = "round"
                     this.ct1.moveTo(body.position.x, body.position.y);
                     this.ct1.quadraticCurveTo(body.position2.x, body.position2.y, body.position1.x, body.position1.y);
                     this.ct1.stroke();
@@ -1152,13 +1199,15 @@ export class DCDrow {
                 if(body.type=="LineFilled"){
                     this.ct1.beginPath();
                     this.ct1.lineWidth = body.param2;
+                    this.ct1.lineCap = "round"
+                    this.ct1.lineJoin = "miter"
                     if(body.array.length>=2){
                         this.ct1.moveTo(body.array[0].x, body.array[0].y)
                         for (var i = 1; i < body.array.length; i++) {
                             this.ct1.lineTo(body.array[i].x, body.array[i].y);
                         } 
                     }                 
-                    this.ct1.closePath();
+                    if (body.checkBoxBool != false) this.ct1.closePath();
                     this.ct1.stroke();
                     if (body.checkBoxBool != false) this.ct1.fill()
                 }
@@ -1180,36 +1229,25 @@ export class DCDrow {
                     if (body.checkBoxBool != false) this.ct1.fill()
                 }
 
-                if(body.type=="Pxz"){
+                if(body.type=="Brush"){
                     this.ct1.beginPath();
-                    //this.ct1.strokeStyle = this.ct1.fillStyle = body.param;                    
-                    if(body.array.length!=0){              
-                        if(body.array.length==1)this.dragC(this.ct1,body.array[0].x,body.array[0].y, body.param1);
-                        else{
-                            for (var j = 0; j < body.array.length-1; j++) {
-                                this.dragCLine(this.ct1,body.array[j],body.array[j+1], body.param1);
-                            }
-                        }
-                    } 
-                    this.ct1.stroke();                       
+                    this.ct1.lineWidth = body.param2;
+                    this.ct1.lineCap = "round"
+                    this.ct1.lineJoin = "round"
+                    if(body.array.length>=2){
+                        this.ct1.moveTo(body.array[0].x, body.array[0].y)
+                        for (var i = 1; i < body.array.length; i++) {
+                            if (body.array[i].x != body.array[i-1].x && body.array[i].y != body.array[i-1].y )
+                            this.ct1.lineTo(body.array[i].x, body.array[i].y);
+                        } 
+                    }                 
+                    if (body.checkBoxBool != false) this.ct1.closePath();
+                    this.ct1.stroke();
+                    if (body.checkBoxBool != false) this.ct1.fill()
                 }
             }
         }
 
-        this.dragC=function(ct,x,y,r){
-            //trace("sdfsdfsdfsdfsdf",x,y,r)
-            ct.lineWidth = r;
-            ct.arc(x, y, r/4, 0, 2 * Math.PI);
-            ct.stroke();
-            
-        }
-
-        this.dragCLine=function(ct,p,p1,r){
-            this.dragC(ct,p.x,p.y,r)
-
-        }
-
-        //this.dragCLine(this.ctx,body.array[i],body.array[1],body.param);
 
 
         var pZ={x:0,y:0}
@@ -1439,7 +1477,7 @@ export class DCCanvas {
             this.ctx.strokeRect(0, 0, this._wh, this._wh);
             this.ctx.strokeRect(this._wh/4, this._wh/4, this._wh/2, this._wh/2);
 
-            //напровляющие
+            //направляющие
             this.ctx.moveTo(this._wh/2- mn / 2, 0);
             this.ctx.lineTo(this._wh/2- mn / 2- mn / 2, this._wh);            
             this.ctx.moveTo(0 - mn / 2,Math.round(this._wh/2) );
