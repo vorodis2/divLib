@@ -853,7 +853,7 @@ set prosentH(value) {
 	},
 	activMouse: {// Активный элемент
 		set: function (value) {			
-			if (this._y == value) return;
+			if (this._activMouse == value) return;
 			this._activMouse = value;
 			 if(value==true){
 				this.alpha=1;

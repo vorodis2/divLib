@@ -2284,14 +2284,18 @@ export class DPanel extends DCont {
 
 		this.dCont.div.style.borderRadius = this._borderRadius+"px";	
   		this.dCont.div.style.background=this._color1;
-  		if(this._boolLine==true){	  		
-	  		this.dCont.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
-	  	}else{
-	  		this.dCont.div.style.border= '0px solid'; 
-	  	}	  	
+  		
+	  
 
   		this.dCont.div.style.width=(this._width-2)+"px";
   		this.dCont.div.style.height=(this._height-2)+"px";
+  		
+  		if(this._boolLine==true){	  		
+  			this.dCont.div.style.border= '1px solid '+dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20); 
+	  	}else{
+	  		this.dCont.div.style.border= '0px solid'; 
+	  	}
+
 
   		this.content=new DCont(this);
   		this.content.y=this._wh;
@@ -2495,6 +2499,7 @@ export class DImage extends DCont {
 		this.fun=_fun;
 
 		this.sahLoad=0;
+		this._activMouse=true;
 
 		this._glowColor="#000000";
 		this.aC=[1,1,1]
@@ -2597,6 +2602,18 @@ export class DImage extends DCont {
 	}	
 	get width() { return  this._width;}
 
+
+	set activMouse(value) {
+		if(this._activMouse!=value){
+			this._activMouse = value;
+			if(){
+
+			}else{
+				
+			}
+		}		
+	}	
+	get activMouse() { return  this._activMouse;}
 
 
 
