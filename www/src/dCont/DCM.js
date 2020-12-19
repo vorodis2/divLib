@@ -1556,7 +1556,7 @@ export class DButton extends DCont {
 			this.aC[1]=	o.g;
 			this.aC[2]=	o.b;		
 			this.dragCanvas();
-			trace()
+		
 
 
 		}		
@@ -1861,139 +1861,6 @@ export class DGlow extends DCont {
 }
 
 
-export class DCheckBoxOld extends DCont {
-  		constructor(dCont, _x, _y, _text, _fun) {
-  		super(); 
-  		this.type="DCheckBox";
-  		if(dcmParam==undefined)dcmParam=new DCM();
-  		dcmParam.add(this);
-  		this.x=_x||0;	
-  		this.y=_y||0;
-  		var self=this
-   		this._text=_text||"null";
-   		this.fun=_fun;
-
-   		this.fun_mouseover=undefined;
-   		this.fun_mouseout=undefined;
-   		this.fun_mousedown=undefined;
-
-  		this._width=100;
-  		this._height=dcmParam.wh;
-  		this.wh=dcmParam.wh*0.6;
-  		this._height=Math.round(dcmParam.wh*2/3+4);
-  		this._color=dcmParam._color;
-  		this._colorText=dcmParam._colorText;
-  		this._fontSize=dcmParam._fontSize;
-  		this._borderRadius = dcmParam._fontSize;
-  		this._value=false;
-   		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);   		
-
-   		this.panel=new DPanel(this, 0, this._height-this.wh)
-   		this.panel.width=this.panel.height=this.wh;
-
-   		this.panel1=new DPanel(this, 2, this._height-this.wh+2)
-   		this.panel1.width=this.panel1.height=this.wh-4;
-   		this.panel1.color1=this._color
-
-
-   		if(this._value==true){
-   			this.panel1.alpha=1
-   		}else{
-   			this.panel1.alpha=0.2
-   		}
-
-		this.label=new DLabel(this, 0,0,this._text);
-		this.label.x=this.wh+4;
-		this.label.y=9;
-		this.label.width=this.label.x+this._text.length*10;
-
-		this.panel3=new DPanel(this, 0, this._height-this.wh)
-   		this.panel3.height=this.wh; 
-   		this.panel3.width = this.wh+5
-   		this.panel3.alpha=0.0	
-	
-		this.label.div.style.cursor="pointer";
-		this.panel3.div.style.cursor="pointer";
-
-		this.div.onclick=function(){			
-			self.value=!self._value;
-			if(self.fun)self.fun()	
-		}
-  	}
-
-
-
-  	set x(value) {this.position.x = value;}	get x() { return  this.position.x;}
-	set y(value) {this.position.y = value;}	get y() { return  this.position.y;}
-	set width(value) {
-		if(this._width!=value){
-			this._width = value;
-		}		
-	}	
-	get width() { return  this._width;}
-
-	set height(value) {
-		if(this._height!=value){
-			this._height = value;
-		}		
-	}	
-	get height() { return  this._height;}
-
-	set borderRadius(value) {
-		if(this._borderRadius!=value){				
-			this._borderRadius = value;	
-			this.panel3.borderRadius = value;
-			this.panel1.borderRadius = value;
-			this.panel.borderRadius = value;			
-		}
-	}	
-	get borderRadius() { return  this._borderRadius;}
-
-	set fontSize(value) {
-		if(this._fontSize!=value){
-			this._fontSize = value;
-			this.label.fontSize = value;
-		}
-	}	
-	get fontSize() { return  this._fontSize;}
-
-	set value(v) {
-		if(this._value!=v){
-			this._value = v;			
-			if(this._value==true){
-	   			this.panel1.alpha=1
-	   		}else{
-	   			this.panel1.alpha=0.2
-	   		}
-		}
-	}	
-	get value() { return  this._value;}
-
-	set text(v) {
-		if(this._text!=v){
-			this._text = v;			
-			this.label.text = this._text;
-			this.label.width=this._text.length*10;
-		}
-	}	
-	get text() { return  this._text;}
-
-	set activMouse(value) {		
-		if(this._activMouse!=value){
-		    this._activMouse = value;		    
-		    if(value==true){
-				this.alpha=1;
-				this.object.style.pointerEvents=null;	
-		    }else{
-		    	this.alpha=0.7;		    	
-		    	this.object.style.pointerEvents="none";	
-		    }		        
-		}		
-	}
-  	get activMouse() { return  this._activMouse;}
-}
-
-
 
 
 export class DCheckBox extends DCont {
@@ -2036,7 +1903,8 @@ export class DCheckBox extends DCont {
    		this.panel1=new DPanel(this, 2, 2)
 
 		this.label=new DLabel(this, 0,0,this._text);
-		this.label.y=3;
+
+		this.label.y=this._height-this._fontSize-3;
 
 		this.panel3=new DPanel(this, 0, 0)
    		this.panel3.alpha=0.0
@@ -2053,7 +1921,7 @@ export class DCheckBox extends DCont {
 	   		this.panel1.color1=this._color
 
 			this.label.x=this.height+2;
-			this.label.y=this.height-this.fontSize;
+			this.label.y=this.height-this.fontSize-3;
 			this.label.width=this.label.x+this._text.length*(this.fontSize/1.6);
 
 	   		this.panel3.height = this.height; 
@@ -2517,6 +2385,7 @@ export class DImage extends DCont {
 
 
 		this.image = new Image();
+		var bPlus=false
 		this.div2.appendChild(this.image);
 		
 		this.canvas = undefined// document.createElement('canvas');
@@ -2535,6 +2404,13 @@ export class DImage extends DCont {
         	self.sahLoad++;
         	self.dragCanvas()
            	if (self.fun) self.fun();
+
+           	if(bPlus==false){
+           		bPlus=true
+           		self.div2.appendChild(self.image);
+           	}
+			
+
   		}
 
   		this.load = function () {
@@ -2587,13 +2463,16 @@ export class DImage extends DCont {
   	
 
 
-  	set x(value) {this.position.x = value;}	get x() { return  this.position.x;}
+  	set x(value) {
+  		
+  		this.position.x = value;
+  	}	get x() { return  this.position.x;}
 	set y(value) {this.position.y = value;}	get y() { return  this.position.y;}
 	set width(value) {
 		if(this._width!=value){
 			this._width = value;
 			this.image.width=this._width//(100/this.picWidth);
-			this.dragCanvas()
+			this.dragCanvas();
 			//this.drag()
 
 			//this.div.style.width=this._width+"px";
@@ -2606,11 +2485,11 @@ export class DImage extends DCont {
 	set activMouse(value) {
 		if(this._activMouse!=value){
 			this._activMouse = value;
-			if(){
-
-			}else{
-				
-			}
+			if(value==true){
+  				this.div.style.pointerEvents="auto";
+  			}else{
+  				this.div.style.pointerEvents="none";
+  			}
 		}		
 	}	
 	get activMouse() { return  this._activMouse;}
@@ -2729,122 +2608,6 @@ export class DLabel extends DCont {
 
 
 
-	/*	var wMax=0
-		this.getRectBig=function(){
-			dcmParam.textarea
-
-			
-			
-			//dcmParam.textarea.style.cssText = "font-weight: bold"; 
-			dcmParam.textarea.style.contenteditable="true"
-			if(dcmParam.textarea.style.fontWeight!=this.dCT.div.style.fontWeight)dcmParam.textarea.style.fontWeight=this.dCT.div.style.fontWeight
-			if(dcmParam.textarea.style.width!=this.dCT.div.style.width)dcmParam.textarea.style.width=this.dCT.div.style.width
-			if(dcmParam.textarea.style.fontSize!=this.dCT.div.style.fontSize)dcmParam.textarea.style.fontSize=this.dCT.div.style.fontSize
-			if(dcmParam.textarea.style.fontFamily!=this.dCT.div.style.fontFamily)dcmParam.textarea.style.fontFamily=this.dCT.div.style.fontFamily
-			if(dcmParam.textarea.style.textAlign!=this.dCT.div.style.fontSize)dcmParam.textarea.style.fontSize=this.dCT.div.style.textAlign
-			if(dcmParam.textarea.value!=this.text)dcmParam.textarea.value=this.text;
-
-
-			dcmParam.textarea.style.scrollbarWidth="auto"	
-				
-
-			var ss = getTextLineBreaks(dcmParam.textarea);
-			trace(ss)
-			
-			return {x:0,y:0,width:wMax,height:dcmParam.textarea.clientHeight}
-							
-			
-		}*/
-
-		/***********************/
-
-/*
-		function getTextLineBreaks (_oTextarea) {
-			var oTextarea = _oTextarea; // || document.getElementById('myTextarea');
-			oTextarea.setAttribute('wrap', 'off');
-
-			var strRawValue = oTextarea.value;
-			oTextarea.value = '';
-			var nEmptyWidth = oTextarea.scrollWidth;
-			var nLastWrappingIndex = -1;
-
-			trace(nEmptyWidth, oTextarea.value, oTextarea.style.width)
-
-			function testBreak (strTest) {
-				oTextarea.value = strTest;
-				//console.log("@@",oTextarea.scrollWidth , nEmptyWidth, strTest)
-
-				return oTextarea.scrollWidth > nEmptyWidth;
-			}
-			function getWidth (strTest) {
-				oTextarea.value = strTest;
-				return oTextarea.scrollWidth;
-			}
-
-			function findNextBreakLength (strSource, nLeft, nRight) {
-				var nCurrent;
-				if (typeof (nLeft) === 'undefined') {
-					nLeft = 0;
-					nRight = -1;
-					nCurrent = 64;
-				} else {
-					if (nRight === -1) { nCurrent = nLeft * 2; } else if (nRight - nLeft <= 1) { return Math.max(2, nRight); } else { nCurrent = nLeft + (nRight - nLeft) / 2; }
-				}
-				var strTest = strSource.substr(0, nCurrent);
-				var bLonger = testBreak(strTest);
-
-				if (bLonger) { 
-					nRight = nCurrent;
-									 
-				} else {
-					
-					if (nCurrent >= strSource.length) {
-					//trace("@@@"+oTextarea.scrollWidth)
-						return null; 
-					}
-					nLeft = nCurrent;
-
-
-				}
-				//trace(nLeft, nRight, bLonger)
-				return findNextBreakLength(strSource, nLeft, nRight);
-			}
-
-			var i = 0,
-				j;
-			var strNewValue = '';
-
-
-			while (i < strRawValue.length) {
-				//trace(" ## ")
-				var breakOffset = findNextBreakLength(strRawValue.substr(i));
-
-				if(wMax<breakOffset)wMax=breakOffset;
-				//trace(breakOffset+" #########   "+strRawValue.substr(i))
-				if (breakOffset === null) {
-					strNewValue += strRawValue.substr(i);					
-					break;
-				}
-				nLastWrappingIndex = -1;
-				var nLineLength = breakOffset - 1;
-				for (j = nLineLength - 1; j >= 0; j--) {
-					var curChar = strRawValue.charAt(i + j);
-					if (curChar === ' ' || curChar === '-' || curChar === '+') {
-						nLineLength = j + 1;
-						break;
-					}
-				}
-				trace("!!!!!!!!!!!",getWidth("ffff"))
-
-				strNewValue += strRawValue.substr(i, nLineLength) + '\n';
-
-				i += nLineLength;
-			}
-			//trace(i,j,strRawValue)
-			oTextarea.value = strRawValue;
-			oTextarea.setAttribute('wrap', '');
-			return strNewValue;
-		}*/
 		if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);
 
 		this.testVisi(true);

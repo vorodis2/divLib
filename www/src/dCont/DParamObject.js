@@ -45,8 +45,7 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	this.hhhhh=this._height
 
 
-	trace( 'DParamObject', this)
-	trace( 'DParamObject', self)
+
 
 
 	if (this._bWindow) {

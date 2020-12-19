@@ -136,9 +136,7 @@ export function DSettings (_cont) {
 						} else {
 
 							if ( this.arrComp2[i].type === 'DCheckBox'){
-								trace('this.shagX', this.shagX)
-								trace(this.shagX + this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize/1.6)) + this.otstup)
-							}
+								}
 
 							if (this.arrComp2[i].type === 'DCheckBox' && predComp === 'DCheckBox' && this.width > this.shagX + this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize)) + this.otstup) {
 								let dcbSize = this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize/1.6)) + this.otstup
@@ -721,7 +719,7 @@ export function DSettings (_cont) {
 			component = new DCheckBox(this.content, 0, 0, _name, this.down);
 			// component.x = this._otstup;
 			//component.funUp = this.funComplit;
-			trace(" $$$$ ",_name,_param)
+	
 			if (_param != undefined) {
 				
 			}
