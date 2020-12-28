@@ -3253,15 +3253,19 @@ export class DSliderBig extends DCont {
   get mobile() { return this._mobile }
   
   set value(v) {   
-      let len = String(this._okrug).length - 1; 
-      this._value = v;
-      if(this._okrug1!=0)this._value -= (this._value % this._okrug1);
-      this._value = +this._value.toFixed(len);
+      	if(this._value!=v){
+      		if(v==null || v==undefined)return
+		    let len = String(this._okrug).length - 1; 
+		    this._value = v;
+		    if(this._okrug1!=0)this._value -= (this._value % this._okrug1);
+		    this._value = +this._value.toFixed(len);
 
-      if(this._value>this._max)this._value=this._max;
-      if(this._value<this._min)this._value=this._min;	
-      this.input.text=""+this._value	
-      this.slider.value=this._value;
+		    if(this._value>this._max)this._value=this._max;
+		    if(this._value<this._min)this._value=this._min;	
+		    this.input.text=""+this._value	
+		    this.slider.value=this._value;
+	  }
+
   }	
   get value() { return  this._value;}	
 
