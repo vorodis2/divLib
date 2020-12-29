@@ -228,10 +228,16 @@ export function DSettings (_cont) {
 			}
 
 		}
+		
 		// добавляем массив с точками для отрисовки фона компонентам
 		// if (this.drawArrFon == true) this.arrayFon.setArrFon(this.arrF);
 		// высота менюшки
-		this.shagY = this.arrComp2[this.arrComp2.length-1].y + this.arrComp2[this.arrComp2.length-1].height + this.otstup
+		if(this.shagY != this._otstup){
+			this.shagY = this.arrComp2[this.arrComp2.length-1].y + this.arrComp2[this.arrComp2.length-1].height + this.otstup
+			
+		}else{
+
+		}
 		this.finalHeight = this.shagY;
 
 		this.draw2();
@@ -412,8 +418,11 @@ export function DSettings (_cont) {
 	this.setObj = function (_obj) {
 		this.object = _obj;
 		this._value = _obj;
+		
 		this.korektObj();
+	
 		this.korektObjParam();
+		
 		this.draw();
 	};
 
@@ -459,11 +468,13 @@ export function DSettings (_cont) {
 
 	var b, ss;
 	this.korektObj = function () {
+		
 		var i, j, ii;
 		for (i = 0; i < this.arrComp.length; i++) {
 			this.arrComp[i].visible = false;
 		}
 		this.arrComp2.length = 0;
+	
 
 
 		for (i = 0; i < this.object.arrComp.length; i++) {
@@ -557,7 +568,7 @@ export function DSettings (_cont) {
 				}
 			}
 		}
-		
+	
 		this.draw();
 	};
 
