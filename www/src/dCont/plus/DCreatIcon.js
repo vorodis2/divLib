@@ -1688,7 +1688,7 @@ export function LocalStorageWW(fun,_key) {
         window.localStorage[this.key] = JSON.stringify(self.object);
     }
 
-    // сохраняем в localStorage данные
+    // удаляем из localStorage данные
     this.clear = function() {
         window.localStorage[this.key] = undefined;
     }
