@@ -136,9 +136,7 @@ export function DSettings (_cont) {
 						} else {
 
 							if ( this.arrComp2[i].type === 'DCheckBox'){
-								trace('this.shagX', this.shagX)
-								trace(this.shagX + this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize/1.6)) + this.otstup)
-							}
+								}
 
 							if (this.arrComp2[i].type === 'DCheckBox' && predComp === 'DCheckBox' && this.width > this.shagX + this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize)) + this.otstup) {
 								let dcbSize = this.arrComp2[i].height + (this.arrComp2[i].text.length * (this.arrComp2[i].fontSize/1.6)) + this.otstup
@@ -230,10 +228,16 @@ export function DSettings (_cont) {
 			}
 
 		}
+		
 		// добавляем массив с точками для отрисовки фона компонентам
 		// if (this.drawArrFon == true) this.arrayFon.setArrFon(this.arrF);
 		// высота менюшки
-		this.shagY = this.arrComp2[this.arrComp2.length-1].y + this.arrComp2[this.arrComp2.length-1].height + this.otstup
+		if(this.shagY != this._otstup){
+			this.shagY = this.arrComp2[this.arrComp2.length-1].y + this.arrComp2[this.arrComp2.length-1].height + this.otstup
+			
+		}else{
+
+		}
 		this.finalHeight = this.shagY;
 
 		this.draw2();
@@ -414,8 +418,11 @@ export function DSettings (_cont) {
 	this.setObj = function (_obj) {
 		this.object = _obj;
 		this._value = _obj;
+		
 		this.korektObj();
+	
 		this.korektObjParam();
+		
 		this.draw();
 	};
 
@@ -461,11 +468,13 @@ export function DSettings (_cont) {
 
 	var b, ss;
 	this.korektObj = function () {
+		
 		var i, j, ii;
 		for (i = 0; i < this.arrComp.length; i++) {
 			this.arrComp[i].visible = false;
 		}
 		this.arrComp2.length = 0;
+	
 
 
 		for (i = 0; i < this.object.arrComp.length; i++) {
@@ -559,7 +568,7 @@ export function DSettings (_cont) {
 				}
 			}
 		}
-		
+	
 		this.draw();
 	};
 
@@ -721,7 +730,7 @@ export function DSettings (_cont) {
 			component = new DCheckBox(this.content, 0, 0, _name, this.down);
 			// component.x = this._otstup;
 			//component.funUp = this.funComplit;
-			trace(" $$$$ ",_name,_param)
+	
 			if (_param != undefined) {
 				
 			}

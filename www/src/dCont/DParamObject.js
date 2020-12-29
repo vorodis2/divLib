@@ -45,8 +45,7 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	this.hhhhh=this._height
 
 
-	trace( 'DParamObject', this)
-	trace( 'DParamObject', self)
+
 
 
 	if (this._bWindow) {
@@ -112,10 +111,15 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 		}
 
 		this.generatShablon();
+
 		this.clearShablon();
+
 		this.creatToShablon();
+
 		this.startToShablon();
+
 		this.draw2();
+
 		this.setTextInput();
 	};
 
@@ -339,6 +343,8 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	};
 
 	this.addTypeComp = function (type, index,as) {
+
+
 		var nameComp, comp, t;		
 		if (type == 'boolean') nameComp = 'DCheckBox';
 		if (type == 'numbercolor') nameComp = 'DColor';
@@ -610,6 +616,7 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 		o.arrComp = [];
 		self.object = o;
 		var pp, aa, aa2, bb;
+
 		if (this._priorityType == true && this._ignTypeArr == false && this.typeYesArray != null) {
 			aa = [];
 			for (var s in this.oShablon) {
@@ -662,9 +669,11 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 		o.param = this.oP;
 		o.fun = this.funDrag;
 		o.funComplit = this.funComplit;
-
+		
 		if(this.funKorektObj!=undefined)this.funKorektObj(o);
+		
 		this.setObj(o);
+		
 	};
 
 
