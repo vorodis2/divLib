@@ -1,4 +1,5 @@
 import { DCont } from '../DCont.js';
+import { DThreeButton } from './DThreeButton.js';
 
 export class DThreeBool extends DCont{
     constructor(dCont, _x, _y, fun, bool) {
@@ -39,18 +40,20 @@ export class DThreeBool extends DCont{
         this.content = new DCont();
         this.add(this.content);
 
-        this.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)"; 
+        // this.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)"; 
 
         this.oldValue;
         this.folderOtstup=this.x;                      
         this.step_y=this.y;                            
         this.i_y=0;                                    
         this.zebra=false;   
-        this.color0 = dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color1),-10) //pl102.color;                     
-        this.color1 = dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color1),-20)                   
-        this.color2 = dcmParam._color1               
-        this.color3 = '#ff0000'; ///////////////////////////////////////                  
-        this.color4 = dcmParam._color//pl102.color10;                       
+        this.color0 = dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color),-20) //pl102.color;      
+        this.color1 = dcmParam._color //dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color1),-20)                               
+        this.color2 = dcmParam._color
+        // this.color3 = '#ff0000'; ///////////////////////////////////////    
+        this.color3 = dcmParam.compToHexArray(dcmParam.hexDec('#ff8c00'),-20)                                   
+        this.color4 = '#ff8c00'
+
 
         this.lines.color = this.color1;
 
@@ -61,14 +64,14 @@ export class DThreeBool extends DCont{
         this.bufferOt = [];  
 
         //Скролл-бар
-        this.scrollBar = new DScrollBarV(this,0,0, function(){
-            self.content.y=-(this.heightContent-this.height)*this.value/100;
-            self.lines.y = -(this.heightContent-this.height)*this.value/100;
-        });
+        // this.scrollBar = new DScrollBarV(this,0,0, function(){
+        //     self.content.y=-(this.heightContent-this.height)*this.value/100;
+        //     self.lines.y = -(this.heightContent-this.height)*this.value/100;
+        // });
        
-        this.scrollBar.visible = false;
-        this.scrollBar.width = this._heightBut/4;
-        this.scrollBar.but.radius = 100;
+        // this.scrollBar.visible = false;
+        // this.scrollBar.width = this._heightBut/4;
+        // this.scrollBar.but.radius = 100;
 
         //Принимает новый массив и меняет дерево
         this.setArr = function(arr){
@@ -111,6 +114,7 @@ export class DThreeBool extends DCont{
             var but;
             idArr++;
             but = this.getElement();
+            if (obj) if (obj.obj) if (obj.obj.link) but.link = obj.obj.link;
             but.id = idArr;
             but.obj = obj;
             but.isFolder = false;
@@ -162,19 +166,19 @@ export class DThreeBool extends DCont{
 
         this.openCloseObj = function(obj, bb){
             if (obj.isFolder) obj.isOpen = bb;
-            this.scrollSet();
+            // this.scrollSet();
             this.clear();
             this.update();
             this.drawElement(this.arrBut);
-            this.scrollBar.scrolValue = -this.content.y
-            this.content.y=- this.scrollBar.scrolValue;
-            this.lines.y = -this.scrollBar.scrolValue;
+            // this.scrollBar.scrolValue = -this.content.y
+            // this.content.y=- this.scrollBar.scrolValue;
+            // this.lines.y = -this.scrollBar.scrolValue;
             //Если видно не все элементы и пропадает скролл
-            //Устанавливаем область видимости в ноль
-            if(!obj.isOpen&&this.content.y<0&&this.scrollBar.visible==false){
-                this.content.y=0;
-                this.lines.y = 0;
-            }
+            // //Устанавливаем область видимости в ноль
+            // if(!obj.isOpen&&this.content.y<0&&this.scrollBar.visible==false){
+            //     this.content.y=0;
+            //     this.lines.y = 0;
+            // }
         }
                
         this.getElement = function(){
@@ -210,8 +214,8 @@ export class DThreeBool extends DCont{
         this.drawAll = function (){
             this.drawElement(this.arrBut);
 
-            this.scrollBar.x = this._width - this.scrollBar.width;
-            this.scrollBar.height=this._height;
+            // this.scrollBar.x = this._width - this.scrollBar.width;
+            // this.scrollBar.height=this._height;
         }
 
         //Отрисовка элемента
@@ -250,17 +254,15 @@ export class DThreeBool extends DCont{
                     arrBut[i].zebra_color=this.color2;
                     this.zebra=false;
                 }
-                // arrBut[i].id=this.butCount;
                 arrBut[i].y=this.step_y;           
-                arrBut[i].x=this.folderOtstup-this._heightBut;
+                arrBut[i].x=this.folderOtstup;
                 arrBut[i].visible = true;
                 arrBut[i].level=levelCounter;
                 this.butCount++;
 
                 if(arrBut[i].isFolder && arrBut[i].isOpen===true){// если мы открыты показываем содержимое
                     levelCounter++;
-                    // this.folderOtstup+=this._otst;
-                    this.folderOtstup+=this._width*0.25;
+                    this.folderOtstup+=this._otst;
                     this.update(arrBut[i].arrBut,true);
                     levelCounter--;
                 }
@@ -270,7 +272,7 @@ export class DThreeBool extends DCont{
                     }
                 }
                 if(i===arrBut.length-1) {
-                     arrBut[i].isLast=true;
+                    arrBut[i].isLast=true;
                     this.folderOtstup-=this._otst;
                     levelCounter=0;
                 }
@@ -285,25 +287,25 @@ export class DThreeBool extends DCont{
                 this.lines.redrawLines(arrBut);
                 
                 this.butInProc=100/this.butCount;
-                this.scrollSet();
+                // this.scrollSet();
             }
 
             
         }
 
         //Обработка действий скролла
-        this.scrollSet=function(){
-            if(this.butCount*(this._heightBut)<=this._height){
-                this.scrollBar.visible = false;           
-            }else{
-                this.scrollBar.visible = true;           
-                this.scrollBar.height = this._height;
-                this.scrollBar.heightContent = (this.butCount*(this._heightBut));
-            }
-            if(this.scrollBar.height<this._heightBut) {
-                this.scrollBar.visible=false;   
-            } 
-        }
+        // this.scrollSet=function(){
+        //     if(this.butCount*(this._heightBut)<=this._height){
+        //         this.scrollBar.visible = false;           
+        //     }else{
+        //         this.scrollBar.visible = true;           
+        //         this.scrollBar.height = this._height;
+        //         this.scrollBar.heightContent = (this.butCount*(this._heightBut));
+        //     }
+        //     if(this.scrollBar.height<this._heightBut) {
+        //         this.scrollBar.visible=false;   
+        //     } 
+        // }
 
         var arrFolderId = [];
         this.openTillId = function(id){
@@ -342,12 +344,12 @@ export class DThreeBool extends DCont{
 
         var ii, jj, ww, hh, bat, sahLoad, wM, hM, sliderOtstup;
         this.scrolPos = function (_bool) {
-            if (_bool == true) {
-                self.scrollBar.value = this.content.y / (this._height - self.scrollBar.heightContent) * 100;            
-            } else {
-                self.content.y = (self.scrollBar.value / 100) * (this._height - self.scrollBar.heightContent);
-                self.lines.y = (self.scrollBar.value / 100) * (this._height - self.scrollBar.heightContent);
-            }       
+            // if (_bool == true) {
+            //     self.scrollBar.value = this.content.y / (this._height - self.scrollBar.heightContent) * 100;            
+            // } else {
+            //     self.content.y = (self.scrollBar.value / 100) * (this._height - self.scrollBar.heightContent);
+            //     self.lines.y = (self.scrollBar.value / 100) * (this._height - self.scrollBar.heightContent);
+            // }       
         };
 
 
@@ -355,7 +357,7 @@ export class DThreeBool extends DCont{
         var hhh, www;
         this.sahDelta=10
         this.mousewheel = function (e) {
-            if(self.scrollBar.visible==false)   return
+            // if(self.scrollBar.visible==false)   return
 
             var p=e.deltaY*-1;
             if(e.wheelDelta!=undefined){
@@ -363,7 +365,7 @@ export class DThreeBool extends DCont{
                 else p=-1;
             }
             p*=-1;
-            hhh=(self.scrollBar.heightContent-self.scrollBar.height)
+            // hhh=(self.scrollBar.heightContent-self.scrollBar.height)
             var pp=self.content.y-self.sahDelta*p;
             if(pp<-hhh)pp=-hhh
             self.content.y=pp
@@ -409,9 +411,9 @@ export class DThreeBool extends DCont{
         var yyy=0
         this.mousemove=function(e){         
             if(self.dragActiv==false)return;
-            if(self.scrollBar.visible == false)return;
+            // if(self.scrollBar.visible == false)return;
             
-            hhh=(self.scrollBar.heightContent-self.scrollBar.height)
+            // hhh=(self.scrollBar.heightContent-self.scrollBar.height)
                
             if(dcmParam.mobile==false){
                 if(sp==undefined){
@@ -500,10 +502,10 @@ export class DThreeBool extends DCont{
     set height(value) {
        if(value==this._height)return;
         this._height = value;  
-        this.scrollBar.height=value;
+        // this.scrollBar.height=value;
         this.content.y=0;
         this.lines.y = 0;
-        this.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)"; 
+        // this.div.style.clip = "getRect(1px "+this._width+"px "+this._height+"px 0px)"; 
         this.redrawThree();
     }   
     get height() { return  this._height;} 
@@ -511,8 +513,8 @@ export class DThreeBool extends DCont{
     set width(value) {
         if(value==this._width)return;
         this._width = value;
-        this.scrollBar.x=value-this.scrollBar.width;
-        this.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)"; 
+        // this.scrollBar.x=value-this.scrollBar.width;
+        // this.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)"; 
         
         this.redrawThree();
     }   
@@ -522,7 +524,7 @@ export class DThreeBool extends DCont{
         if(value==this._heightBut)return;
         this._heightBut = value;
         this.lines.heightBut = this._heightBut;
-        this._otst=this._heightBut;
+        this._otst=this._heightBut*0.25;
         for (var i = 0; i < this.bufferOt.length; i++) {
             if (this.bufferOt[i].inited) {
                 this.bufferOt[i].height = this._heightBut;
@@ -548,7 +550,7 @@ export class DThreeBool extends DCont{
     set activMouse(value) {
         if(this._activMouse == value) return;
         this._activMouse=value;
-        this.scrollBar.activMouse = value;
+        // this.scrollBar.activMouse = value;
         this.graphCover.visible = !value;
     }   
     get activMouse() { return  this._activMouse;} 
@@ -560,11 +562,11 @@ export class DThreeBool extends DCont{
                 this.bufferOt[i].mouseDown();
                 this._activId=value;
 
-                if (!this.scrollBar.visible) {
-                    return;
-                }
-                let offset = -Math.min(this.bufferOt[i].y,
-                    this.scrollBar.heightContent - this.scrollBar.height);
+                // if (!this.scrollBar.visible) {
+                //     return;
+                // }
+                let offset = -Math.min(this.bufferOt[i].y)
+                    // this.scrollBar.heightContent - this.scrollBar.height);
 
                 this.content.y = offset;
                 this.lines.y = offset;
@@ -580,12 +582,9 @@ export class DThreeBool extends DCont{
 export class DObjectThree extends DCont{
     constructor(cont, _x, _y, fun, par) {
         super(cont);
-        cont.add(this)
-  
         var self = this;
+        cont.add(this)
         this.type = 'DObjectThree'; 
-        cont.add(this);                    
-        
         this.par=par
 
         this.fun=fun;                 
@@ -593,8 +592,9 @@ export class DObjectThree extends DCont{
         this.y=_y;
         this._width= 100;
         this._height=20;
-        this._title='';
+        this._title=' ';
         this._color = '#fff000';
+        this._link = null
 
         this.arrBut=[];  
         this.life = true;       
@@ -615,21 +615,16 @@ export class DObjectThree extends DCont{
             this.add(this.content);
 
             // Основная кнопка
-            this.panel=new DButton(this.content,0,0)
+            this.panel=new DThreeButton(this.content,0,0)
             this.panel.boolLine=false
-            
-            // this.icon_type=2;
-            // this.icon=new DIconThree(this);
+            if (this.link != null && this.link != 'null') this.panel.link = this.link
+
+            this.panel.text=this.title
 
             this.panel1=new DPanel(this,0,0)
             this.panel1.alpha=0;
 
             this.panel.height=this.panel1.height=this._height
-
-            this.label = new DLabel(this.content,this.x, this.y, this.title);
-            this.label.y = (this._height - this.label.height) / 2;
-
-            this.label.div.style.pointerEvents="none"; 
 
             this.sobEvent = "null";
 
@@ -674,145 +669,51 @@ export class DObjectThree extends DCont{
                 this.setInfo();
                 this.correctInfo = true;
             }
-
-            // this.icon.isLast=this.isLast;
-            // this.icon.level=this.level;
-            // this.icon._height=this._height;
-            // this.icon._width=this._height;
-            // this.icon.isOpen=this.isOpen;
-            // this.icon.isLast=this.isLast;
-            // if (this.isFolder) {
-            //     this.icon.icon_type = 1;
-            // } else {
-            //     this.icon.icon_type = 2;
-            // }
-            // this.icon.clear();
-            // this.icon.drawIcon();
-            this.label.visible=true;
-            this.rect = this.label.getRect();
-            if(this._height<24){
-                let s=Math.round(this._height)-8
-                if(s<4)s=4
-                this.label.fontSize=s
-            }else{
-                this.label.fontSize=16
-            }
-            this.label.y = (this._height - this.rect.height) / 2;
-
-                // this.panel.x =  this.icon.but.x - this.otstup;
-                // this.label.x = this.icon.but._width*2+this.otstup*4;
+            
+            this.panel.x=-this.x+(this.x);
             this.panel.color=this._color;
-            this.panel.width=this.panel.x+this._width
+            this.panel.width=this.width-this.x;
 
-            this.panel1.x=-this.x
-            trace('p', this.panel.x)
-            trace('x', this.x)
-            this.panel1.width=this.par.width
+            // this.panel1.x=-this.x;
+            // this.panel1.width=this.par.width;
+
+            this.panel1.x=-this.x+(this.x);
+            this.panel1.width=this.width-this.x;
         }
     }
-}
+    
+    set title (value) {
+        if(value==this._title)return;
+        this._title = value; 
+        if (value) this.panel.text = value;
 
-Object.defineProperties(DObjectThree.prototype, {
-    title: {
-        set : function(value){
-            if(value==this._title)return;
-            this._title = value; 
-            this.label.text = this._title;
-        },
-        get : function() { return this._title; }
-    },
-    width: {
-        set : function(value){
-            if(value==this._width)return;
-            this._width = value; 
-            this.panel.width=this._width   
-            this.panel1.width=this._width
-
-            
-
-        },
-        get : function() { return this._width; }
-    },
-    height: {
-        set : function(value){
-            if(value==this._height)return;
-            this._height = value;
-            this.panel.height=this.panel1.height=this._height
-            
-        },
-        get : function() { return this._height; }
-    },
-});
-
-
-
-export class DIconThree extends DCont{
-    constructor(cont, _x, _y,_h,_w, icon_type) {
-        super(cont);
-        cont.add(this)
-        this.type = 'DIconThree';
-        var self = this;
-        this.cont=cont;
-
-        this.par=cont
-        this.x=_x;
-        this.y=_y;
-        this._width=100;     //высота фигуры
-        this._height=this.par._height;    //ширина фигуры
-
-        this.color =  '#777777';
-        this.otstup = 3;
-        this.otstupIcon=this._width*2; //отступ иконки от кнопи
-
-        this.cont.add(this);
-        this.content = new DCont();
-        this.add(this.content);
-
-        this.but = new DImage(this,0,0);
-        this.content.add(this.but);
-
-        this.but.div.style.pointerEvents="none";
-
-        this.base1 = "data:image/png;base64,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";
-        this.base2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAAVlJREFUeNrsmj1KQ0EUhb/z3uQRfwg8RG3cgeAGJAuwsHYPgmsQUrgE12GtrStIY2UjFqJCIOUzM9fGwgQrzSQO3LuAO+c7Z+bOFCMzo+SqKLzC+90uFeFoFtUmLOr3vWQ9zWrSY+z0+lOuTZ2WItoQShGTCMB5Il1VNc2f40gYMJY4Ezwt8GVJQG+3ey/A/lKbmo2Ay3npYlmnbTGBwfJt0c7cgpb3EHcZ+nbf7CpyCtkqxOcE6FjR9RIy2X8suAA2M+nuIZ5BNyHTAkMTw3y+G6YKQ6dF38TCTkp/SkQHWPtjDrN+wfr7AekBaIFZcebDJNTt4dbXvE6FAVRAF9QbHAAbhW6h7UD66AoG6IqfQg7gAA7gAA7gAA7gAA7gAA7gAA7gAA5QMEBTsP6mAqYFA0wD2Ah0VWASHdgoIF1bTPfIWtWK/Pe/HwKLVmOaqK7G8t8qa67PAQAFql9iJQukKQAAAABJRU5ErkJggg==";
-        this.base3 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAA2dJREFUeNrsWMuOHEUQjKyq7mZm8L60XvCuLQ4sSPyG/Q/GB3NAsiX+iwNCiC9CCC7YBsQY786rH5XBoccrbE+vt2qqx7PS5mEOpR5VRmVGZFQJSbwd479/+RnAA/QUxhhUVYl/X734yWR8CsqV/nd6ev+dNdfx7QGAXfQWAhFiMZ0+sbndGYyGXysVYMRhdKyX6D3aU59PZg8Xs8UPYuT1UhIAGwmRNuPFZPaomlbfi5jrBeAChADz6fRxNSt/NMYEVeKDA/h/JebTaXA7bQWAddppawDEttNWAYhpJxc3iCzEGIDsygLqPUiNBkESi8nskUCafFh8A2g6APP5BL6pLk7r7SCJvBgiy4pLQah6qPfommAkMT07e+z9KC9GxXcAXq4FwFqLslrgrxe/o65LmJVEI5qmwf7hHdw+ugdoe5pvJqYQMdjZPUTjPYx09whBCOWhs/kMwLdrAVBVWOOwf/ApmqYCVm3M9mcwvAWqYpXXIgljLPb2P8HV9JIg8eXaLUQSIoKd3cN2X3a7BCrfywESELmyATpPxgFVn0hz2KkD12oSrxNxMmotJMY6Xl6LpSL1CEDEwPsa43+eL1UoDQglkWUF9vaPYG0WND8CAQiUivnsvAVg0nSgqqLJKuzsHcKJBPHChZLXuRx3Tk7hfY0Y/75ajRTWZjDWBguEi9gN1lo4lyHqDtihu+TqmdELiUmC9NdXhVoPJIlT4eYqoOqjNnvfocRwKgiAsRZ1tcCzP35FXc4hxqY5e/XIigGOTz5Hln8UNA8ivJDBaLSLphh02ukYTjmXQ8QEVzYMgCqsdbh9dC/6snLZkFT1oGq/HCAJ7z0kMYdb/d8QiVO4yA8moyICsyRvujEWr24uMHuQisn5GbyvkayPSFibYTD8GJBLHgvWllFjUZUV/nz+G8pqflGJFP1f5APc/ewr5MUA6puezJz3sNbh+O4X8L5JKqPWOljrgu8ELpS8IoLB8Fb7dpOQA626NcHMilIhH1DiGzOXvoXMxdRMB4JLQdDlhJf+VKipa4zHz1DXVcfLXMydWJFlOQ4OjuGyDKo93YkhAoKoqhJ1tUgKgCQIBs+WOBk9Oe3FzL3eYyMkFnGJzQQ3eydOl/x6ruraPy3eALgB0BOAYgtzLUJUaAzg1ZYBGK9a/G8ACce1fW49K2cAAAAASUVORK5CYII=";
-
-        this.p1={};
-        this.isOpen=false;
-        this.isLast=false;
-
-        this.lineArr=[];
-
-        this.level=0;
-        this.dist=this._height;
-
-
-        this.drawIcon = function (){
-            this.p1.x=this._width/2;
-            this.p1.y=this._height/3;
-            this.p1.width=this.p1.x+this._width/4
-            this.but.width=this._width-this.otstup;
-            this.but.height=this._height-this.otstup;
-            
-            this.but.x=this.but.width+this.otstup+(this.otstup/2);
-            this.dist=this._height;
-            if(this.icon_type==1){ 
-                if(this.isOpen){
-                    this.but.link=this.base1;
-                }
-                else{
-                    this.but.link=this.base2;
-                }
-            } else if(this.icon_type==2){
-                this.but.link=this.base3;
-            }
-
-        }
-
-        this.clear=function(){
-        }  
     }
+    get title () { return this._title; }
+
+    set link (value) {
+        if(value==this._link)return;
+        this._link = value; 
+        if (value) if(this.panel) this.panel.link = value; 
+
+    }
+    get link () { return this._link; }
+
+    set width (value) {
+        if(value==this._width)return;
+        this._width = value; 
+        this.panel.width=this._width   
+        this.panel1.width=this._width
+    }
+    get width () { return this._width; }
+
+    set height (value) {     
+        if(value==this._height)return;
+        this._height = value;
+        this.panel.height=this.panel1.height=this._height  
+    }
+    get height () { return this._height; }
 }
+
 
 class Dlines extends DCont {
     constructor(dCont, _x, _y, _fun) {
