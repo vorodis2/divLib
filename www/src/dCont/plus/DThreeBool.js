@@ -231,9 +231,9 @@ export class DThreeBool extends DCont{
             for (var i = 0; i < arrBut.length; i++){
 
                 if (this._heightBut>this._widthBut+this.folderOtstup) this.difference+=this._heightBut-(this._widthBut+this.folderOtstup)
-
-                this.step_y=this.i_y*(this._heightBut+this.otstup)-this.difference
+                this.step_y=this.i_y*(this._heightBut+this.otstup)
                 this.i_y++;
+
                 if(this.zebra===false){
                     arrBut[i].zebra_color=this.color1;
                     this.zebra=true;
@@ -252,7 +252,6 @@ export class DThreeBool extends DCont{
 
                 if(arrBut[i].isFolder && arrBut[i].isOpen===true){// если мы открыты показываем содержимое
                     levelCounter++;
-                // trace(levelCounter)
                     this.folderOtstup+=this._otst;
                     this.update(arrBut[i].arrBut,true);
                     levelCounter--;
