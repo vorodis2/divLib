@@ -67,12 +67,7 @@ export class DThreeButton extends DCont {
         this.panel.div.style.borderRadius = this._borderRadius + 'px';
         this.panel1.div.style.borderRadius = this._borderRadius + 'px';
 
-        this.label = new DLabel(
-            this.dCont,
-            5,
-            (this._height - this._fontSize) / 2,
-            _text
-        );
+        this.label = new DLabel(this.dCont, 5, (this._height - this._fontSize) / 2, _text);
         this.label.div.style.pointerEvents = 'none';
 
         this.label.color = this._colorText;
@@ -184,9 +179,6 @@ export class DThreeButton extends DCont {
                 self.panel.color1 = self._color;
                 self.panel1.color1 = self._color;
             }
-            //self.panel1.alpha=0
-            //this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(this._color), -20);
-
             if (self.fun_mouseout) self.fun_mouseout();
         };
 
@@ -203,11 +195,11 @@ export class DThreeButton extends DCont {
         var ww, ww1;
         this.image = undefined;
         this.reDrag = function () {
-            this.panel.width = this._width - 1;
-            this.panel1.width = this._width + 1;
+            this.panel.width = this._width// - 1;
+            this.panel1.width = this._width// + 1;
 
-            this.panel.height = this._height - 1;
-            this.panel1.height = this._height + 1;
+            this.panel.height = this._height// - 1;
+            this.panel1.height = this._height// + 1;
 
             sp = 5;
             var s;
@@ -219,15 +211,9 @@ export class DThreeButton extends DCont {
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
                 sp = this.image.width + 5;
-                if (self.label.value.length >= 1) {
-                    this.image.x = 0;
-                    this.image.y = 0;
-                } else {
-                    // this.image.x = (this._width - this.image.width) / 2;
-                    // this.image.y = (this._height - this.image.height) / 2;
-                    this.image.y = 0;
-                    this.image.x = 5;
-                }
+
+                this.image.x = 0;
+                this.image.y = (this._height - this.image.height) / 2;
             }
             let b = true;
 
@@ -240,7 +226,8 @@ export class DThreeButton extends DCont {
             }
             if (this.boolDrahVert == false) b = true;
 
-            if (this.image) var ppp = this.image.width
+            var ppp = 0;
+            if (this.image) ppp = this.image.width
             
             if (b) {
                 this.label.width = this._width - sp;
@@ -264,8 +251,8 @@ export class DThreeButton extends DCont {
                 self.label.x = ppp+5;
             }
 
-            if( this.image ) if ((this.width - this.image.width) < (this.label.value.length * this._fontSize)) this.label.visible = false
-            if( this.image ) if ((this.width - this.image.width) > (this.label.value.length * this._fontSize)) this.label.visible = true
+            if( this.image ) if ((this.width - this.image.width) < (this.label.value.length * this._fontSize)/2) this.label.visible = false
+            if( this.image ) if ((this.width - this.image.width) > (this.label.value.length * this._fontSize)/2) this.label.visible = true
 
             this.dragCanvas();
             if (this.funReDrag != undefined) this.funReDrag();
@@ -306,7 +293,7 @@ export class DThreeButton extends DCont {
                     if (self.funLoadImag != undefined) self.funLoadImag();
                 });
                 this.image.div.style.pointerEvents = 'none';
-                //this.add(this.panel1);/**/
+                //this.add(this.panel1);
             }
             this.image.link = this._link;
         };
@@ -455,11 +442,11 @@ export class DThreeButton extends DCont {
             this._boolLine = value;
             this.panel.boolLine = value;
             this.panel1.boolLine = value;
-            if (this._boolLine == true) {
-                //this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(self._color), -20);//"none";
-            } else {
-                //this.object.style.border= '0px solid'
-            }
+            // if (this._boolLine == true) {
+            //     this.object.style.border= '1px solid ' + dcmParam.compToHexArray(dcmParam.hexDec(self._color), -20);//"none";
+            // } else {
+            //     this.object.style.border= '0px solid'
+            // }
         }
     }
     get boolLine() {

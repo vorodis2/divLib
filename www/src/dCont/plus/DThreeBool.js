@@ -2,7 +2,7 @@ import { DCont } from '../DCont.js';
 import { DThreeButton } from './DThreeButton.js';
 
 export class DThreeBool extends DCont{
-    constructor(dCont, _x, _y, fun, bool) {
+    constructor(dCont, _x, _y, fun) {
         super(dCont);
         dCont.add(this)
 
@@ -16,13 +16,14 @@ export class DThreeBool extends DCont{
         this.fun = fun;
         this.x=_x;
         this.y=_y;
-        this._width=100;
-        this._height=100;
-        this._heightBut=24;  
+        this._width=32;
+        this._height=200;
+        this._heightBut=32;  
 
-        this._widthBut=200;  
+        this._widthBut=32;  
         this._activMouse = true;
         this._activId = -1;
+        this._bool = true
 
         this.arr=[];                                   
         this.arrBut=[];                                
@@ -33,6 +34,13 @@ export class DThreeBool extends DCont{
         this.indexMouseDown = -1;                      
         this.indexOver= -1;
 
+        this.panelGlav = new DPanel();
+        this.panelGlav.width = this.width
+        this.panelGlav.height = this.height
+        this.panelGlav.color1 = '#EBEBEB'
+        this.panelGlav.visible = this.bool
+        this.add(this.panelGlav);
+
         this.lines = new Dlines();
         this.lines.heightBut = this._heightBut;
         this.add(this.lines);
@@ -40,38 +48,26 @@ export class DThreeBool extends DCont{
         this.content = new DCont();
         this.add(this.content);
 
-        // this.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)"; 
-
         this.oldValue;
         this.folderOtstup=this.x;                      
         this.step_y=this.y;                            
         this.i_y=0;                                    
         this.zebra=false;   
-        this.color0 = dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color),-20) //pl102.color;      
-        this.color1 = dcmParam._color //dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color1),-20)                               
-        this.color2 = dcmParam._color
-        // this.color3 = '#ff0000'; ///////////////////////////////////////    
-        this.color3 = dcmParam.compToHexArray(dcmParam.hexDec('#ff8c00'),-20)                                   
-        this.color4 = '#ff8c00'
+
+        this.color0 = dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color),-20) //pl102.color;          // Цвет при наведении
+        this._color1 =  '#008cba'              
+        this.color2 = this.color1
+        this.color3 = dcmParam.compToHexArray(dcmParam.hexDec('#ff8c00'),-20)                               // ХЗ                             
+        this._color4 = '#ff8044'                                                                            // Цвет активного эллемента
 
 
         this.lines.color = this.color1;
 
         var levelCounter=0;                            
         var last_closed=false;                         
-        this._otst = this._heightBut;
+        this._otst = this.heightBut*0.15;
         var idArr = -1;
         this.bufferOt = [];  
-
-        //Скролл-бар
-        // this.scrollBar = new DScrollBarV(this,0,0, function(){
-        //     self.content.y=-(this.heightContent-this.height)*this.value/100;
-        //     self.lines.y = -(this.heightContent-this.height)*this.value/100;
-        // });
-       
-        // this.scrollBar.visible = false;
-        // this.scrollBar.width = this._heightBut/4;
-        // this.scrollBar.but.radius = 100;
 
         //Принимает новый массив и меняет дерево
         this.setArr = function(arr){
@@ -166,19 +162,9 @@ export class DThreeBool extends DCont{
 
         this.openCloseObj = function(obj, bb){
             if (obj.isFolder) obj.isOpen = bb;
-            // this.scrollSet();
             this.clear();
             this.update();
             this.drawElement(this.arrBut);
-            // this.scrollBar.scrolValue = -this.content.y
-            // this.content.y=- this.scrollBar.scrolValue;
-            // this.lines.y = -this.scrollBar.scrolValue;
-            //Если видно не все элементы и пропадает скролл
-            // //Устанавливаем область видимости в ноль
-            // if(!obj.isOpen&&this.content.y<0&&this.scrollBar.visible==false){
-            //     this.content.y=0;
-            //     this.lines.y = 0;
-            // }
         }
                
         this.getElement = function(){
@@ -213,9 +199,6 @@ export class DThreeBool extends DCont{
         //Отрисовка всего дерева
         this.drawAll = function (){
             this.drawElement(this.arrBut);
-
-            // this.scrollBar.x = this._width - this.scrollBar.width;
-            // this.scrollBar.height=this._height;
         }
 
         //Отрисовка элемента
@@ -242,11 +225,15 @@ export class DThreeBool extends DCont{
                 this.zebra=false;
                 this.butCount=0;
                 this.folderOtstup=0;
+                this.difference=0;
+                this.otstup=5;
             }
             for (var i = 0; i < arrBut.length; i++){
-                this.step_y=this.i_y*(this._heightBut)
-                this.i_y++;
 
+                if (this._heightBut>this._widthBut+this.folderOtstup) this.difference+=this._heightBut-(this._widthBut+this.folderOtstup)
+
+                this.step_y=this.i_y*(this._heightBut+this.otstup)-this.difference
+                this.i_y++;
                 if(this.zebra===false){
                     arrBut[i].zebra_color=this.color1;
                     this.zebra=true;
@@ -256,12 +243,16 @@ export class DThreeBool extends DCont{
                 }
                 arrBut[i].y=this.step_y;           
                 arrBut[i].x=this.folderOtstup;
+                trace('w', arrBut[i].width-this.folderOtstup)
+                trace('h',arrBut[i].height)
+
                 arrBut[i].visible = true;
                 arrBut[i].level=levelCounter;
                 this.butCount++;
 
                 if(arrBut[i].isFolder && arrBut[i].isOpen===true){// если мы открыты показываем содержимое
                     levelCounter++;
+                // trace(levelCounter)
                     this.folderOtstup+=this._otst;
                     this.update(arrBut[i].arrBut,true);
                     levelCounter--;
@@ -287,25 +278,10 @@ export class DThreeBool extends DCont{
                 this.lines.redrawLines(arrBut);
                 
                 this.butInProc=100/this.butCount;
-                // this.scrollSet();
             }
 
             
         }
-
-        //Обработка действий скролла
-        // this.scrollSet=function(){
-        //     if(this.butCount*(this._heightBut)<=this._height){
-        //         this.scrollBar.visible = false;           
-        //     }else{
-        //         this.scrollBar.visible = true;           
-        //         this.scrollBar.height = this._height;
-        //         this.scrollBar.heightContent = (this.butCount*(this._heightBut));
-        //     }
-        //     if(this.scrollBar.height<this._heightBut) {
-        //         this.scrollBar.visible=false;   
-        //     } 
-        // }
 
         var arrFolderId = [];
         this.openTillId = function(id){
@@ -343,52 +319,8 @@ export class DThreeBool extends DCont{
         }
 
         var ii, jj, ww, hh, bat, sahLoad, wM, hM, sliderOtstup;
-        this.scrolPos = function (_bool) {
-            // if (_bool == true) {
-            //     self.scrollBar.value = this.content.y / (this._height - self.scrollBar.heightContent) * 100;            
-            // } else {
-            //     self.content.y = (self.scrollBar.value / 100) * (this._height - self.scrollBar.heightContent);
-            //     self.lines.y = (self.scrollBar.value / 100) * (this._height - self.scrollBar.heightContent);
-            // }       
-        };
-
 
         // прокрутка колесом мышки
-        var hhh, www;
-        this.sahDelta=10
-        this.mousewheel = function (e) {
-            // if(self.scrollBar.visible==false)   return
-
-            var p=e.deltaY*-1;
-            if(e.wheelDelta!=undefined){
-                if(e.wheelDelta>0)p=1;
-                else p=-1;
-            }
-            p*=-1;
-            // hhh=(self.scrollBar.heightContent-self.scrollBar.height)
-            var pp=self.content.y-self.sahDelta*p;
-            if(pp<-hhh)pp=-hhh
-            self.content.y=pp
-            self.lines.y = pp;
-
-            if (p < 0) {
-                if (self.content.y >= 0) {
-                    self.content.y = 0;
-                    self.lines.y = 0;
-                } else {                
-                    self.content.y += self.sahDelta;
-                    self.lines.y += self.sahDelta;
-                }
-            } 
-            self.scrolPos(true)
-            
-        };
-
-
-        if(dcmParam.mobile==false){             
-            this.div.addEventListener('mousewheel', this.mousewheel)
-        }
-
         var sp=undefined;   
         this.dragActiv=false
         this.mouseDown=function(e){     
@@ -411,10 +343,6 @@ export class DThreeBool extends DCont{
         var yyy=0
         this.mousemove=function(e){         
             if(self.dragActiv==false)return;
-            // if(self.scrollBar.visible == false)return;
-            
-            // hhh=(self.scrollBar.heightContent-self.scrollBar.height)
-               
             if(dcmParam.mobile==false){
                 if(sp==undefined){
                     sp={                    
@@ -441,20 +369,7 @@ export class DThreeBool extends DCont{
             }   
             self.content.y=yyy
             self.lines.y = yyy;
-            self.scrolPos(true)
         }   
-
-        if(dcmParam.mobile==false){         
-            this.content.div.addEventListener("mousedown", this.mouseDown);
-            window.addEventListener("mouseup", this.mouseup);
-            
-        }else{
-            this.content.div.addEventListener("touchstart", this.mouseDown);
-            window.addEventListener("touchend", this.mouseup);
-            
-        }
-        dcmParam.addFunMove(self.mousemove)
-
 
         this.objectNa
         this.arrObj;
@@ -467,8 +382,17 @@ export class DThreeBool extends DCont{
             this.key1=_key1
             if(_key1==undefined)this.key1="name";
 
-            this.arrObj=this.getArr(_o,this.key,this.key1)
-            
+            if(_o[0]!==undefined){
+                
+                this.arrObj=[] 
+
+                for (var i = 0; i < _o.length; i++) {
+                    this.arrObj.push(this.getArr(_o[i],this.key,this.key1)[0])
+                }   
+            }else{
+                this.arrObj=this.getArr(_o,this.key,this.key1)
+            }
+
             this.setArr(this.arrObj);
         }
 
@@ -501,11 +425,11 @@ export class DThreeBool extends DCont{
 
     set height(value) {
        if(value==this._height)return;
-        this._height = value;  
-        // this.scrollBar.height=value;
+        this._height = value;
+        this.panelGlav.height = value 
+
         this.content.y=0;
         this.lines.y = 0;
-        // this.div.style.clip = "getRect(1px "+this._width+"px "+this._height+"px 0px)"; 
         this.redrawThree();
     }   
     get height() { return  this._height;} 
@@ -513,9 +437,16 @@ export class DThreeBool extends DCont{
     set width(value) {
         if(value==this._width)return;
         this._width = value;
-        // this.scrollBar.x=value-this.scrollBar.width;
-        // this.div.style.clip = "rect(1px "+this._width+"px "+this._height+"px 0px)"; 
+        this._widthBut=this._width;
+        this.panelGlav.width = value 
         
+        for (var i = 0; i < this.bufferOt.length; i++) {
+            if (this.bufferOt[i].inited) {
+                this.bufferOt[i].width = this._widthBut;
+            }
+        }
+
+
         this.redrawThree();
     }   
     get width() { return  this._width;} 
@@ -524,7 +455,7 @@ export class DThreeBool extends DCont{
         if(value==this._heightBut)return;
         this._heightBut = value;
         this.lines.heightBut = this._heightBut;
-        this._otst=this._heightBut*0.25;
+        this._otst=this._heightBut*0.15;
         for (var i = 0; i < this.bufferOt.length; i++) {
             if (this.bufferOt[i].inited) {
                 this.bufferOt[i].height = this._heightBut;
@@ -535,48 +466,81 @@ export class DThreeBool extends DCont{
     }   
     get heightBut() { return  this._heightBut;} 
 
-    set widthBut(value) {
-        if(value==this._widthBut)return;
-        this._widthBut = value; 
-        for (var i = 0; i < this.bufferOt.length; i++) {
-            if (this.bufferOt[i].inited) {
-                this.bufferOt[i].width = this._widthBut;
-            }
-        }
-        this.redrawThree(); 
-    }   
-    get widthBut() { return  this._widthBut;} 
+    // set widthBut(value) {
+    //     if(value==this._widthBut)return;
+    //     this._widthBut = value; 
+    //     for (var i = 0; i < this.bufferOt.length; i++) {
+    //         if (this.bufferOt[i].inited) {
+    //             this.bufferOt[i].width = this._widthBut;
+    //         }
+    //     }
+    //     this.redrawThree(); 
+    // }   
+    // get widthBut() { return  this._widthBut;} 
 
     set activMouse(value) {
-        if(this._activMouse == value) return;
-        this._activMouse=value;
-        // this.scrollBar.activMouse = value;
-        this.graphCover.visible = !value;
+        if (this._activMouse != value) {
+            this._activMouse = value;
+            if (value == true) {
+                this.alpha = 1;
+                this.content.div.style.cursor = 'pointer';
+                this.div.style.pointerEvents = null;
+            } else {
+                this.alpha = 0.85;
+                this.content.div.style.cursor = 'auto';
+                this.div.style.pointerEvents = 'none';
+            }
+        }
+
+
     }   
     get activMouse() { return  this._activMouse;} 
 
     set activId(value) {
+        value = Math.round(value)
         this.openTillId(value);
-        for (var i = 0; i < this.bufferOt.length; i++) {
-            if(this.bufferOt[i].id == value){
-                this.bufferOt[i].mouseDown();
-                this._activId=value;
 
-                // if (!this.scrollBar.visible) {
-                //     return;
-                // }
-                let offset = -Math.min(this.bufferOt[i].y)
-                    // this.scrollBar.heightContent - this.scrollBar.height);
-
-                this.content.y = offset;
-                this.lines.y = offset;
-                this.scrolPos(true);
-                return;
-            }
-        }
-        this._activId=-1;
+        this._activId=value;
+        this.clear();
+        this.update();
+        this.drawElement(this.arrBut);
     }   
     get activId() { return  this._activId;} 
+
+
+
+    set bool(value) {
+        if(this._bool == value) return;
+        this._bool=value;
+        this.panelGlav.visible = value
+
+    }   
+    get bool() { return  this._bool;} 
+
+
+    set color1(value) {
+        if(this._color1 == value) return;
+        this._color1=value;
+        this.color2=value;
+        this.color0=dcmParam.compToHexArray(dcmParam.hexDec(value),-20);
+
+        this.clear();
+        this.update();
+        this.drawElement(this.arrBut);
+    }   
+    get color1() { return  this._color1;} 
+
+    set color4(value) {
+        if(this._color4 == value) return;
+        this._color4=value;
+
+        this.clear();
+        this.update();
+        this.drawElement(this.arrBut);
+    }   
+    get color4() { return  this._color4;} 
+
+
 }
 
 export class DObjectThree extends DCont{
@@ -616,15 +580,11 @@ export class DObjectThree extends DCont{
 
             // Основная кнопка
             this.panel=new DThreeButton(this.content,0,0)
-            this.panel.boolLine=false
+            this.panel.boolLine=true
             if (this.link != null && this.link != 'null') this.panel.link = this.link
 
             this.panel.text=this.title
-
-            this.panel1=new DPanel(this,0,0)
-            this.panel1.alpha=0;
-
-            this.panel.height=this.panel1.height=this._height
+            this.panel.height=this._height
 
             this.sobEvent = "null";
 
@@ -644,11 +604,11 @@ export class DObjectThree extends DCont{
             };
 
             if(dcmParam.mobile==false){         
-                this.panel1.div.addEventListener("mousedown", this.mouseDown);
-                this.panel1.div.addEventListener("mouseout", this.mouseOut);
-                this.panel1.div.addEventListener("mouseover", this.mouseOver);
+                this.panel.div.addEventListener("mousedown", this.mouseDown);
+                this.panel.div.addEventListener("mouseout", this.mouseOut);
+                this.panel.div.addEventListener("mouseover", this.mouseOver);
             }else{
-                this.panel1.div.addEventListener("touchstart", this.mouseDown);        
+                this.panel.div.addEventListener("touchstart", this.mouseDown);        
             }
         }
 
@@ -669,16 +629,13 @@ export class DObjectThree extends DCont{
                 this.setInfo();
                 this.correctInfo = true;
             }
-            
-            this.panel.x=-this.x+(this.x);
+
+            this.panel.x=this.x;
             this.panel.color=this._color;
-            this.panel.width=this.width-this.x;
+            this.panel.width=this.width-this.x*2;
 
-            // this.panel1.x=-this.x;
-            // this.panel1.width=this.par.width;
-
-            this.panel1.x=-this.x+(this.x);
-            this.panel1.width=this.width-this.x;
+            if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
+            if (this.panel.height<this.panel.width)this.panel.height = this.height
         }
     }
     
@@ -702,14 +659,20 @@ export class DObjectThree extends DCont{
         if(value==this._width)return;
         this._width = value; 
         this.panel.width=this._width   
-        this.panel1.width=this._width
+
+        if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
+        if (this.panel.height<this.panel.width)this.panel.height = this.height
+
     }
     get width () { return this._width; }
 
     set height (value) {     
         if(value==this._height)return;
         this._height = value;
-        this.panel.height=this.panel1.height=this._height  
+        this.panel.height=this._height  
+
+        if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
+        if (this.panel.height<this.panel.width)this.panel.height = this.height
     }
     get height () { return this._height; }
 }
@@ -735,9 +698,11 @@ class Dlines extends DCont {
     drawLines (arrBut, pathX, pathY) {
         let path = new Path2D();
         let butCount = 0;
+        pathX =( pathX*0.15)
+        
         this.ctx.strokeStyle = this.color;
-        path.moveTo(pathX, pathY);
-        pathY += this._heightBut / 2;
+        path.moveTo(pathX, pathY-50);
+        pathY += (this._heightBut + 10) / 2 ;
         path.lineTo(pathX, pathY);
 
         for(let but of arrBut) {
@@ -749,11 +714,13 @@ class Dlines extends DCont {
                 pathY += this._heightBut * innerButCount;
                 butCount += innerButCount;
             }
+
             if(!but.isLast) {
                 pathY += this._heightBut;
                 path.lineTo(pathX, pathY);
             }
         }
+
         this.ctx.stroke(path);
         return butCount + arrBut.length;
     }
