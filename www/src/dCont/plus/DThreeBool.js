@@ -53,6 +53,10 @@ export class DThreeBool extends DCont{
         this.step_y=this.y;                            
         this.i_y=0;                                    
         this.zebra=false;   
+                
+
+        this.temp_y = this.y
+
 
         this.color0 = dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color),-20) //pl102.color;          // Цвет при наведении
         this._color1 =  '#008cba'              
@@ -221,18 +225,27 @@ export class DThreeBool extends DCont{
             if(arrBut===undefined) arrBut=this.arrBut;
             if(!bool){
                 this.i_y=0;
+                this.i1_y=0;
                 this.step_y=this.y;
                 this.zebra=false;
                 this.butCount=0;
                 this.folderOtstup=0;
                 this.difference=0;
                 this.otstup=5;
+                this.ee = 1
             }
             for (var i = 0; i < arrBut.length; i++){
+                var oo = this._otst * this.ee
+                // var height = this._heightBut > this._widthBut ? this._heightBut + this.otstup : this._widthBut + this.otstup
+                var height = this._heightBut > this._widthBut ? this._widthBut + this.otstup : this._heightBut + this.otstup
+                var height1 =  this._heightBut > this._widthBut-oo ? this._widthBut-oo*2 + this.otstup : this._heightBut + this.otstup
+                this.step_y=((this.i_y*height)-(this.i1_y*height))+(this.i1_y*height1)
 
-                if (this._heightBut>this._widthBut+this.folderOtstup) this.difference+=this._heightBut-(this._widthBut+this.folderOtstup)
-                this.step_y=this.i_y*(this._heightBut+this.otstup)
+
+
+
                 this.i_y++;
+                if(bool===true) this.i1_y++;
 
                 if(this.zebra===false){
                     arrBut[i].zebra_color=this.color1;
@@ -243,12 +256,10 @@ export class DThreeBool extends DCont{
                 }
                 arrBut[i].y=this.step_y;           
                 arrBut[i].x=this.folderOtstup;
-                trace('w', arrBut[i].width-this.folderOtstup)
-                trace('h',arrBut[i].height)
-
                 arrBut[i].visible = true;
                 arrBut[i].level=levelCounter;
                 this.butCount++;
+                this.ee = levelCounter > 1 ? levelCounter : 1
 
                 if(arrBut[i].isFolder && arrBut[i].isOpen===true){// если мы открыты показываем содержимое
                     levelCounter++;
@@ -272,7 +283,8 @@ export class DThreeBool extends DCont{
             }
 
             if(!bool){
-                this.lines.height = this.butCount * this._heightBut;
+                this.lines.height = ((this.i_y*height)-(this.i1_y*height))+(this.i1_y*height1);
+                // this.lines.height = this.butCount * this._heightBut
                 this.lines.width = this._width;
                 this.lines.redrawLines(arrBut);
                 
@@ -453,7 +465,6 @@ export class DThreeBool extends DCont{
     set heightBut(value) {
         if(value==this._heightBut)return;
         this._heightBut = value;
-        this.lines.heightBut = this._heightBut;
         this._otst=this._heightBut*0.15;
         for (var i = 0; i < this.bufferOt.length; i++) {
             if (this.bufferOt[i].inited) {
@@ -579,9 +590,7 @@ export class DObjectThree extends DCont{
 
             // Основная кнопка
             this.panel=new DThreeButton(this.content,0,0)
-            this.panel.boolLine=true
             if (this.link != null && this.link != 'null') this.panel.link = this.link
-
             this.panel.text=this.title
             this.panel.height=this._height
 
@@ -661,17 +670,20 @@ export class DObjectThree extends DCont{
 
         if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
         if (this.panel.height<this.panel.width)this.panel.height = this.height
-
+        this.drawElement()
     }
     get width () { return this._width; }
 
     set height (value) {     
         if(value==this._height)return;
         this._height = value;
-        this.panel.height=this._height  
 
-        if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
-        if (this.panel.height<this.panel.width)this.panel.height = this.height
+
+        // this.panel.height=this._height 
+        // if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
+        // if (this.panel.height<this.panel.width)this.panel.height = this.height
+
+        this.drawElement()
     }
     get height () { return this._height; }
 }
@@ -680,49 +692,62 @@ export class DObjectThree extends DCont{
 class Dlines extends DCont {
     constructor(dCont, _x, _y, _fun) {
         super(dCont);
-
         this.canvas = document.createElement('canvas');
         this.div.appendChild(this.canvas);
-
         this.ctx = this.canvas.getContext('2d');
-
         this.lineLength = 0.4;
     }
 
     redrawLines (arrBut) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawLines(arrBut, -this._heightBut / 2, 0);
+        this.drawLines(arrBut, -(-this._heightBut / 2) * 0.25, this._heightBut);
+        this.xx= -(-this._heightBut / 2) * 0.25
     }
 
-    drawLines (arrBut, pathX, pathY) {
+    drawLines (arrBut, pathX, pathY, bool) {
         let path = new Path2D();
         let butCount = 0;
-        pathX =( pathX*0.15)
-        
         this.ctx.strokeStyle = this.color;
-        path.moveTo(pathX, pathY-50);
-        pathY += (this._heightBut + 10) / 2 ;
-        path.lineTo(pathX, pathY);
+                trace('$$$@@', pathY)
 
         for(let but of arrBut) {
-            path.lineTo(pathX + this._heightBut * this.lineLength, pathY);
-            path.moveTo(pathX, pathY);
+            if (bool) {
+                trace('$$$@', pathY)
+                path.moveTo(this.xx, pathY);
+                pathY += 5 + but.height ;
+                path.lineTo(this.xx, pathY);
+                path.lineTo(this.xx+but.width/2, pathY);
+                path.moveTo(this.xx, pathY);
+                // pathY += 5 + but.height ;
+                // path.lineTo(this.xx, pathY);
+                // path.lineTo(this.xx+but.width/2, pathY);
+            }
 
+            // path.moveTo(pathX, pathY);
+            // pathY += (but.height) / 2;
+            // path.lineTo(pathX, pathY);
+
+            // path.lineTo(pathX + but.height * this.lineLength, pathY);
+            // path.moveTo(pathX, pathY);
             if(but.isFolder && but.isOpen === true) {
-                let innerButCount = this.drawLines(but.arrBut, pathX + this._heightBut, pathY + this._heightBut / 2);
-                pathY += this._heightBut * innerButCount;
-                butCount += innerButCount;
+                trace('$$',but.y)
+                trace('$$$',but.x)
+                let innerButCount = this.drawLines(but.arrBut, but.x, this._heightBut, true);
+                // let innerButCount = this.drawLines(but.arrBut, pathX , pathY + but.arrBut[0].height / 2);
+                // pathY += (but.height) * innerButCount;
+                // butCount += innerButCount;
             }
 
-            if(!but.isLast) {
-                pathY += this._heightBut;
-                path.lineTo(pathX, pathY);
-            }
+            // if(!but.isLast) {
+            //     pathY += but.height+5;
+            //     path.lineTo(pathX, pathY);
+            // }
         }
-
+        
         this.ctx.stroke(path);
         return butCount + arrBut.length;
     }
+
 
     
     set width (w) {
