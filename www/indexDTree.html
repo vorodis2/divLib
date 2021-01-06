@@ -1,0 +1,120 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>testAdmin1</title>
+
+
+<script src="build/divLib.js"></script>
+
+
+<style type="text/css">
+	#stats { position: absolute; top:0; left: 200px; }
+</style>
+
+</head>
+<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<body>
+
+<script  type="module">
+	window.trace = window.console.log.bind(window.console);
+	import { DCreatIcon } from "./src/dCont/plus/DCreatIcon.js";
+	import { DCompDev } from "./src/dCont/plus/DCompDev.js";
+	import { DThreeBool } from "./src/dCont/plus/DThreeBool.js";
+	import { DThreeButton } from "./src/dCont/plus/DThreeButton.js";
+
+	var dcmParam, scane, content;
+
+	
+	function init () {
+		document.addEventListener('contextmenu', event => event.preventDefault());
+		dcmParam=new DCM();
+
+		scane= new DCont(document.body);
+		
+
+		scane= new DCont(document.body);
+		content= new DCont(scane);
+
+		var pObject=new DParamObject(content,2,2,function(s){			
+			trace(s)
+		});
+		pObject.width=222;
+
+
+	 	var sah = 1;
+	 	var pic =  function(n) {
+	 		let linkPic  = 'resources/DThree/'
+	 		let typePic  = 'w.png'
+	 		sah = n != undefined ? n : sah
+	 		let ret =  linkPic+sah+typePic
+	 		sah += 1
+
+	 		return ret
+	 	}
+
+
+		var n = new DPanel(content, 500, 85)
+		n.width = 150 
+		n.height = 150 
+		var three=new DThree(n.content,4,4,function(){pObject.addObject(three)})
+
+		var n1 = new DPanel(content, 500, 230)
+		n1.width = 200 
+		n1.height = 150 
+		var three1=new DThreeBool(n1,4,4,function(){pObject.addObject(three1)})
+
+		var n2 = new DPanel(content, 230, 230)
+		n2.width = 200 
+		n2.height = 150 
+		var three2=new DThreeBool(n2,4,4,function(o){
+			pObject.addObject(three2)
+			// trace(this)
+			// trace(o)
+		})
+		three2.width=150
+
+
+
+		var obj1={uuid:Math.random(),name:"План",link:pic(1),array:
+		[{uuid:Math.random(),name:"Список",link:pic(2),array:[]},{uuid:Math.random(),name:"Добавить",link:pic(3),array:[]}]}
+
+		var objA=[{uuid:Math.random(), name:"Список", link:pic(2),array:[obj1]}, {uuid:Math.random(),name:"Добавить",link:pic(3),array:[]}]
+
+		var arr=[]
+		arr.push({uuid:Math.random(),name:"План",link:pic(1),array:objA})
+		arr.push({uuid:Math.random(),name:"Текстуры",link:pic(4),array:objA})
+		arr.push({uuid:Math.random(),name:"Объект 3D",link:pic(5),array:objA})
+		arr.push({uuid:Math.random(),name:"Материал",link:pic(6),array:[]})
+
+
+		three.setObj(obj1,"array","name")
+		pObject.addObject(three)
+
+		three1.setObj(arr,"array","name")
+		pObject.addObject(three1)
+
+		three2.setObj(arr,"array","name")
+		pObject.addObject(three2)
+
+		n.height = three.height
+		n1.height = three1.height
+
+		var n2 = new DPanel(content, 700, 285)
+		n2.width = 200 
+		n2.height = 150 
+
+		var threeB=new DThreeButton(n2,4,4, 'text', function(){pObject.addObject(threeB)})
+		threeB.link="resources/pic/2.png"
+		threeB.height=100
+		threeB.width=190	
+
+	}
+
+	init()
+</script>
+
+	
+</body ></html>
+
+
+
+

@@ -720,7 +720,7 @@ class Dlines extends DCont {
         // but.level
             path.lineTo(this.xx + but.height1 * this.lineLength, pathY);
             path.moveTo(this.xx, pathY);
-            // trace(but)
+            trace(but)
             if(but.isFolder && but.isOpen === true) {
                 let innerButCount = this.drawLines(but.arrBut, this.xx + this._heightBut, pathY + this._heightBut / 2);
                 pathY += this._heightBut * innerButCount;
