@@ -239,6 +239,7 @@ export class DThreeBool extends DCont{
                 // var height = this._heightBut > this._widthBut ? this._heightBut + this.otstup : this._widthBut + this.otstup
                 var height = this._heightBut > this._widthBut ? this._widthBut + this.otstup : this._heightBut + this.otstup
                 var height1 =  this._heightBut > this._widthBut-oo ? this._widthBut-oo*2 + this.otstup : this._heightBut + this.otstup
+
                 this.step_y=((this.i_y*height)-(this.i1_y*height))+(this.i1_y*height1)
 
 
@@ -570,6 +571,7 @@ export class DObjectThree extends DCont{
         this._color = '#fff000';
         this._link = null
 
+        this.height1=0;
         this.arrBut=[];  
         this.life = true;       
         this.zebra_color=this._color;
@@ -644,6 +646,8 @@ export class DObjectThree extends DCont{
 
             if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
             if (this.panel.height<this.panel.width)this.panel.height = this.height
+
+            this.height1 = this.panel.height
         }
     }
     
@@ -700,53 +704,67 @@ class Dlines extends DCont {
 
     redrawLines (arrBut) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawLines(arrBut, -(-this._heightBut / 2) * 0.25, this._heightBut);
+        this.drawLines(arrBut, -(-this._heightBut / 2) * 0.25, 0);
         this.xx= -(-this._heightBut / 2) * 0.25
     }
 
-    drawLines (arrBut, pathX, pathY, bool) {
+    drawLines (arrBut, pathX, pathY) {
         let path = new Path2D();
         let butCount = 0;
         this.ctx.strokeStyle = this.color;
-                trace('$$$@@', pathY)
+        path.moveTo(this.xx, pathY);
+        pathY += this._heightBut / 2 ;
+        path.lineTo(this.xx, pathY);
 
         for(let but of arrBut) {
-            if (bool) {
-                trace('$$$@', pathY)
-                path.moveTo(this.xx, pathY);
-                pathY += 5 + but.height ;
-                path.lineTo(this.xx, pathY);
-                path.lineTo(this.xx+but.width/2, pathY);
-                path.moveTo(this.xx, pathY);
-                // pathY += 5 + but.height ;
-                // path.lineTo(this.xx, pathY);
-                // path.lineTo(this.xx+but.width/2, pathY);
-            }
-
-            // path.moveTo(pathX, pathY);
-            // pathY += (but.height) / 2;
-            // path.lineTo(pathX, pathY);
-
-            // path.lineTo(pathX + but.height * this.lineLength, pathY);
-            // path.moveTo(pathX, pathY);
+        // but.level
+            path.lineTo(this.xx + but.height1 * this.lineLength, pathY);
+            path.moveTo(this.xx, pathY);
+            // trace(but)
             if(but.isFolder && but.isOpen === true) {
-                trace('$$',but.y)
-                trace('$$$',but.x)
-                let innerButCount = this.drawLines(but.arrBut, but.x, this._heightBut, true);
-                // let innerButCount = this.drawLines(but.arrBut, pathX , pathY + but.arrBut[0].height / 2);
-                // pathY += (but.height) * innerButCount;
-                // butCount += innerButCount;
+                let innerButCount = this.drawLines(but.arrBut, this.xx + this._heightBut, pathY + this._heightBut / 2);
+                pathY += this._heightBut * innerButCount;
+                butCount += innerButCount;
             }
 
-            // if(!but.isLast) {
-            //     pathY += but.height+5;
-            //     path.lineTo(pathX, pathY);
-            // }
+            if(!but.isLast) {
+                pathY += but.height1+5;
+                path.lineTo(this.xx, pathY);
+            }
         }
         
         this.ctx.stroke(path);
         return butCount + arrBut.length;
     }
+
+
+    // drawLines (arrBut, pathX, pathY, bool) {
+    //     let path = new Path2D();
+    //     let butCount = 0;
+    //     this.ctx.strokeStyle = this.color;
+    //             trace('$$$@@', pathY)
+
+    //     for(let but of arrBut) {
+    //         if (bool) {
+    //             trace('$$$@', pathY)
+    //             path.moveTo(this.xx, pathY);
+    //             pathY += 5 + but.height/2 ;
+    //             path.lineTo(this.xx, pathY);
+    //             path.lineTo(this.xx+but.width/2, pathY);
+    //             pathY += 5 + but.height/2 ;
+    //             path.moveTo(this.xx, pathY);
+    //         }
+
+    //         if(but.isFolder && but.isOpen === true) {
+    //             trace('$$',but.y)
+    //             trace('$$$',but.x)
+    //             let innerButCount = this.drawLines(but.arrBut, but.x, but.y, true);
+    //         }
+    //     }
+        
+    //     this.ctx.stroke(path);
+    //     return butCount + arrBut.length;
+    // }
 
 
     
