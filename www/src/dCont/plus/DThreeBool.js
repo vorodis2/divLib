@@ -13,21 +13,23 @@ export class DThreeBool extends DCont{
         this.dcmParam.add(this)
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);
 
+        this.otstup = 2;    
+
         this.fun = fun;
         this.x=_x;
         this.y=_y;
-        this._width=32;
+        this._width=36;
         this._height=200;
         this._heightBut=32;  
 
-        this._widthBut=32;  
+        this._widthBut=this._width-(this.otstup*2); //32
+        this._widthBut=32; //32
         this._activMouse = true;
         this._activId = -1;
         this._bool = true
 
         this.arr=[];                                   
         this.arrBut=[];                                
-        this.otstup = 2;                               
         this.butOnPanel = 10;                          
         this.butCount=0;                               
         this.butInProc=0;
@@ -38,11 +40,14 @@ export class DThreeBool extends DCont{
         this.panelGlav.width = this.width
         this.panelGlav.height = this.height
         this.panelGlav.color1 = '#EBEBEB'
+        this.panelGlav.color1 = '#00ff00'
         this.panelGlav.visible = this.bool
         this.add(this.panelGlav);
 
         this.lines = new Dlines();
         this.lines.heightBut = this._heightBut;
+        this.lines.x = this.otstup
+        this.lines.y = this.otstup
         this.add(this.lines);
 
         this.content = new DCont();
@@ -94,8 +99,9 @@ export class DThreeBool extends DCont{
 
         this.redrawThree = function () {
             this.butCount = 0
-            this.content.y=0;
-            this.lines.y = 0;
+            this.content.y=this.otstup;
+            this.content.x=this.otstup;
+            this.lines.y = this.otstup;
             this.update();
             this.drawAll();
         }
@@ -188,6 +194,7 @@ export class DThreeBool extends DCont{
             },this);
           
             ot.three = this;
+            trace('this', this)
             this.bufferOt.push(ot);
             return ot;
         }
@@ -235,7 +242,7 @@ export class DThreeBool extends DCont{
             }
             for (var i = 0; i < arrBut.length; i++){
                 var oo = this._otst * this.ee
-                // var height = this._heightBut > this._widthBut ? this._heightBut + this.otstup : this._widthBut + this.otstup
+
                 var height = this._heightBut > this._widthBut ? this._widthBut + this.otstup : this._heightBut + this.otstup
                 var height1 =  this._heightBut > this._widthBut-oo ? this._widthBut-oo*2 + this.otstup : this._heightBut + this.otstup
 
@@ -446,7 +453,7 @@ export class DThreeBool extends DCont{
     set width(value) {
         if(value==this._width)return;
         this._width = value;
-        this._widthBut=this._width;
+        this._widthBut=this._width-(this.otstup*2);
         this.panelGlav.width = value 
         
         for (var i = 0; i < this.bufferOt.length; i++) {
@@ -454,8 +461,6 @@ export class DThreeBool extends DCont{
                 this.bufferOt[i].width = this._widthBut;
             }
         }
-
-
         this.redrawThree();
     }   
     get width() { return  this._width;} 
@@ -474,17 +479,17 @@ export class DThreeBool extends DCont{
     }   
     get heightBut() { return  this._heightBut;} 
 
-    // set widthBut(value) {
-    //     if(value==this._widthBut)return;
-    //     this._widthBut = value; 
-    //     for (var i = 0; i < this.bufferOt.length; i++) {
-    //         if (this.bufferOt[i].inited) {
-    //             this.bufferOt[i].width = this._widthBut;
-    //         }
-    //     }
-    //     this.redrawThree(); 
-    // }   
-    // get widthBut() { return  this._widthBut;} 
+    set widthBut(value) {
+        if(value==this._widthBut)return;
+        this._widthBut = value; 
+        for (var i = 0; i < this.bufferOt.length; i++) {
+            if (this.bufferOt[i].inited) {
+                this.bufferOt[i].width = this._widthBut;
+            }
+        }
+        this.redrawThree(); 
+    }   
+    get widthBut() { return  this._widthBut;} 
 
     set activMouse(value) {
         if (this._activMouse != value) {
@@ -562,7 +567,7 @@ export class DObjectThree extends DCont{
         this.fun=fun;                 
         this.x=_x;
         this.y=_y;
-        this._width= 100;
+        this._width=50;
         this._height=20;
         this._title=' ';
         this._color = '#fff000';
@@ -583,8 +588,6 @@ export class DObjectThree extends DCont{
         this.inited = false;
         this._height1 = this.height;
 
-            // if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
-            // if (this.panel.height<this.panel.width)this.panel.height = this.height
 
         this.init = function () {
             this.content = new DCont();
@@ -595,7 +598,6 @@ export class DObjectThree extends DCont{
             if (this.link != null && this.link != 'null') this.panel.link = this.link
             this.panel.text=this.title
             this.panel.height=this._height
-            // this.panel.alpha = 0.3
 
             this.sobEvent = "null";
 
@@ -626,7 +628,7 @@ export class DObjectThree extends DCont{
         this.correctInfo = false;
         this.setInfo = function () {
             this.title = this.obj.text;
-            this.width = this.three._width;
+            this.width = this.three._widthBut;
             this.height = this.three._heightBut;
             this.height1 = this.height > this.width ? this.width-this.x*2 : this.height 
         }
@@ -721,23 +723,20 @@ class Dlines extends DCont {
         this.ctx.strokeStyle = this.color;
 
         for (var i = 0; i < arrBut.length; i++){
-            trace(lvl, 'i', i)
             if(arrBut[i].isFolder && arrBut[i].isOpen===true && lvl < 1){
                 yy = arrBut[i].y
                 path.moveTo(this.xx, yy);
                 yy += arrBut[i].height1
                 path.lineTo(this.xx, yy); 
-                trace('yy', yy)
                 let innerButCount = this.drawLines(arrBut[i].arrBut, this.xx, yy, i+1, arrBut[i].arrBut[0].height1);
 
             }
 
             if (lvl > 0){
-                trace('pathY', pathY)
                 path.moveTo(this.xx, pathY);
                 let sp = 5+(arrBut[i].height1/2)*(i+1)
                 path.lineTo(this.xx, pathY+sp);
-                path.lineTo(this.xx*25, pathY+sp);
+                path.lineTo(this.xx*5, pathY+sp);
                 path.moveTo(this.xx, pathY+sp);
                 if(!arrBut[i].isLast)path.lineTo(this.xx, pathY+sp+(arrBut[i].height1/2));
                 pathY+= arrBut[i].height1/2
