@@ -28,6 +28,7 @@ export function DCM() {
     var self = this;
 
     this.wh = 32;
+    this.wb = 200;
     this._color = '#008CBA';
     this._color1 = '#ffffff';
     this._colorText = '#ffffff'; //dfgdfg
