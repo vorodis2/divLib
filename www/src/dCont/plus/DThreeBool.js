@@ -13,7 +13,7 @@ export class DThreeBool extends DCont{
         this.dcmParam.add(this)
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);
 
-        this.otstup = 2;    
+        this.otstup = 4;    
 
         this.fun = fun;
         this.x=_x;
@@ -23,7 +23,7 @@ export class DThreeBool extends DCont{
         this._heightBut=32;  
 
         this._widthBut=this._width-(this.otstup*2); //32
-        this._widthBut=32; //32
+        // this._widthBut=32; //32
         this._activMouse = true;
         this._activId = -1;
         this._bool = true
@@ -40,7 +40,6 @@ export class DThreeBool extends DCont{
         this.panelGlav.width = this.width
         this.panelGlav.height = this.height
         this.panelGlav.color1 = '#EBEBEB'
-        this.panelGlav.color1 = '#00ff00'
         this.panelGlav.visible = this.bool
         this.add(this.panelGlav);
 
@@ -237,7 +236,7 @@ export class DThreeBool extends DCont{
                 this.butCount=0;
                 this.folderOtstup=0;
                 this.difference=0;
-                this.otstup=5;
+                this.otstup=4;
                 this.ee = 1
             }
             for (var i = 0; i < arrBut.length; i++){
