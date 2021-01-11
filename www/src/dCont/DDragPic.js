@@ -97,15 +97,20 @@ export function DDragPic(dC) {
     //дергает вложеные фунАпы
     this.mouseup = function(e){
         if(sp!=undefined){
+             for (var i = 0; i < self.arrFunUp.length; i++) {
+                self.arrFunUp[i]()
+            } 
+
             self.stop();
+
+           
         }
+        
     }
 
     this.stop = function(){               
         if(self.fUp)self.fUp(); 
-        for (var i = 0; i < self.arrFunUp.length; i++) {
-            self.arrFunUp[i]()
-        }      
+             
         dcmParam.removeFunMove(self.mousemove) 
         self.dC.remove(self.dCont);
         self.object=undefined
