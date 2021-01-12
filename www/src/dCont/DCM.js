@@ -1486,13 +1486,13 @@ export class DButton extends DCont {
         this.dContC = new DCont(this.dCont);
 
         this.panel1 = new DPanel(this.dCont, 0, 0);
-        this.panel1.width = this._width + 1;
-        this.panel1.height = this._height + 1;
+        this.panel1.width = this._width ;
+        this.panel1.height = this._height ;
         this.panel1.color1 = this._color;
 
-        this.panel = new DPanel(this.dCont, 2, 2);
-        this.panel.width = this._width - 1;
-        this.panel.height = this._height - 1;
+        this.panel = new DPanel(this.dCont, 0, 0);
+        this.panel.width = this._width;
+        this.panel.height = this._height;
         this.panel.color1 = this._color;
         this.panel.div.style.pointerEvents = 'none';
         this.panel.boolLine = false;
@@ -1638,11 +1638,11 @@ export class DButton extends DCont {
         var ww, ww1;
         this.image = undefined;
         this.reDrag = function () {
-            this.panel.width = this._width - 1;
-            this.panel1.width = this._width + 1;
+            this.panel.width = this._width ;
+            this.panel1.width = this._width ;
 
-            this.panel.height = this._height - 1;
-            this.panel1.height = this._height + 1;
+            this.panel.height = this._height ;
+            this.panel1.height = this._height ;
 
             sp = 5;
             var s;
@@ -2450,8 +2450,8 @@ export class DPanel extends DCont {
         this.dCont.div.style.borderRadius = this._borderRadius + 'px';
         this.dCont.div.style.background = this._color1;
 
-        this.dCont.div.style.width = this._width - 2 + 'px';
-        this.dCont.div.style.height = this._height - 2 + 'px';
+        this.dCont.div.style.width = this._width  + 'px';
+        this.dCont.div.style.height = this._height  + 'px';
 
         if (this._boolLine == true) {
             this.dCont.div.style.border =
@@ -2532,7 +2532,7 @@ export class DPanel extends DCont {
     set width(value) {
         if (this._width != value) {
             this._width = value;
-            this.dCont.div.style.width = this._width - 2 + 'px';
+            this.dCont.div.style.width = this._width  + 'px';
             this.dragCanvas();
         }
     }
@@ -2543,7 +2543,7 @@ export class DPanel extends DCont {
     set height(value) {
         if (this._height != value) {
             this._height = value;
-            this.dCont.div.style.height = this._height - 2 + 'px';
+            this.dCont.div.style.height = this._height  + 'px';
             this.dragCanvas();
         }
     }
@@ -3503,7 +3503,7 @@ export class DSliderBig extends DCont {
             this._width = v;
             this.slider.width = (this._width - dcmParam._otstup) * 0.7;
             this.input.width = (this._width - dcmParam._otstup) * 0.3 - 4;
-            this.input.x = this.slider.width + dcmParam._otstup;
+            this.input.x = this.slider.width + dcmParam._otstup+4;
 
             this.label2.x = this.input.x - 4 * this.label2.text.length;
         }
@@ -3590,10 +3590,12 @@ export class DSliderBig extends DCont {
     set value(v) {
         if (this._value != v) {
             if (v == null || v == undefined) return;
-
+            if(isNaN(v)==true)return;
+            
             let len = String(this._okrug).length - 1;
             this._value = v;
             if (this._okrug1 != 0) this._value -= this._value % this._okrug1;
+            
             this._value = +this._value.toFixed(len);
 
             if (this._value > this._max) this._value = this._max;
@@ -3827,8 +3829,8 @@ export class DInput extends DCont {
             }
         };
 
-        this.object.style.width = this._width - 2 + 'px';
-        this.object.style.height = this._height - 4 + 'px';
+        this.object.style.width = this._width - 4 + 'px';
+        this.object.style.height = this._height - 2 + 'px';
 
         this.div.appendChild(this.object);
 
@@ -3874,7 +3876,7 @@ export class DInput extends DCont {
     set width(v) {
         if (this._width != v) {
             this._width = v;
-            this.object.style.width = this._width - 2 + 'px';
+            this.object.style.width = this._width - 4 + 'px';
         }
     }
     get width() {
@@ -3884,7 +3886,7 @@ export class DInput extends DCont {
     set height(v) {
         if (this._height != v) {
             this._height = v;
-            this.object.style.height = this._height - 4 + 'px';
+            this.object.style.height = this._height - 2 + 'px';
         }
     }
     get height() {
