@@ -2944,6 +2944,16 @@ export class DLabel extends DCont {
             this.add(this.dCT1);
             this.add(this.dCT);
         };
+
+        var dCt=undefined;
+        this.getTextWidth = function(text, font) {
+            if(dCt==undefined)dCt = document.createElement("canvas")
+            var canvas = dCt// getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));    
+            var context = canvas.getContext("2d");
+            context.font = font;
+            var metrics = context.measureText(text);
+            return metrics.width;
+        }
     }
 
     set activMouse(value) {
