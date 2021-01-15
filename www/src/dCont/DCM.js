@@ -2945,10 +2945,10 @@ export class DLabel extends DCont {
             this.add(this.dCT);
         };
 
-        var dCt=undefined;
+        var dCt2=undefined;
         this.getTextWidth = function(text, font) {
-            if(dCt==undefined)dCt = document.createElement("canvas")
-            var canvas = dCt// getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));    
+            if(dCt2==undefined)dCt2 = document.createElement("canvas")
+            var canvas = dCt2// getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));    
             var context = canvas.getContext("2d");
             context.font = font;
             var metrics = context.measureText(text);
