@@ -259,7 +259,11 @@ export function DDragPic(dC) {
             document.addEventListener("touchend", self.mouseup1);
         } 
         dcmParam.addFunMove(this.mousemove1)       
-    }  
+    } 
+
+
+
+     
 
 //-------------------------------------------------
 
