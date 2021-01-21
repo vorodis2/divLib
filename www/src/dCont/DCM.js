@@ -1474,6 +1474,7 @@ export class DButton extends DCont {
         this._borderRadius = 0;
         this._boolLine = dcmParam._boolLine;
         this._boolFond = true;
+        this._scalePic = 0;
 
         this.alphaTeni = 0.1;
 
@@ -1652,12 +1653,16 @@ export class DButton extends DCont {
                 if (this._width / this.image.picWidth < s)
                     s = this._width / this.image.picWidth;
 
+                if(this._scalePic!==0){
+                    s=this._scalePic;
+                }
+
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
                 sp = this.image.width + 5;
                 if (self.label.value.length >= 1) {
                     this.image.x = 0;
-                    this.image.y = 0;
+                    this.image.y = (this._height - this.image.height) / 2;
                 } else {
                     this.image.x = (this._width - this.image.width) / 2;
                     this.image.y = (this._height - this.image.height) / 2;
@@ -1685,11 +1690,15 @@ export class DButton extends DCont {
                 if (this._width / this.image.picWidth < s)
                     s = this._width / this.image.picWidth;
 
+                if(this._scalePic!==0){
+                    s=this._scalePic;
+                }
+
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
 
                 this.image.x = (this._width - this.image.width) / 2;
-                this.image.y = 0;
+                this.image.y = (this._height - this.image.height) / 2;
 
                 this.label.width = this._width;
                 self.label.y = this._height - this._fontSize * 1.5;
@@ -1857,6 +1866,18 @@ export class DButton extends DCont {
     get width() {
         return this._width;
     }
+
+    set scalePic(value) {
+        if (this._scalePic != value) {
+            this._scalePic = value;
+            this.reDrag();
+        }
+    }
+    get scalePic() {
+        return this._scalePic;
+    }
+
+    
 
     set textAlign(value) {
         if (this._textAlign != value) {
