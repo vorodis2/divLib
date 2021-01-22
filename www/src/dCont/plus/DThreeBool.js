@@ -2,7 +2,7 @@ import { DCont } from '../DCont.js';
 import { DThreeButton } from './DThreeButton.js';
 
 export class DThreeBool extends DCont{
-    constructor(dCont, _x, _y, fun) {
+    constructor(dCont, _x, _y, fun, _bool) {
         super(dCont);
         dCont.add(this)
 
@@ -18,6 +18,8 @@ export class DThreeBool extends DCont{
         this.fun = fun;
         this.x=_x;
         this.y=_y;
+        this.boolClick=_bool;
+
         this._width=36;
         this._height=200;
         this._heightBut=32;  
@@ -63,7 +65,7 @@ export class DThreeBool extends DCont{
 
 
         this.color0 = dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color),-20) //pl102.color;          // Цвет при наведении
-        this._color1 =  '#008cba'              
+        this._color1 =  dcmParam._color
         this.color2 = this.color1
         this.color3 = dcmParam.compToHexArray(dcmParam.hexDec('#ff8c00'),-20)                               // ХЗ                             
         this._color4 = '#ff8044'                                                                            // Цвет активного эллемента
@@ -120,6 +122,7 @@ export class DThreeBool extends DCont{
             idArr++;
             but = this.getElement();
             if (obj) if (obj.obj) if (obj.obj.link) but.link = obj.obj.link;
+
             but.id = idArr;
             but.obj = obj;
             but.isFolder = false;
@@ -141,9 +144,14 @@ export class DThreeBool extends DCont{
             //Нажатие клавиши     
             if(obj.sobEvent=="mouseDown"){
                 if(this.fun!=undefined) this.fun(obj.obj);
-                this._activId = obj.id;
+                this.activId = obj.id;
                 //Открытие/закрытие папки
-                this.openCloseObj(obj, !obj.isOpen); 
+                if(this.boolClick == false || this.boolClick == undefined)this.openCloseObj(obj, !obj.isOpen); 
+                if(this.boolClick == true) {
+                     var vv = obj.id
+                     if(this.findPath(this.arrBut, obj.id)[0] != undefined) vv = this.findPath(this.arrBut, obj.id)[0]
+                     this.openId(vv)
+                }
             }
 
             //Наведение курсора
@@ -193,7 +201,6 @@ export class DThreeBool extends DCont{
             },this);
           
             ot.three = this;
-            trace('this', this)
             this.bufferOt.push(ot);
             return ot;
         }
@@ -211,17 +218,26 @@ export class DThreeBool extends DCont{
         }
 
         //Отрисовка элемента
-        this.drawElement = function (arrBut){
+        this.drawElement = function (arrBut, p){
             //debugger;
+
             for (var i = 0; i < arrBut.length; i++){
                 //Если была наведена мышка
-                if(arrBut[i].isIndexOver){
-                    arrBut[i]._color=this.color0;
-                } else arrBut[i]._color=arrBut[i].zebra_color;
-                if(arrBut[i].id == this._activId) arrBut[i]._color = this.color4;
+                let col = arrBut[i].zebra_color
+
+                if(arrBut[i].isIndexOver) arrBut[i]._color=col;
+                else arrBut[i]._color=col;
+
+                arrBut[i].actXZ="null"
+                if(arrBut[i].id == this._activId){
+                    arrBut[i]._color = this.color4;
+                    arrBut[i].actXZ=this.color4
+                } 
+
                 arrBut[i].drawElement();
+
                 //Рисуем вложенные эл-ты
-                if(arrBut[i].isOpen===true) this.drawElement(arrBut[i].arrBut);
+                if(arrBut[i].isOpen===true) this.drawElement(arrBut[i].arrBut, this.arrObj[i].obj);
             }
         }
 
@@ -329,6 +345,8 @@ export class DThreeBool extends DCont{
             for (var i = 0; i < this.bufferOt.length; i++) {
                 if(this.bufferOt[i].id == id){
                     this.openCloseObj(this.bufferOt[i], true);
+                } else {
+                    this.openCloseObj(this.bufferOt[i], false);
                 }
             }
         }
@@ -397,6 +415,8 @@ export class DThreeBool extends DCont{
             this.key1=_key1
             if(_key1==undefined)this.key1="name";
 
+            trace(this.key,this.key1 )
+
             if(_o[0]!==undefined){
                 
                 this.arrObj=[] 
@@ -416,7 +436,6 @@ export class DThreeBool extends DCont{
             a[0]={}
             a[0].text=_o[_key1]
             a[0].obj=_o
-
             if(_o[_key]!=undefined){
                 if(_o[_key].length!=undefined){
                     if(_o[_key].length!=0){
@@ -430,12 +449,36 @@ export class DThreeBool extends DCont{
             return a;
         }
 
-        var startJson = '[{"text":"Папка 1","arr":[{"text":"Вложенный файл 1"},{"text":"Вложенный файл 2"}]}]';
+
+
+
+        this.openKey=function(name, key, bool){
+            for (var i = 0; i < this.arrObj.length; i++) {
+                var iii = -1
+                if(this.arrObj[i].obj[name] == key){
+                    this.arrBut[i].isOpen = true
+                    iii = this.arrBut[i].id
+                } else {
+                    this.arrBut[i].isOpen = false
+                }
+            }
+
+            if(iii) {
+                this.activId = iii
+                if(self.fun)self.fun("openKey", this.arrObj)
+            } else {
+                if(self.fun)self.fun("openKey", "null")
+            }
+        }
+
+
+
+        /*var startJson = '[{"text":"Папка 1","arr":[{"text":"Вложенный файл 1"},{"text":"Вложенный файл 2"}]}]';
         //var a=[{text:"Папка 1", arr:[{text:"Вложенный 1"},{text:"Вложенный 2"},{text:"Вложенный 2"},{text:"Папка 1", arr:[{text:"Вложенный 1"},{text:"Вложенный 2"},{text:"Вложенный 2"} ]} ,{text:"Вложенный 2"}]}];
         var a=[{text:"Папка 1", arr:[{text:"Вложенный 1"},{text:"Вложенный 2"},{text:"Вложенный 2"}]}]
         
         this.setArr(a);
-        this.updateThree();
+        this.updateThree();*/
     }    
 
     set height(value) {
@@ -511,8 +554,8 @@ export class DThreeBool extends DCont{
     set activId(value) {
         value = Math.round(value)
         this.openTillId(value);
-
         this._activId=value;
+
         this.clear();
         this.update();
         this.drawElement(this.arrBut);
@@ -586,7 +629,9 @@ export class DObjectThree extends DCont{
         this.three = null;
         this.inited = false;
         this._height1 = this.height;
+        // this.color = undefined
 
+        this.actXZ="null"
 
         this.init = function () {
             this.content = new DCont();
@@ -595,6 +640,7 @@ export class DObjectThree extends DCont{
             // Основная кнопка
             this.panel=new DThreeButton(this.content,0,0)
             if (this.link != null && this.link != 'null') this.panel.link = this.link
+
             this.panel.text=this.title
             this.panel.height=this._height
 
@@ -644,7 +690,20 @@ export class DObjectThree extends DCont{
             }
 
             this.panel.x=this.x;
-            this.panel.color=this._color;
+            
+           
+            if(this.obj.obj)if(this.obj.obj.color!=undefined){
+                if(this.actXZ=="null"){
+                    this.panel.color=this.obj.obj.color;
+                }else{
+                    this.panel.color=this.actXZ;
+                }
+                
+            }else{
+                this.panel.color=this.color;
+            }
+            
+
             this.panel.width=this.width-this.x*2;
 
             if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
@@ -661,6 +720,15 @@ export class DObjectThree extends DCont{
 
     }
     get title () { return this._title; }
+
+    set color (value) {
+        if(value==this._color)return;
+        this._color = value; 
+        if (value) if(this.panel) this.panel.color = value; 
+        this.drawElement()
+
+    }
+    get color () { return this._color; }
 
     set link (value) {
         if(value==this._link)return;
