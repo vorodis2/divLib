@@ -37,6 +37,7 @@ export function DCM() {
     this._fontFamily = 'Arial, Helvetica, sans-serif';
     this._otstup = 2;
     this._boolLine = true;
+    this.crossOrigin=null
 
     this.borderRadius = 0;
 
@@ -1473,6 +1474,7 @@ export class DButton extends DCont {
         this._borderRadius = 0;
         this._boolLine = dcmParam._boolLine;
         this._boolFond = true;
+        this._scalePic = 0;
 
         this.alphaTeni = 0.1;
 
@@ -1651,12 +1653,16 @@ export class DButton extends DCont {
                 if (this._width / this.image.picWidth < s)
                     s = this._width / this.image.picWidth;
 
+                if(this._scalePic!==0){
+                    s=this._scalePic;
+                }
+
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
                 sp = this.image.width + 5;
                 if (self.label.value.length >= 1) {
                     this.image.x = 0;
-                    this.image.y = 0;
+                    this.image.y = (this._height - this.image.height) / 2;
                 } else {
                     this.image.x = (this._width - this.image.width) / 2;
                     this.image.y = (this._height - this.image.height) / 2;
@@ -1684,11 +1690,15 @@ export class DButton extends DCont {
                 if (this._width / this.image.picWidth < s)
                     s = this._width / this.image.picWidth;
 
+                if(this._scalePic!==0){
+                    s=this._scalePic;
+                }
+
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
 
                 this.image.x = (this._width - this.image.width) / 2;
-                this.image.y = 0;
+                this.image.y = (this._height - this.image.height) / 2;
 
                 this.label.width = this._width;
                 self.label.y = this._height - this._fontSize * 1.5;
@@ -1856,6 +1866,18 @@ export class DButton extends DCont {
     get width() {
         return this._width;
     }
+
+    set scalePic(value) {
+        if (this._scalePic != value) {
+            this._scalePic = value;
+            this.reDrag();
+        }
+    }
+    get scalePic() {
+        return this._scalePic;
+    }
+
+    
 
     set textAlign(value) {
         if (this._textAlign != value) {
@@ -2718,10 +2740,10 @@ export class DImage extends DCont {
 
         this.load = function () {
             self.image.onerror = self.loadError;
-            self.image.crossOrigin = '';
+            self.image.crossOrigin = dcmParam.crossOrigin;
             this.image.onload = self.loadComplit;
             self.image.src = self._link;
-            self.image.crossOrigin = '';
+            self.image.crossOrigin = dcmParam.crossOrigin;
         };
 
         this.dragCanvas = function () {
@@ -4268,7 +4290,7 @@ export class DBitmapData {
         // загружаем картинку . путь к картинке или data:base64
         this.load = function (data, isClear) {
             var img = new Image();
-            img.crossOrigin = 'Anonymous';
+            img.crossOrigin = dcmParam.crossOrigin;
             img.onload = function () {
                 if (isClear) {
                     self.clear();
@@ -5641,6 +5663,8 @@ export class DButSim extends DCont {
         this.fun_mousedown = undefined;
         this.funDownFile = undefined;
 
+        this._iconScale=false
+
         this.dCont = new DCont(this);
 
         this._width = 100;
@@ -5742,11 +5766,28 @@ export class DButSim extends DCont {
         this.reDrag = function () {
             this.panel.width = this.panel1.width = this._width + 1;
             this.panel.height = this.panel1.height = this._height + 1;
+
             this.label.width = this._width;
             if (this.image != undefined) {
+
+                this.image.x=0;
+                this.image.y=0;
+
                 var s = this._height / this.image.picHeight;
+                if(this._iconScale==false){
+                    s=1;                    
+                }else{
+                    this.image.x=0;
+                    this.image.y=0;
+                }
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
+                
+                if(this._iconScale==false){
+                    this.image.x=(this._width-this.image.width)/2;
+                    this.image.y=(this._height-this.image.height)/2;
+                }
+
                 self.label.x = this.image.width + 5;
             }
         };
@@ -5828,6 +5869,19 @@ export class DButSim extends DCont {
     get height() {
         return this._height;
     }
+
+    set iconScale(value) {
+        if (this._iconScale != value) {
+            this._iconScale = value;
+            this.reDrag();
+            //this.object.style.iconScale=this._iconScale+"px";
+        }
+    }
+    get iconScale() {
+        return this._iconScale;
+    }
+
+
 
     set boolLine(value) {
         if (this._boolLine != value) {
