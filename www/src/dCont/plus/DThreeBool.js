@@ -452,22 +452,33 @@ export class DThreeBool extends DCont{
 
 
 
-        this.openKey=function(name, key, bool){
-            for (var i = 0; i < this.arrObj.length; i++) {
-                var iii = -1
-                if(this.arrObj[i].obj[name] == key){
-                    this.arrBut[i].isOpen = true
-                    iii = this.arrBut[i].id
+        var iii = -1
+        var sahi = -1
+        var el = undefined
+        this.openKey=function(name, key, bool, _arr, _but, _bb){
+            var arr = _arr || this.arrObj
+            var but = _but || this.arrBut
+
+            for (var i = 0; i < arr.length; i++) {
+                sahi++
+                if(arr[i].obj[name] == key || arr[i][name] == key){
+                    if(but[i].isOpen) but[i].isOpen = true
+                    el = arr[i]
+                    this.activId=sahi
                 } else {
-                    this.arrBut[i].isOpen = false
+                    if(but[i].isOpen) but[i].isOpen = false
                 }
+                if(arr[i].obj.array) this.openKey(name, key, bool, arr[i].obj.array, but[i].obj.arr, true)
             }
 
-            if(iii) {
-                this.activId = iii
-                if(self.fun)self.fun("openKey", this.arrObj)
-            } else {
-                if(self.fun)self.fun("openKey", "null")
+            if (_bb != true){
+                if(sahi>-1) {
+                    sahi = -1
+                    if(self.fun)self.fun("openKey", el)
+                } else {
+                    sahi = -1
+                    if(self.fun)self.fun("openKey", "null")
+                }
             }
         }
 
