@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
  let conf = {
-  	entry: './src/indexDev.js',
+  	entry: './src/devIindex.js',
   	output: {
     	path: path.resolve(__dirname, 'build'),
 		filename: 'divLibPlus.js',
