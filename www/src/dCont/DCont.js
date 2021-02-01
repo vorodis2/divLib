@@ -22,6 +22,8 @@ export class DCont {
 		dContSah++;
 		this.htmlBody=undefined;
 
+		
+
 
 		this.p = new PositionD(this.dragBigXZ, 0, 0, 1);
 
