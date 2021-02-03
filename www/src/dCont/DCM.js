@@ -749,6 +749,7 @@ export class DWindow extends DCont {
                 var ss =
                     sp.x1 +
                     (e.targetTouches[0].clientX - sp.x) / self.scaleDrag.s;
+                    (e.targetTouches[0].clientX - sp.x) / self.scaleDrag.s;
                 if (self.startScale) {
                     self.width = self.startScaleW + ss;
                     if (self.width < self.min) self.width = self.min;
@@ -1220,10 +1221,254 @@ export class DColor extends DCont {
     }
 }
 
-export class DComboBox extends DCont {
+export class DComboBox extends  DCont {
     constructor(dCont, _x, _y, _arr, _fun, _link) {
         super();
+
+        let self = this;
         this.type = 'DComboBox';
+        this.fun = _fun;
+        this.link = _link;
+        this.dcmParam = dcmParam;
+        this.dcmParam.add(this);
+
+        if (dCont && dCont.add) dCont.add(this);
+
+        this._x = _x || 0;
+        this._y = _y || 0;
+        this._borderRadius = dcmParam.borderRadius;
+        this._panelState = false;
+        this._maxKoll = 3;
+        this._width = 150;
+        this._height = dcmParam.wh;
+        this._color1 = dcmParam._color1;
+        this._colorText1 = dcmParam._colorText1;
+        this._fontSize = dcmParam._fontSize;
+        this._fontFamily = dcmParam._fontFamily;
+        this._boolWheel = false;
+        this.boolWheel = true;
+
+        this._array = _arr || [];
+        this._minPanelWidth = this._width;
+
+        this.otstup = 5;
+
+        this.backPanel = new DPanel(this, 0, 0);
+        this.backPanel.width = this._width;
+        this.backPanel.height = this._height;
+
+        this.btn = new DButton(this, 0, 0, '', this.togglePanelVisible.bind(this), null);
+        this.btn.width = this._width;
+        this.btn.height = this._height;
+        this.btn.alpha = 0;
+
+        this.label = new DLabel(this, 0, 0, 'Text');
+        this.label.activMouse = false;
+        this.label.div.style.userSelect = 'none';
+        this.label.x = this.otstup;
+        this.label.y = this._height / 2 - this.label.fontSize / 2;
+
+        this.label1 = new DLabel(this, 0, 0, '˅');
+        this.label1.activMouse = false;
+        this.label1.div.style.userSelect = 'none';
+        this.label1.x = this._width - this.label1.getTextWidth(this.label1.value, this.label1.fontFamily) - this.otstup;
+        this.label1.y = this._height / 2 - this.label1.fontSize / 2;
+
+        this.btn.div.style.border =
+            '1px solid ' +
+            dcmParam.compToHexArray(dcmParam.hexDec(self._color1), -20); //"none";
+
+        this.eventFuncs = [
+            this.mouseOver.bind(this),
+            this.mouseMove.bind(this),
+            this.mouseOut.bind(this),
+            this.docClick.bind(this),
+            this.mouseWheel.bind(this)
+        ]
+
+
+    }
+
+    mouseOver(e) {
+        // trace('over', e);
+        // e.offsetY;
+    }
+
+    mouseMove(e) {
+        // trace('move', e)
+    }
+
+    mouseOut(e) {
+        // trace('out', e);
+    }
+
+    mouseWheel(e) {
+        trace(e)
+
+        if (self.kolII <= self.array.length) {
+            hhh = (self.heightPic + self.otstup) * (Math.ceil(self.array.length / self.kolII)) - self._height;
+            www = (self.widthPic + self.otstup) * self.kolII - self._width;
+        } else {
+            hhh = self.heightPic + self.otstup - self._height;
+            www = (self.widthPic + self.otstup) * self.array.length - self._width;
+        }
+
+        var delta=-1;
+        var p=e.delta
+        if(e.wheelDelta==undefined){
+            p=e.wheelDelta
+        }
+
+        if(e.delta)if(e.delta<0)delta=1;
+        if(e.deltaY)if(e.deltaY<0)delta=1;
+        if(e.detail)if(e.detail<0)delta=1;
+
+
+        if(e.wheelDelta!=undefined){
+            if(e.wheelDelta>0)delta=-1;
+            else delta=1;
+        }
+
+        p=delta;
+
+        if (self.scrollBarV.visible) {
+            if (p < 0) {
+                if (self.content.y >= 0) {
+                    self.content.y = 0;
+                    //self.scrollBarV.value = 0;
+                } else {
+                    //self.scrollBarV.value -= self.sahDelta;
+                    self.content.y += self.sahDelta;
+                }
+            } else {
+                if (self.content.y <= -(hhh + self.otstup)) {
+                    self.content.y = -(hhh + self.otstup);
+                } else {
+                    self.content.y -= self.sahDelta;
+                }
+
+            }
+
+        }
+        self.scrolPos(true)
+    }
+
+    docClick(e) {
+        let rectPanel = this.panel.div.getBoundingClientRect();
+        let rectBtn = this.btn.div.getBoundingClientRect()
+        let border = 2;
+
+        if (e.clientX >= rectBtn.x && e.clientX <= rectBtn.x + this._width + border &&
+            e.clientY >= rectBtn.y && e.clientY <= rectBtn.y + this._height + border) return;
+
+        if ((e.clientX <= rectPanel.x || e.clientX >= rectPanel.x + this.panel.width + border) ||
+            (e.clientY <= rectPanel.y || e.clientY >= rectPanel.y + this.panel.height + border)) this.panelState = false;
+    }
+
+    togglePanelVisible() {
+        if (!this.panel) {
+            this.panel = new DPanel(this, 0, 0);
+            this.panel.width = this._minPanelWidth;
+            this.panel.y = this._height + 1;
+            this.panel.div.style.userSelect = 'none';
+
+            this.scrollBar = new DScrollBarV(this.panel, 0, 0, () => {
+                this.scrollPos(false);
+            })
+
+            this.showLabels();
+        }
+
+        this.panelState = !this._panelState;
+    }
+
+    scrollPos(_bool) {
+        if (_bool === true) {
+            self.scrollBarV.value = this.content.y / (this._height - self.scrollBarV.heightContent) * 100;
+            self.scrollBarH.value = this.content.x / (this._width - self.scrollBarH.widthContent) * 100;
+        } else {
+            self.content.y = (self.scrollBarV.value / 100) * (this._height - self.scrollBarV.heightContent);
+            self.content.x = (self.scrollBarH.value / 100) * (this._width - self.scrollBarH.widthContent);
+        }
+    };
+
+    showLabels() {
+        if (this._array.length) {
+            let yy = this.otstup/2;
+            let label;
+            for (let text of this._array) {
+                label = new DLabel(this.panel, this.otstup, yy, text);
+                label.activMouse = false;
+                label.color = this._colorText1;
+                yy += label.height
+            }
+            this.panel.height = this._maxKoll * label.height + this.otstup;
+            if (yy > this._maxKoll * label.height + this.otstup/2) {
+                this.scrollBar.visible = true;
+                this.scrollBar.width = 5;
+                this.scrollBar.height = this.panel.height;
+                this.scrollBar.heightContent = yy + this.otstup/2;
+                this.scrollBar.x = this.panel.width - this.scrollBar.width;
+            }
+        }
+    }
+
+    addEvents() {
+        let fs = this.eventFuncs;
+
+        this.panel.div.addEventListener('mouseover', fs[0]);
+        this.panel.div.addEventListener('mousemove', fs[1]);
+        this.panel.div.addEventListener('mouseout', fs[2]);
+
+        document.addEventListener('mousedown', fs[3]);
+    }
+
+    removeEvents() {
+        let fs = this.eventFuncs;
+
+        this.panel.div.removeEventListener('mouseover', fs[0]);
+        this.panel.div.removeEventListener('mousemove', fs[1]);
+        this.panel.div.removeEventListener('mouseout', fs[2]);
+
+        document.removeEventListener('mousedown', fs[3]);
+    }
+
+    set panelState(v) {
+        if (this._panelState != v) {
+            this._panelState = v;
+
+            if (!this._panelState) {
+                this.removeEvents();
+                this.label1.value = '˅';
+                this.remove(this.panel);
+            } else {
+                this.addEvents();
+                this.label1.value = '˂';
+                this.add(this.panel);
+            }
+        }
+    }
+    get panelState() { return this._panelState }
+
+    set boolWheel(v) {
+        if (this._boolWheel === v) return;
+        this._boolWheel = v;
+
+        if (this._boolWheel === true) {
+            this.div.addEventListener('mousewheel', this.mouseWheel);
+            this.div.addEventListener("DOMMouseScroll", this.mouseWheel);
+        } else {
+            this.div.removeEventListener('mousewheel', this.mouseWheel);
+            this.div.removeEventListener('DOMMouseScroll', this.mouseWheel)
+        }
+    }
+    get boolWheel() { return this._boolWheel }
+}
+
+export class DComboBoxOld extends DCont {
+    constructor(dCont, _x, _y, _arr, _fun, _link) {
+        super();
+        this.type = 'DComboBoxOld';
         this.dcmParam = dcmParam;
         this.dcmParam.add(this);
         var self = this;
@@ -1477,6 +1722,7 @@ export class DButton extends DCont {
         this._scalePic = 0;
 
         this.alphaTeni = 0.1;
+        this.vertElem = 100;  // От какой высоты кнопки, поставить все элементы вертикально
 
         this.aSah = 1;
         this.alphaAnimat = true;
@@ -1650,8 +1896,9 @@ export class DButton extends DCont {
             var s;
             if (this.image != undefined) {
                 s = this._height / this.image.picHeight;
-                if (this._width / this.image.picWidth < s)
-                    s = this._width / this.image.picWidth;
+                if (this._width / this.image.picWidth < s) {
+                    s = this._width / this.image.picWidth; // если ширина кнопки равна размеру иконки, то при дальнейшем уменьшении ширины, уменьшаем иконку
+                }
 
                 if(this._scalePic!==0){
                     s=this._scalePic;
@@ -1659,6 +1906,7 @@ export class DButton extends DCont {
 
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
+
                 sp = this.image.width + 5;
                 if (self.label.value.length >= 1) {
                     this.image.x = 0;
@@ -1671,7 +1919,7 @@ export class DButton extends DCont {
             let b = true;
 
             if (this.image != undefined) {
-                if (this._height > self.label.fontSize * 3) {
+                if (this._height >= self.label.fontSize * (this.vertElem / self.label.fontSize)) {
                     if (self.label.value.length >= 1) {
                         b = false;
                     }
@@ -1700,6 +1948,7 @@ export class DButton extends DCont {
                 this.image.x = (this._width - this.image.width) / 2;
                 this.image.y = (this._height - this.image.height) / 2;
 
+                this.label.div.style.zIndex = '10';
                 this.label.width = this._width;
                 self.label.y = this._height - this._fontSize * 1.5;
                 self.label.x = 0;

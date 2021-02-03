@@ -169,7 +169,7 @@
 		var g= new DGallery(content,800,300,downMy);
 		var a=[]
 		for (var i = 0; i < 10; i++) {
-			a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
+			a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})
 		}
 		g.start(a);
 		g.kolII=2
@@ -197,32 +197,37 @@
 
 
 
-		var rrr=new DComboBox(null,0,0,["DComboBox","xz"],function(){
+		var rrr=new DComboBox(content,0,0,["xz","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10", "sdfsdfsdfsdczsdfsdzdf"],function(){
 			trace(this.index+"   "+this.value)
-		})		
+		})
 		rrr.array=["xz1","xz2","xz3","xz4"]
 		rrr.valueS=[1,"xz2",22,33]
 		rrr.value=33
 		plus(rrr)
 
-		var three=new DThree(null,0,0,function(){
-			
-		})
-		three.mouseUpFun=function(o){
-	        
-	        
-	        trace("mouseUpFun",o)
-	    }
-	    three.mouseOverFun=function(o){
-	        trace("mouseOverFun",o)
-	    }
+        var rrr23 = new DComboBoxOld(null,677,0,["xz","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10"],function(){
+            trace(this.index+"   "+this.value);
+        })
+        plus(rrr23)
 
-	    three.mouseOutFun=function(o){
-	    	trace("mouseOutFun",o)
-	    }
-		
-
-		plus(three)
+		// var three=new DThree(null,0,0,function(){
+		//
+		// })
+		// three.mouseUpFun=function(o){
+	    //
+	    //
+	    //     trace("mouseUpFun",o)
+	    // }
+	    // three.mouseOverFun=function(o){
+	    //     trace("mouseOverFun",o)
+	    // }
+        //
+	    // three.mouseOutFun=function(o){
+	    // 	trace("mouseOutFun",o)
+	    // }
+		//
+        //
+		// plus(three)
 		pObject.addObject(array[array.length-1].obj);
 
 		trace("g",g);
