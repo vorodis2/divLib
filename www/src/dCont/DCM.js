@@ -1260,6 +1260,7 @@ export class DComboBox extends  DCont {
         this.backPanel = new DPanel(this, 0, 0);
         this.backPanel.width = this._width;
         this.backPanel.height = this._height;
+        this.backPanel.div.style.clip = `rect(1px ${this.backPanel.width - this.otstup*4}px ${this.backPanel.height}px 0px)`;
 
         this.btn = new DButton(this, 0, 0, '', () => {
             if (!this.panel) this.init();
@@ -1275,6 +1276,7 @@ export class DComboBox extends  DCont {
         this.label.x = this.otstup;
         this.label.y = this._height / 2 - this.label.fontSize / 2;
 
+
         this.label1 = new DLabel(this, 0, 0, '˅');
         this.label1.activMouse = false;
         this.label1.div.style.userSelect = 'none';
@@ -1285,7 +1287,7 @@ export class DComboBox extends  DCont {
             if (!this.panel) {
                 this.panel = new DPanel(this, 0, 0);
                 this.panel.width = this._width;
-                this.panel.y = this._height + 1;
+                this.panel.y = this._height;
                 this.panel.div.style.userSelect = 'none';
 
                 this.content = new DCont();
@@ -1315,6 +1317,7 @@ export class DComboBox extends  DCont {
         this.reDrag=function(){
             this.backPanel.width = this._width;
             this.backPanel.height = this._height;
+            this.backPanel.div.style.clip = `rect(1px ${this.backPanel.width - this.otstup*4}px ${this.backPanel.height}px 0px)`;
 
             this.btn.width = this._width;
             this.btn.height = this._height;
@@ -1329,10 +1332,24 @@ export class DComboBox extends  DCont {
             this.currElemPanel.width = this._width;
             this.currElemPanel.height = this._height;
 
-            this.scrollBar.x = this._width - this.scrollBar.width;
+            let yy = 0;
+            let otstup = (this._height - this.label.height) / 2;
+            for (let label of this.labels) {
+                yy += otstup;
+                label.fontSize = this._fontSize;
+                label.y = yy;
+                yy += label.height + otstup;
+            }
 
             this.panel.width = this._width;
+            this.panel.height = this._maxKoll * this._height;
             this.panel.div.style.clip = `rect(1px ${this.panel.width+2}px ${this.panel.height+2}px 0px)`;
+
+            this.currElemPanel.y = this._index * this._height
+
+            this.scrollBar.x = this._width - this.scrollBar.width;
+            this.scrollBar.height = this.panel.height;
+            this.scrollBar.heightContent = this._array.length * this._height;
         }
 
         this.scaleDrag = { s: 1 };
@@ -1366,21 +1383,15 @@ export class DComboBox extends  DCont {
                 oo.y = this._height;
                 if (!nP) nP = this.getBigPar(this.panel, this.oo1);
                 nP.add(this.panel);
-                this.backPanel.height = this._height + this.panel.height;
-                this.panel.x = this.oo1.x + this.position.x - 2;
-                this.panel.y = this.oo1.y + this.position.y - 2;
                 this.reDragPanel()
+
+                this.panel.x = this.oo1.x + this.position.x - 2;
+                this.panel.y = this.oo1.y + this.position.y - 1;
             } else {
                 this.removeEvents();
                 this.label1.value = '˅';
-
-                this.backPanel.height = this._height;
                 if(this.panel.parent)this.panel.parent.remove(this.panel);
-                this.panel.x = oo.x;
-                this.panel.y = oo.y;
-                this.scale = 1;
             }
-
         };
 
         this.mousemove = function (e) {
@@ -1401,19 +1412,29 @@ export class DComboBox extends  DCont {
             if (self.fun) self.fun();
         }
 
+        this.mouseleave = function (e) {
+            self.prevId = self.currId;
+            self.currId = self._index;
+
+            self.labels[self.prevId].colorText1 = self._colorText1;
+            self.labels[self.currId].colorText1 = '#ffffff';
+            self.currElemPanel.y = self._index * self._height
+        }
+
         this.mousewheel = function (e) {
             let delta = -1;
             if(e.deltaY)if(e.deltaY<0)delta=1;
 
-            let hhh
+            let hhh;
             if (self._maxKoll <= self._array.length) {
-                hhh = self.panel.height * (self._array.length / self._maxKoll) - self.panel.height;
+                hhh = (self._array.length - self._maxKoll) * self._height;
             }
 
             if(e.wheelDelta){
                 if(e.wheelDelta>0)delta=-1;
                 else delta=1;
             }
+
 
             if (self.scrollBar.visible) {
                 if (delta < 0) {
@@ -1423,8 +1444,8 @@ export class DComboBox extends  DCont {
                         self.content.y += self.sahDelta;
                     }
                 } else {
-                    if (self.content.y <= -(hhh - self.otstup)) {
-                        self.content.y = -(hhh - self.otstup);
+                    if (self.content.y <= -hhh) {
+                        self.content.y = -hhh;
                     } else {
                         self.content.y -= self.sahDelta;
                     }
@@ -1448,6 +1469,7 @@ export class DComboBox extends  DCont {
         this.addEvents = function () {
             this.panel.div.addEventListener('mousemove', this.mousemove);
             this.panel.div.addEventListener('click', this.click);
+            this.panel.div.addEventListener('mouseleave', this.mouseleave);
             document.addEventListener('mousedown', this.docClick);
 
             this.panel.div.addEventListener('mousewheel', this.mousewheel);
@@ -1457,6 +1479,7 @@ export class DComboBox extends  DCont {
         this.removeEvents = function () {
             this.panel.div.removeEventListener('mousemove', this.mousemove);
             this.panel.div.removeEventListener('click', this.click);
+            this.panel.div.addEventListener('mouseleave', this.mouseleave);
             document.removeEventListener('mousedown', this.docClick);
 
             this.panel.div.removeEventListener('mousewheel', this.mousewheel);
@@ -1542,6 +1565,7 @@ export class DComboBox extends  DCont {
         if (this._index !== v) {
             this._index = v;
             this.label.text = this._array[v];
+            this.value = this._array[v];
         }
     }
     get index() { return this._index }
@@ -1563,6 +1587,8 @@ export class DComboBox extends  DCont {
     set array(value) {
         if (Array.isArray(value)) {
             this._array = value;
+            trace(this.labels)
+
             if (this._array.length < this.labels.length) {
                 let yy = this.labels.length * this._height;
                 let otstup = (this._height - this.labels[0].height) / 2;
