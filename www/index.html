@@ -177,12 +177,21 @@
 
 
 		new DButton(content,200,22,"ttt",function(){
-			var a=[]
-			var k=10+Math.random()*33;
-			for (var i = 0; i < k; i++) {
-				a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})			
-			}
-			g.start(a);
+			// var a=[]
+			// var k=10+Math.random()*33;
+			// for (var i = 0; i < k; i++) {
+			// 	a.push({src:"resources/pic/"+Math.round(Math.random()*3)+".png"})
+			// }
+			// g.start(a);
+            var a=[]
+            var k=10+Math.random()*33;
+            for (var i = 0; i < k; i++) {
+                var d=""+Math.random()*222
+
+            	a.push(d)
+            }
+            //g.start(a);
+            rrr.array=a
 		})
 
 
@@ -197,10 +206,9 @@
 
 
 
-		var rrr=new DComboBox(content,0,0,["xz","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10", "sdfsdfsdfsdczsdfsdzdf"],function(){
+		var rrr=new DComboBox(content,0,0,["xz","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10", "sdfsdfsdfsdczsdfsdzdfczxcxzc"],function(){
 			trace(this.index+"   "+this.value)
 		})
-        // rrr.array = ['dsfdsfd', 'fsdfds']
 		plus(rrr)
         var rrr23 = new DComboBoxOld(content,677,0,["xz","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10"],function(){
 

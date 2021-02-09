@@ -1235,37 +1235,38 @@ export class DComboBox extends  DCont {
 
         if (dCont && dCont.add) dCont.add(this);
 
-        this.otstup = 5;
-        this.sahDelta = 20;
+        this.otstup = dcmParam._otstup;
+        this._otstup1 = 5;
+        this.sahDelta = dcmParam.wh;
 
         this._x = _x || 0;
         this._y = _y || 0;
-        this._width = 150;
+        this._width = 100;
         this._index = 0;
         this._height = dcmParam.wh;
         this._color = dcmParam._color;
         this._color1 = dcmParam._color1;
+        this._colorText = dcmParam._colorText;
         this._colorText1 = dcmParam._colorText1;
         this._fontSize = dcmParam._fontSize;
         this._fontFamily = dcmParam._fontFamily;
         this._borderRadius = dcmParam.borderRadius;
         this._activMouse = true;
+        this._flipPanel = false;
 
         this._array = _arr || [];
         this._value = this._array[this._index] || this._array[0] || '';
         this._panelState = false;
-        this._maxKoll = 5;
-        if (this._maxKoll > this._array.length) this._maxKoll = this._array.length;
+        this._maxKoll = 10;
+        this._minPanelWidth = 100;
+
+        this.labels = [];
 
         this.backPanel = new DPanel(this, 0, 0);
         this.backPanel.width = this._width;
         this.backPanel.height = this._height;
-        this.backPanel.div.style.clip = `rect(1px ${this.backPanel.width - this.otstup*4}px ${this.backPanel.height}px 0px)`;
 
-        this.btn = new DButton(this, 0, 0, '', () => {
-            if (!this.panel) this.init();
-            this.panelState = !this._panelState;
-        }, null);
+        this.btn = new DButton(this, 0, 0, '', () => this.panelState = !this._panelState,null);
         this.btn.width = this._width;
         this.btn.height = this._height;
         this.btn.alpha = 0;
@@ -1273,83 +1274,139 @@ export class DComboBox extends  DCont {
         this.label = new DLabel(this.backPanel, 0, 0, this._value);
         this.label.activMouse = false;
         this.label.div.style.userSelect = 'none';
-        this.label.x = this.otstup;
+        this.label.x = this._otstup1;
         this.label.y = this._height / 2 - this.label.fontSize / 2;
+        this.label.div.style.clip = `rect(0px ${Math.round(this._width - this._width/5)}px ${this._fontSize+this._otstup1*2}px 0px)`;
 
-
-        this.label1 = new DLabel(this, 0, 0, '˅');
+        this.label1 = new DLabel(this, 0, 0, '▼');
         this.label1.activMouse = false;
+        this.label1.fontSize = this._fontSize*0.7;
         this.label1.div.style.userSelect = 'none';
         this.label1.x = this._width - this.label1.getTextWidth() - this.otstup;
         this.label1.y = this._height / 2 - this.label1.fontSize / 2;
 
-        this.init = function () {
-            if (!this.panel) {
-                this.panel = new DPanel(this, 0, 0);
-                this.panel.width = this._width;
-                this.panel.y = this._height;
-                this.panel.div.style.userSelect = 'none';
+        /*** Создание выпадающей панели ***/
+        this.panel = new DPanel(this, 0, 0);
+        this.panel.width = this._width;
+        this.panel.y = this._height;
+        this.panel.div.style.userSelect = 'none';
 
-                this.content = new DCont();
+        this.content = new DCont();
 
-                this.currElemPanel = new DPanel(this.content, 0, 0);
-                this.currElemPanel.div.style.pointerEvents = 'none';
-                this.currElemPanel.color = this._color;
-                this.currElemPanel.width = this._width;
-                this.currElemPanel.height = this._height;
-                this.currElemPanel.y = this._index * this.currElemPanel.height;
-                this.currId = this._index;
+        this.currElemPanel = new DPanel(this.content, 0, 0);
+        this.currElemPanel.div.style.pointerEvents = 'none';
+        this.currElemPanel.color = this._color;
+        this.currElemPanel.width = this._width;
+        this.currElemPanel.height = this._height;
+        this.currElemPanel.y = this._index * this.currElemPanel.height;
+        this.currId = this._index;
 
-                this.panel.add(this.content);
+        this.panel.add(this.content);
 
-                this.scrollBar = new DScrollBarV(this.panel, 0, 0, () => {
-                    this.scrollPos(false);
-                })
-                this.scrollBar.but.color = this._color;
-                this.scrollBar.width = 5;
-                this.scrollBar.visible = false;
-                this.scrollBar.x = this.panel.width - this.scrollBar.width;
+        this.scrollBar = new DScrollBarV(this.panel, 0, 0, () => this.scrollPos(false));
+        this.scrollBar.but.color = this._color;
+        this.scrollBar.width = 5;
+        this.scrollBar.visible = false;
+        this.scrollBar.x = this.panel.width - this.scrollBar.width;
 
-                this.showLabels();
+        if(this.panel.parent)this.panel.parent.remove(this.panel);
+
+        this.scrollPos = function (bool) {
+            if (bool) {
+                this.scrollBar.value = this.content.y / (this.panel.height - this.scrollBar.heightContent) * 100;
+            } else {
+                this.content.y = (this.scrollBar.value / 100) * (this.panel.height - this.scrollBar.heightContent);
             }
+        };
+
+         this.reDragArr=function(){
+            for (let i = 0; i < this.labels.length; i++) {
+                this.labels[i].visible=false
+            }
+
+             if (!this._array.length) this.array = ['null'];
+             if (this._maxKoll > this._array.length) this._maxKoll = this._array.length;
+
+            let yy=0;
+            for (let i = 0; i < this._array.length; i++) {
+                if (this.labels[i] == undefined) {
+                    this.labels[i] = new DLabel(this.content, this._otstup1, 0, "");
+                    this.labels[i].fontSize = this._fontSize;
+                    this.labels[i].colorText1 = this._colorText1;
+                    this.labels[i].div.style.pointerEvents = 'none';
+                }
+
+                this.labels[i].visible = true;
+                this.labels[i].y = yy + (this._height - this._fontSize) / 2
+                this.labels[i].text = this._array[i]
+                yy += this._height;
+            }
+
+             this.labels[this.currId].color = this._colorText;
+             this.panel.height = this._maxKoll * this._height;
+
+             if (yy > this._maxKoll * this._height) {
+                 this.scrollBar.visible = true;
+                 this.scrollBar.heightContent = yy;
+                 this.scrollBar.height = this.panel.height;
+                 this.content.y = 0;
+                 this.scrollPos(true)
+             } else {
+                 this.scrollBar.visible = false;
+             }
+
+            this.panel.height = yy;
         }
+
+        this.reDragArr();
 
         this.reDrag=function(){
             this.backPanel.width = this._width;
             this.backPanel.height = this._height;
-            this.backPanel.div.style.clip = `rect(1px ${this.backPanel.width - this.otstup*4}px ${this.backPanel.height}px 0px)`;
 
             this.btn.width = this._width;
             this.btn.height = this._height;
 
             this.label.y = this._height / 2 - this.label.height / 2;
+            this.label.div.style.clip = `rect(0px ${Math.round(this._width - this._width/5)}px ${this._fontSize+this._otstup1*2}px 0px)`;
             this.label1.y = this._height / 2 - this.label1.height / 2;
-
-            this.label1.x = this._width - this.label1.getTextWidth() - this.otstup;
+            this.label1.x = this._width - this._otstup1 - this._fontSize*0.7;
         }
 
         this.reDragPanel = function () {
-            this.currElemPanel.width = this._width;
-            this.currElemPanel.height = this._height;
-
-            let yy = 0;
-            let otstup = (this._height - this.label.height) / 2;
-            for (let label of this.labels) {
-                yy += otstup;
-                label.fontSize = this._fontSize;
-                label.y = yy;
-                yy += label.height + otstup;
+            if (this.panel.width !== this._width) {
+                if (this._width < 100) {
+                    this.panel.width = this._minPanelWidth;
+                    this.currElemPanel.width = this._minPanelWidth;
+                    this.scrollBar.x = this._minPanelWidth - this.scrollBar.width;
+                } else {
+                    this.panel.width = this._width;
+                    this.currElemPanel.width = this._width;
+                    this.scrollBar.x = this._width - this.scrollBar.width;
+                }
             }
 
-            this.panel.width = this._width;
-            this.panel.height = this._maxKoll * this._height;
-            this.panel.div.style.clip = `rect(1px ${this.panel.width+2}px ${this.panel.height+2}px 0px)`;
+            if (this.panel.height !== this._height) {
+                this.currElemPanel.height = this._height;
+                this.panel.height = this._maxKoll * this._height;
+                this.scrollBar.height = this.panel.height;
 
-            this.currElemPanel.y = this._index * this._height
+                let yy=0;
+                for (let i = 0; i < this._array.length; i++) {
+                    this.labels[i].y = yy+(this._height-this._fontSize)/2
+                    yy += this._height;
+                }
 
-            this.scrollBar.x = this._width - this.scrollBar.width;
-            this.scrollBar.height = this.panel.height;
-            this.scrollBar.heightContent = this._array.length * this._height;
+                this.currElemPanel.y = this._index * this._height
+                this.scrollBar.heightContent = this._array.length * this._height;
+            }
+
+            if (this._index === -1) {
+                this.scrollBar.value = 0;
+                this.content.y = 0;
+            }
+
+            this.panel.div.style.clip = `rect(0px ${this.panel.width}px ${this.panel.height+2}px 0px)`;
         }
 
         this.scaleDrag = { s: 1 };
@@ -1374,33 +1431,42 @@ export class DComboBox extends  DCont {
         this.dragMenu = function () {
             if (this._panelState) {
                 this.addEvents();
-                this.label1.value = '˂';
-
                 this.scaleDrag.s = 1;
                 this.testScale(this, this.scaleDrag);
 
                 oo.x = 0;
                 oo.y = this._height;
-                if (!nP) nP = this.getBigPar(this.panel, this.oo1);
+                if (!nP) nP = this.getBigPar(this.backPanel, {x: 0, y: 0});
                 nP.add(this.panel);
+                this.getBigPar(this.backPanel, this.oo1);
+
+                if (this._index+1 - this._maxKoll > 0) {
+                    this.content.y = -((this._index+1) - this._maxKoll) * this._height;
+                    this.scrollPos(true);
+                }
+
                 this.reDragPanel()
 
-                this.panel.x = this.oo1.x + this.position.x - 2;
-                this.panel.y = this.oo1.y + this.position.y - 1;
+                if (this._flipPanel) {
+                    this.panel.x = this.oo1.x;
+                    this.panel.y = this.oo1.y - this.panel.height;
+                } else {
+                    this.panel.x = this.oo1.x;
+                    this.panel.y = this.oo1.y + this._height;
+                }
+                this.oo1 = { x: 0, y: 0 };
             } else {
                 this.removeEvents();
-                this.label1.value = '˅';
                 if(this.panel.parent)this.panel.parent.remove(this.panel);
             }
         };
 
+        /***  События ***/
         this.mousemove = function (e) {
             const idElem = Math.floor((e.offsetY - self.content.y) / self._height);
-            self.prevId = self.currId;
-            self.currId = idElem;
+            if (idElem > self._array.length-1 || idElem < 0) return;
 
-            self.labels[self.prevId].colorText1 = self._colorText1;
-            self.labels[self.currId].colorText1 = '#ffffff';
+            self.highlightText(idElem);
 
             self.currElemPanel.y = idElem * self._height
         }
@@ -1413,11 +1479,7 @@ export class DComboBox extends  DCont {
         }
 
         this.mouseleave = function (e) {
-            self.prevId = self.currId;
-            self.currId = self._index;
-
-            self.labels[self.prevId].colorText1 = self._colorText1;
-            self.labels[self.currId].colorText1 = '#ffffff';
+            self.highlightText(self._index);
             self.currElemPanel.y = self._index * self._height
         }
 
@@ -1486,36 +1548,19 @@ export class DComboBox extends  DCont {
             this.panel.div.removeEventListener("DOMMouseScroll", this.mousewheel);
         }
 
-        this.scrollPos = function (bool) {
-            if (bool) {
-                this.scrollBar.value = this.content.y / (this.panel.height - this.scrollBar.heightContent) * 100;
-            } else {
-                this.content.y = (this.scrollBar.value / 100) * (this.panel.height - this.scrollBar.heightContent);
+        this.highlightText = function (index) {
+            if (index === -1) {
+                for (let label of this.labels) {
+                    label.color = this._colorText1;
+                }
+                return
             }
-        };
 
-        this.showLabels = function () {
-            if (this._array.length) {
-                let otstup = (this._height - this.label.height) / 2;
-                let yy = 0;
-                this.labels = [];
-                let label;
-                for (let text of this._array) {
-                    yy += otstup;
-                    label = new DLabel(this.content, this.otstup, yy, text);
-                    label.activMouse = false;
-                    this.labels.push(label);
-                    yy += label.height + otstup;
+            if (this.labels[index]) {
+                for (let label of this.labels) {
+                    label.color = this._colorText1;
                 }
-                this.labels[this.currId].color = "#ffffff";
-                this.panel.height = this._maxKoll * this._height;
-                this.panel.div.style.clip = `rect(1px ${this.panel.width+2}px ${this.panel.height+2}px 0px)`;
-
-                if (yy > this._maxKoll * this._height) {
-                    this.scrollBar.visible = true;
-                    this.scrollBar.heightContent = yy;
-                    this.scrollBar.height = this.panel.height;
-                }
+                this.labels[index].color = this._colorText;
             }
         }
     }
@@ -1552,6 +1597,14 @@ export class DComboBox extends  DCont {
         return this._height;
     }
 
+    set maxKoll(v) {
+        if (this._maxKoll !== v) {
+            this._maxKoll = v;
+            this.reDragArr();
+        }
+    }
+    get maxKoll() { return this._maxKoll }
+
     set panelState(v) {
         if (this._panelState !== v) {
             this._panelState = v;
@@ -1561,11 +1614,25 @@ export class DComboBox extends  DCont {
     }
     get panelState() { return this._panelState }
 
+    set flipPanel(v) {
+        if (this._flipPanel !== v) {
+            this._flipPanel = v;
+        }
+    }
+    get flipPanel() { return this._flipPanel }
+
     set index(v) {
         if (this._index !== v) {
             this._index = v;
-            this.label.text = this._array[v];
-            this.value = this._array[v];
+            if (!this._array[v]) {
+                this.value = 'null';
+                this._index = -1;
+            } else {
+                this.label.text = this._array[v];
+                this.value = this._array[v];
+            }
+
+            this.highlightText(this._index);
         }
     }
     get index() { return this._index }
@@ -1587,22 +1654,9 @@ export class DComboBox extends  DCont {
     set array(value) {
         if (Array.isArray(value)) {
             this._array = value;
-            trace(this.labels)
+            this.reDragArr();
 
-            if (this._array.length < this.labels.length) {
-                let yy = this.labels.length * this._height;
-                let otstup = (this._height - this.labels[0].height) / 2;
-
-                while (this._array.length < this.labels.length) {
-                    yy += otstup;
-                    this.labels.push(new DLabel(this.content, this.otstup, yy, ''));
-                    yy += this.labels[0].height + otstup;
-                }
-            }
-
-            for (let [i, label] of this.labels.entries()) {
-                label.text = this._array[i];
-            }
+            this._index = -1;
             this.index = 0;
         }
     }
@@ -1650,10 +1704,30 @@ export class DComboBox extends  DCont {
         if (this._fontSize !== v) {
             this._fontSize = v;
             this.label.fontSize = v;
+            this.label1.fontSize = v*0.7;
             this.label.y = this._height / 2 - this.label.height / 2;
+            this.label.div.style.clip = `rect(0px ${Math.round(this._width - this._width/5)}px ${this._fontSize+this._otstup1*2}px 0px)`;
+            this.label1.y = this._height / 2 - this.label1.height / 2 + 2;
+            this.label1.x = this._width - this._otstup1 - this._fontSize*0.7;
+
+            for (let i = 0; i < this._array.length; i++) {
+                this.labels[i].fontSize = this._fontSize;
+            }
         }
     }
     get fontSize() { return this._fontSize }
+
+    set fontFamily(v) {
+        if (this._fontFamily !== v) {
+            this._fontFamily = v;
+            this.label.fontFamily = v;
+
+            for (let i = 0; i < this._array.length; i++) {
+                this.labels[i].fontFamily = v;
+            }
+        }
+    }
+    get fontFamily() { return this._fontFamily }
 
     set activMouse(v) {
         if (this._activMouse !== v) {
