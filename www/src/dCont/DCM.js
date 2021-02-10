@@ -1255,7 +1255,7 @@ export class DComboBox extends  DCont {
         this._flipPanel = false;
 
         this._array = _arr || [];
-        this._value = this._array[this._index] || this._array[0] || '';
+        this._value = this._array[this._index] || this._array[0] || 'null';
         this._panelState = false;
         this._maxKoll = 10;
         this._minPanelWidth = 100;
@@ -1345,6 +1345,7 @@ export class DComboBox extends  DCont {
              this.labels[this.currId].color = this._colorText;
              this.panel.height = this._maxKoll * this._height;
 
+             console.warn(this._array.length)
              if (yy > this._maxKoll * this._height) {
                  this.scrollBar.visible = true;
                  this.scrollBar.heightContent = yy;
@@ -1357,8 +1358,6 @@ export class DComboBox extends  DCont {
 
             this.panel.height = yy;
         }
-
-        this.reDragArr();
 
         this.reDrag=function(){
             this.backPanel.width = this._width;
@@ -1562,6 +1561,10 @@ export class DComboBox extends  DCont {
                 }
                 this.labels[index].color = this._colorText;
             }
+        }
+
+        if (this._array.length && !this.labels.length) {
+            this.reDragArr();
         }
     }
 
