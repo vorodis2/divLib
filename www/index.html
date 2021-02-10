@@ -204,7 +204,7 @@
 
 
 
-
+		content.visible=false
 
 		var rrr=new DComboBox(content,0,0,null,function(){
 			trace(this.index+"   "+this.value)
@@ -215,6 +215,10 @@
 
         })
         plus(rrr23)
+
+        setTimeout(function() {
+        	content.visible=true
+        }, 2210);
 
 		// var three=new DThree(null,0,0,function(){
 		//

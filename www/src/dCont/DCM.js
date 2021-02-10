@@ -1252,8 +1252,8 @@ export class DComboBox extends  DCont {
         this._otstup1 = 5;
         this.sahDelta = dcmParam.wh;
 
-        this._x = _x || 0;
-        this._y = _y || 0;
+        this.x = _x || 0;
+        this.y = _y || 0;
         this._width = 100;
         this._index = 0;
         this._height = dcmParam.wh;
@@ -3030,7 +3030,7 @@ export class DPanel extends DCont {
         }
 
         this.content = new DCont(this);
-        this.content.y = this._wh;
+        //this.content.y = this._wh;
 
         this.rectPlus = { x: 0, y: 0, w: 0, h: 0 };
         this.canvas = undefined; // document.createElement('canvas');
