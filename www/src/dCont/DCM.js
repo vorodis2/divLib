@@ -1299,7 +1299,7 @@ export class DComboBox extends  DCont {
         this.label1.y = this._height / 2 - this.label1.fontSize / 2;
 
         /*** Создание выпадающей панели ***/
-        this.panel = new DPanel(this, 0, 0);
+        this.panel = new DPanel(null, 0, 0);
         this.panel.width = this._width;
         this.panel.y = this._height;
         this.panel.div.style.userSelect = 'none';
@@ -1321,8 +1321,6 @@ export class DComboBox extends  DCont {
         this.scrollBar.width = 5;
         this.scrollBar.visible = false;
         this.scrollBar.x = this.panel.width - this.scrollBar.width;
-
-        if(this.panel.parent)this.panel.parent.remove(this.panel);
 
         this.scrollPos = function (bool) {
             if (bool) {
@@ -1579,6 +1577,7 @@ export class DComboBox extends  DCont {
         if (this._array.length && !this.labels.length) {
             this.reDragArr();
         }
+        // if(this.panel.parent)this.panel.parent.remove(this.panel);
     }
 
     set x(value) {
