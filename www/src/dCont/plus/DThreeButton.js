@@ -38,6 +38,7 @@ export class DThreeButton extends DCont {
         this._borderRadius = 0;
         this._boolLine = dcmParam._boolLine;
         this._boolFond = true;
+        this._scalePic = 0;
 
         this.alphaTeni = 0.1;
 
@@ -208,6 +209,10 @@ export class DThreeButton extends DCont {
                 if (this._width / this.image.picWidth < s)
                     s = this._width / this.image.picWidth;
 
+                if(this._scalePic!==0){
+                    s=this._scalePic;
+                }
+
                 this.image.height = this.image.picHeight * s;
                 this.image.width = this.image.picWidth * s;
                 sp = this.image.width + 5;
@@ -238,6 +243,9 @@ export class DThreeButton extends DCont {
                 if (this._width / this.image.picWidth < s)
                     s = this._width / this.image.picWidth;
 
+                if(this._scalePic!==0){
+                    s=this._scalePic;
+                }
                 // this.image.height = this.image.picHeight * s;
                 // this.image.width = this.image.picWidth * s;
 
@@ -415,7 +423,15 @@ export class DThreeButton extends DCont {
     get width() {
         return this._width;
     }
-
+    set scalePic(value) {
+        if (this._scalePic != value) {
+            this._scalePic = value;
+            this.reDrag();
+        }
+    }
+    get scalePic() {
+        return this._scalePic;
+    }
     set textAlign(value) {
         if (this._textAlign != value) {
             this._textAlign = value;
