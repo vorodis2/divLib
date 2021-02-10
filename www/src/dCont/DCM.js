@@ -33,6 +33,7 @@ export function DCM() {
     this._color1 = '#ffffff';
     this._colorText = '#ffffff'; //dfgdfg
     this._colorText1 = '#999999';
+    this._colorActive = '#f28044';
     this._fontSize = 16;
     this._fontFamily = 'Arial, Helvetica, sans-serif';
     this._otstup = 2;
@@ -40,7 +41,6 @@ export function DCM() {
     this.crossOrigin=null
 
     this.borderRadius = 0;
-
     this.mobile = false;
     this.mobileVisi = undefined;
     this.dragNotEvent = false;
@@ -599,6 +599,19 @@ Object.defineProperties(DCM.prototype, {
         },
     },
 
+    colorActive: {
+        set: function (value) {
+            this._colorActive = value;
+            for (var i = 0; i < this.array.length; i++) {
+                if (this.array[i].colorActive != undefined)
+                    this.array[i].colorActive = this._colorActive;
+            }
+        },
+        get: function () {
+            return this._colorActive;
+        },
+    },
+    
     fontSize: {
         set: function (value) {
             this._fontSize = value;
