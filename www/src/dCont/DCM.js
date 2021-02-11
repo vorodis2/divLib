@@ -1343,6 +1343,7 @@ export class DComboBox extends  DCont {
                 if (this.labels[i] == undefined) {
                     this.labels[i] = new DLabel(this.content, this._otstup1, 0, "");
                     this.labels[i].fontSize = this._fontSize;
+                    this.labels[i].width = 1000;
                     this.labels[i].colorText1 = this._colorText1;
                     this.labels[i].div.style.pointerEvents = 'none';
                 }
@@ -1416,7 +1417,7 @@ export class DComboBox extends  DCont {
                 this.content.y = 0;
             }
 
-            this.panel.div.style.clip = `rect(0px ${this.panel.width}px ${this.panel.height+2}px 0px)`;
+            this.panel.div.style.clip = `rect(0px ${this.panel.width+2}px ${this.panel.height+2}px 0px)`;
         }
 
         this.scaleDrag = { s: 1 };
