@@ -1287,6 +1287,7 @@ export class DComboBox extends  DCont {
         this.label = new DLabel(this.backPanel, 0, 0, this._value);
         this.label.activMouse = false;
         this.label.div.style.userSelect = 'none';
+        this.label.width = 1000;
         this.label.x = this._otstup1;
         this.label.y = this._height / 2 - this.label.fontSize / 2;
         this.label.div.style.clip = `rect(0px ${Math.round(this._width - this._width/5)}px ${this._fontSize+this._otstup1*2}px 0px)`;
@@ -1378,7 +1379,7 @@ export class DComboBox extends  DCont {
             this.btn.width = this._width;
             this.btn.height = this._height;
 
-            this.label.y = this._height / 2 - this.label.height / 2;
+            this.label.y = this._height / 2 - this.label.fontSize / 2;
             this.label.div.style.clip = `rect(0px ${Math.round(this._width - this._width/5)}px ${this._fontSize+this._otstup1*2}px 0px)`;
             this.label1.y = this._height / 2 - this.label1.height / 2;
             this.label1.x = this._width - this._otstup1 - this._fontSize*0.7;
@@ -1721,7 +1722,7 @@ export class DComboBox extends  DCont {
             this._fontSize = v;
             this.label.fontSize = v;
             this.label1.fontSize = v*0.7;
-            this.label.y = this._height / 2 - this.label.height / 2;
+            this.label.y = this._height / 2 - this.label.fontSize / 2;
             this.label.div.style.clip = `rect(0px ${Math.round(this._width - this._width/5)}px ${this._fontSize+this._otstup1*2}px 0px)`;
             this.label1.y = this._height / 2 - this.label1.height / 2 + 2;
             this.label1.x = this._width - this._otstup1 - this._fontSize*0.7;
