@@ -115,25 +115,44 @@
         return*/
 
 
-/*
+
 		this._vusot=20
 
-<<<<<<< HEAD
-=======
+		var ddd=new DCont(content)
+		ddd.x=333
+		ddd.y=100
+		var dd=new DCont(ddd)
+		dd.scale=0.25
+	
+		let dHole=new DHole(dd, 0,0,null,function(){
 
-
-		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-		/*let dHole=new DHole(content, 333,100,null,function(){
->>>>>>> d7f6325e10880532201752eb2d6f1fb113151675
-
+/*
 	
 		let dHole=new DHole(scane, 333,100,null,function(){
-
+*/
 		}, false)
-<<<<<<< HEAD
-		pObject.addObject(dHole); */
-		
-		//return
+
+		pObject.addObject(dHole);/* */
+		dHole.colorButton="#222222";
+       	dHole.colorAct="#222222";
+        dHole.borderRadius=20;	
+
+        dHole.width= 5000;
+        dHole.height= 5000;
+
+        var ddd1=new DCont(content)
+		ddd1.x=133
+		ddd1.y=300
+
+        for (var i = 0; i < 100; i++) {
+        	new DButton(ddd1,Math.random()*100,Math.random()*100,"dfgads")
+        }
+
+        //ddd1.visible=false
+
+
+        content.remove(ddd1)
+		return;
 
 	
 
@@ -197,10 +216,11 @@
 
 
 
+
 		var rrr=new DComboBox(null,0,0,["DComboBox","xz"],function(){
 			trace(this.index+"   "+this.value)
 		})		
-		rrr.array=["xz1","xz2","xz3","xz4"]
+		rrr.array=["xz1ы нркеынркыенкн","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4","xz2","xz3","xz4"]
 		rrr.valueS=[1,"xz2",22,33]
 		rrr.value=33
 		plus(rrr)

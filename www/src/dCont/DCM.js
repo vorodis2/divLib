@@ -2969,8 +2969,8 @@ export class DLabel extends DCont {
 
         var dCt2=undefined;
         this.getTextWidth = function(_text, _font) {
-            let text = _text || this.text
-            let font = _font || this.fontSize
+            let text = _text || this._text
+            let font = _font || this._fontSize
             if(dCt2==undefined)dCt2 = document.createElement("canvas")
             var canvas = dCt2// getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));    
             var context = canvas.getContext("2d");
