@@ -532,7 +532,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.boolWheel = bb;
 
 	this.panelBool=true
-
 }
 DGallery.prototype = Object.create(DCont.prototype);
 DGallery.prototype.constructor = DGallery;

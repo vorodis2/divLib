@@ -29,6 +29,7 @@ export class DThreeBool extends DCont{
         this._activMouse = true;
         this._activId = -1;
         this._bool = true
+        this._scalePic=0
 
         this.arr=[];                                   
         this.arrBut=[];                                
@@ -37,7 +38,7 @@ export class DThreeBool extends DCont{
         this.butInProc=0;
         this.indexMouseDown = -1;                      
         this.indexOver= -1;
-
+        
         this.panelGlav = new DPanel();
         this.panelGlav.width = this.width
         this.panelGlav.height = this.height
@@ -518,6 +519,18 @@ export class DThreeBool extends DCont{
     }   
     get width() { return  this._width;} 
 
+    set scalePic(value) {
+        if(value==this._scalePic)return;
+        this._scalePic = value;
+        for (var i = 0; i < this.bufferOt.length; i++) {
+            if (this.bufferOt[i].inited) {
+                this.bufferOt[i].scalePic = this._scalePic;
+            }
+        }
+        this.redrawThree();
+    }   
+    get scalePic() { return  this._scalePic;} 
+
     set heightBut(value) {
         if(value==this._heightBut)return;
         this._heightBut = value;
@@ -625,6 +638,7 @@ export class DObjectThree extends DCont{
         this._title=' ';
         this._color = '#fff000';
         this._link = null
+        this._scalePic = 0;
 
         this.arrBut=[];  
         this.life = true;       
@@ -649,11 +663,11 @@ export class DObjectThree extends DCont{
             this.add(this.content);
 
             // Основная кнопка
-            this.panel=new DThreeButton(this.content,0,0)
-            if (this.link != null && this.link != 'null') this.panel.link = this.link
+            this.button=new DThreeButton(this.content,0,0)
+            if (this.link != null && this.link != 'null') this.button.link = this.link
 
-            this.panel.text=this.title
-            this.panel.height=this._height
+            this.button.text=this.title
+            this.button.height=this._height
 
             this.sobEvent = "null";
 
@@ -673,11 +687,11 @@ export class DObjectThree extends DCont{
             };
 
             if(dcmParam.mobile==false){         
-                this.panel.div.addEventListener("mousedown", this.mouseDown);
-                this.panel.div.addEventListener("mouseout", this.mouseOut);
-                this.panel.div.addEventListener("mouseover", this.mouseOver);
+                this.button.div.addEventListener("mousedown", this.mouseDown);
+                this.button.div.addEventListener("mouseout", this.mouseOut);
+                this.button.div.addEventListener("mouseover", this.mouseOver);
             }else{
-                this.panel.div.addEventListener("touchstart", this.mouseDown);        
+                this.button.div.addEventListener("touchstart", this.mouseDown);        
             }
         }
 
@@ -700,42 +714,53 @@ export class DObjectThree extends DCont{
                 this.correctInfo = true;
             }
 
-            this.panel.x=this.x;
+            this.button.x=this.x;
+            this.button.scalePic=this.scalePic;
             
            
             if(this.obj.obj)if(this.obj.obj.color!=undefined){
                 if(this.actXZ=="null"){
-                    this.panel.color=this.obj.obj.color;
+                    this.button.color=this.obj.obj.color;
                 }else{
-                    this.panel.color=this.actXZ;
+                    this.button.color=this.actXZ;
                 }
                 
             }else{
-                this.panel.color=this.color;
+                this.button.color=this.color;
             }
             
 
-            this.panel.width=this.width-this.x*2;
+            this.button.width=this.width-this.x*2;
 
-            if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
-            if (this.panel.height<this.panel.width)this.panel.height = this.height
+            if (this.button.height>this.button.width)this.button.height = this.button.width
+            if (this.button.height<this.button.width)this.button.height = this.height
 
-            this.height1 = this.panel.height
+            this.height1 = this.button.height
         }
     }
     
     set title (value) {
         if(value==this._title)return;
         this._title = value; 
-        if (value) this.panel.text = value;
+        if (value) this.button.text = value;
 
     }
     get title () { return this._title; }
 
+    set scalePic(value) {
+        if (this._scalePic != value) {
+            this._scalePic = value;
+            this.drawElement();
+        }
+    }
+    get scalePic() {
+        return this._scalePic;
+    }
+
     set color (value) {
         if(value==this._color)return;
         this._color = value; 
-        if (value) if(this.panel) this.panel.color = value; 
+        if (value) if(this.button) this.button.color = value; 
         this.drawElement()
 
     }
@@ -744,7 +769,7 @@ export class DObjectThree extends DCont{
     set link (value) {
         if(value==this._link)return;
         this._link = value; 
-        if (value) if(this.panel) this.panel.link = value; 
+        if (value) if(this.button) this.button.link = value; 
 
     }
     get link () { return this._link; }
@@ -752,10 +777,10 @@ export class DObjectThree extends DCont{
     set width (value) {
         if(value==this._width)return;
         this._width = value; 
-        this.panel.width=this._width   
+        this.button.width=this._width   
 
-        if (this.panel.height>this.panel.width)this.panel.height = this.panel.width
-        if (this.panel.height<this.panel.width)this.panel.height = this.height
+        if (this.button.height>this.button.width)this.button.height = this.button.width
+        if (this.button.height<this.button.width)this.button.height = this.height
         this.drawElement()
     }
     get width () { return this._width; }
@@ -783,7 +808,7 @@ class Dlines extends DCont {
         this.canvas = document.createElement('canvas');
         this.div.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
-        this.lineLength = 0.4;
+        // this.lineLength = 0.4;
     }
 
     redrawLines (arrBut) {
