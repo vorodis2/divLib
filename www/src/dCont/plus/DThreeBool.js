@@ -577,12 +577,12 @@ export class DThreeBool extends DCont{
 
     set activId(value) {
         value = Math.round(value)
-        this.openTillId(value);
         this._activId=value;
 
         this.clear();
-        this.update();
+        this.openTillId(value);
         this.drawElement(this.arrBut);
+        this.update();
     }   
     get activId() { return  this._activId;} 
 
