@@ -1074,10 +1074,8 @@ export function DBox(_cont, _x, _y, _fun) {
 		if (self.funOver) self.funOver(self);
 	};
 	this.mouseOut = function (e) {		
-		
 		if(self._activ==false)self.panel.color1=self._color1;
-		else self.panel.color1=self._color;
-		
+		else self.panel.color1=self._color;		
 		if (self.funOut) self.funOut(self);
 	};
 	this.mouseDown = function (e) {		
@@ -1086,20 +1084,20 @@ export function DBox(_cont, _x, _y, _fun) {
 	this.draw();
 
 
-
-
+	this.image.div.style.pointerEvents = 'none';
+	
 
 	if(dcmParam.mobile==false){
-		this.image.image.addEventListener("mousedown", this.mouseDown)
+		//this.image.image.addEventListener("mousedown", this.mouseDown)
 		this.panel.div.addEventListener("mousedown", this.mouseDown)
 
 		this.panel.div.addEventListener("mouseout", this.mouseOut);
-		this.image.image.addEventListener("mouseout", this.mouseOut);
+		//this.image.image.addEventListener("mouseout", this.mouseOut);
 
 		this.panel.div.addEventListener("mouseover", this.mouseOver);
-		this.image.image.addEventListener("mouseover", this.mouseOver);		
+		//this.image.image.addEventListener("mouseover", this.mouseOver);		
 	}else{
-		this.image.image.addEventListener("touchstart", this.mouseDown)
+		//this.image.image.addEventListener("touchstart", this.mouseDown)
 		this.panel.div.addEventListener("touchstart", this.mouseDown)
 	}
 
