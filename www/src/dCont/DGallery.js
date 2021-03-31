@@ -38,6 +38,9 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this._boolPositOtctup = true;// внутурь/наружу
 	this._boolWheel = true;
 
+	this.killTukIndex = 0;//rколичество тыков по индексу
+
+
 	this.sahDelta = 20;
 
 	this.funLoad;
@@ -596,22 +599,6 @@ Object.defineProperties(DGallery.prototype, {
 		}
 	},
 
-	/*
-
-set prosentH(value) {                
-        this._prosentH = value;
-        let hd=(this.hh-this._height)*this._prosentH;      
-        if(hd>0)hd=0
-        this.content.y=  hd   
-        
-    }
-    get prosentH() {
-        let hd=this.hh-this._height;       
-        this._prosentH=this.content.y/hd
-        return  this._prosentH;
-    }
-
-	*/
 
 
 
@@ -813,17 +800,24 @@ set prosentH(value) {
 	},
 	index: {// Активный элемент
 		set: function (value) {
+			this.killTukIndex++;
 
 			if (this.array[value] != undefined) {
 				this.korektPoIndex(value);
 			}
 			if (this._index == value) return;
+			this.killTukIndex=0
 			this._index = value;
 
 			for (var i = 0; i < this.array.length; i++) {
-				if (this._index == i) this.array[i].activ = true;
-				else this.array[i].activ = false;
-			}
+				if (this._index == i) {
+					this.array[i].activ = true;
+					this.killTukIndex=1
+				}					
+				else {
+					this.array[i].activ = false;
+				}
+			}		
 
 		},
 		get: function () {

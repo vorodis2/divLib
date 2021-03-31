@@ -2201,16 +2201,16 @@ export class DButton extends DCont {
                     s=this._scalePic;
                 }
 
-                this.image.height = this.image.picHeight * s;
-                this.image.width = this.image.picWidth * s;
+                this.image.height = Math.round(this.image.picHeight * s);
+                this.image.width = Math.round(this.image.picWidth * s);
 
                 sp = this.image.width + 5;
                 if (self.label.value.length >= 1) {
                     this.image.x = 0;
-                    this.image.y = (this._height - this.image.height) / 2;
+                    this.image.y = Math.round((this._height - this.image.height) / 2);
                 } else {
-                    this.image.x = (this._width - this.image.width) / 2;
-                    this.image.y = (this._height - this.image.height) / 2;
+                    this.image.x = Math.round((this._width - this.image.width) / 2);
+                    this.image.y = Math.round((this._height - this.image.height) / 2);
                 }
             }
             let b = true;
@@ -2239,11 +2239,11 @@ export class DButton extends DCont {
                     s=this._scalePic;
                 }
 
-                this.image.height = this.image.picHeight * s;
-                this.image.width = this.image.picWidth * s;
+                this.image.height = Math.round(this.image.picHeight * s);
+                this.image.width = Math.round(this.image.picWidth * s);
 
-                this.image.x = (this._width - this.image.width) / 2;
-                this.image.y = (this._height - this.image.height) / 2;
+                this.image.x = Math.round((this._width - this.image.width) / 2);
+                this.image.y = Math.round((this._height - this.image.height) / 2);
 
                 this.label.div.style.zIndex = '10';
                 this.label.width = this._width;
