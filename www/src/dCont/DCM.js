@@ -33,6 +33,7 @@ export function DCM() {
     this._color1 = '#ffffff';
     this._colorText = '#ffffff'; //dfgdfg
     this._colorText1 = '#999999';
+    this._colorTextInput = this._colorText1;
     this._colorActive = '#f28044';
     this._fontSize = 16;
     this._fontFamily = 'Arial, Helvetica, sans-serif';
@@ -544,6 +545,16 @@ export function DCM() {
             div.removeEventListener('mousedown', this.mousedown);
         }
     };
+
+    this.getFocus= function(){
+        for (var i = 0; i < this.array.length; i++) {
+            if(this.array[i].boolFocus!=undefined){
+                if(this.array[i].boolFocus==true)return this.array[i]
+            }
+        }        
+        return null;
+    }
+
 }
 
 Object.defineProperties(DCM.prototype, {
@@ -1057,7 +1068,7 @@ export class DColor extends DCont {
                 oo1.y = 0;
 
                 nP = this.getBigPar(this.image, oo1);
-                trace(nP)
+        
                 cOld = self._color;
                 this.panel.height = this._height + 100 + this._otstup;
                 nP.add(this.image);
@@ -1234,7 +1245,7 @@ export class DColor extends DCont {
         return this._openBool;
     }
 }
-
+/*
 export class DComboBox extends  DCont {
     constructor(dCont, _x, _y, _arr, _fun, _link) {
         super();
@@ -1299,7 +1310,7 @@ export class DComboBox extends  DCont {
         this.label1.x = this._width - this.label1.getTextWidth() - this.otstup;
         this.label1.y = this._height / 2 - this.label1.fontSize / 2;
 
-        /*** Создание выпадающей панели ***/
+        // Создание выпадающей панели 
         this.panel = new DPanel(null, 0, 0);
         this.panel.width = this._width;
         this.panel.y = this._height;
@@ -1472,7 +1483,7 @@ export class DComboBox extends  DCont {
             }
         };
 
-        /***  События ***/
+        //  События 
         this.mousemove = function (e) {
             const idElem = Math.floor((e.offsetY - self.content.y) / self._height);
             if (idElem > self._array.length-1 || idElem < 0) return;
@@ -1760,6 +1771,222 @@ export class DComboBox extends  DCont {
         }
     }
     get activMouse() { return this._activMouse }
+}*/
+
+
+export class DComboBox extends DCont {
+    constructor(dCont, _x, _y, _arr, _fun, _link) {
+        super();
+        this.type = 'DComboBox';
+        this.dcmParam = dcmParam;
+        this.dcmParam.add(this);
+        var self = this;
+        this.x = _x || 0;
+        this.y = _y || 0;
+        this._array = _arr || ['null'];
+        this._valueS = _arr || ['null'];
+
+        this.fun = _fun;
+
+        this.fun_mouseover = undefined;
+        this.fun_mouseout = undefined;
+        this.fun_mousedown = undefined;
+        this.funDownFile = undefined;
+
+        this._borderRadius = dcmParam.borderRadius;
+        this._width = 100;
+        this._height = dcmParam.wh;
+        this._color1 = dcmParam._color1;
+        this._colorText1 = dcmParam._colorText1;
+        this._fontSize = dcmParam._fontSize;
+
+        if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
+        this.object = document.createElement('select');
+        if (dcmParam.isIE == false) this.object.style.position = 'fixed';
+        this.object.style.top = '0px';
+        this.object.style.left = '0px';
+        this.object.style.background = this._color1;
+        this.object.style.color = this._colorText1;
+        this.object.style.fontSize = this._fontSize + 'px';
+        this.object.style.border =
+            '1px solid ' +
+            dcmParam.compToHexArray(dcmParam.hexDec(self._color1), -20); //"none";
+        this.object.style.display = 'inline-block';
+        this.object.style.fontFamily = dcmParam._fontFamily;
+        this.object.style.borderRadius = this._borderRadius + 'px';
+
+        this.div.appendChild(this.object);
+        this.object.style.width = this._width + 'px';
+        this.object.style.height = this._height + 'px';
+
+        this.object.onchange = function (e) {
+            self.index = self.object.value;
+            if (self.fun) self.fun();
+        };
+
+        self.mousedown = function () {
+            dcmParam.activInp = self;
+        };
+
+        if (dcmParam.mobile == false) {
+            this.object.addEventListener('mousedown', self.mousedown);
+        } else {
+            this.object.addEventListener('touchstart', self.mousedown);
+        }
+
+        this.image = undefined;
+        this.reDrag = function () {
+            this.object.style.width = this._width + 'px';
+            this.object.style.height = this._height + 'px';
+        };
+        this.array = this._array;
+        this.valueS = this._valueS;
+    }
+
+    set valueS(value) {
+        this._valueS = value;
+    }
+    get valueS() {
+        return this._valueS;
+    }
+
+    set array(value) {
+        this._array = value;
+        this.object.options.length = this._array.length;
+        for (var i = 0; i < this.object.options.length; i++) {
+            this.object.options[i].text = this._array[i];
+            this.object.options[i].value = i;
+        }
+        this.index = 0;
+        this.reDrag();
+    }
+    get array() {
+        return this._array;
+    }
+
+    set borderRadius(value) {
+        if (this._borderRadius != value) {
+            this._borderRadius = value;
+            this.object.style.borderRadius = this._borderRadius + 'px';
+        }
+    }
+    get borderRadius() {
+        return this._borderRadius;
+    }
+
+    set x(value) {
+        this.position.x = value;
+    }
+    get x() {
+        return this.position.x;
+    }
+    set y(value) {
+        this.position.y = value;
+    }
+    get y() {
+        return this.position.y;
+    }
+    set width(value) {
+        if (this._width != value) {
+            this._width = value;
+            this.reDrag();
+        }
+    }
+    get width() {
+        return this._width;
+    }
+
+    set height(value) {
+        if (this._height != value) {
+            this._height = value;
+            this.reDrag();
+        }
+    }
+    get height() {
+        return this._height;
+    }
+
+    set index(value) {
+        this._index = value;
+        if (this._valueS[value] != undefined) this._value = this._valueS[value];
+        this.object.value = this._index;
+    }
+    get index() {
+        return this._index;
+    }
+
+    set value(v) {
+        this._value = v;
+        for (var i = 0; i < this._valueS.length; i++) {
+            if (this._valueS[i] == v) {
+                this.index = i;
+            }
+        }
+    }
+    get value() {
+        return this._value;
+    }
+
+    set fontSize(value) {
+        if (this._fontSize != value) {
+            this._fontSize = value;
+            this.object.style.fontSize = value + 'px';
+        }
+    }
+    get fontSize() {
+        return this._fontSize;
+    }
+
+    set color1(value) {
+        if (this._color1 != value) {
+            this._color1 = value;
+            this.object.style.background = this._color1;
+            this.object.style.border =
+                '1px solid ' +
+                dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
+        }
+    }
+    get color1() {
+        return this._color1;
+    }
+
+    set colorText1(value) {
+        if (this._colorText1 != value) {
+            this._colorText1 = value;
+            this.object.style.color = this._colorText1;
+        }
+    }
+    get colorText1() {
+        return this._colorText1;
+    }
+
+    set borderRadius(value) {
+        if (this._borderRadius != value) {
+            this._borderRadius = value;
+            this.object.style.borderRadius = this._borderRadius + 'px';
+            this.object.style.webkitBorderRadius = this._borderRadius + 'px';
+            this.object.style.mozBorderRadius = this._borderRadius + 'px';
+        }
+    }
+    get borderRadius() {
+        return this._borderRadius;
+    }
+
+    set activMouse(value) {
+        if (this._activMouse != value) {
+            this._activMouse = value;
+            if (value == true) {
+                this.alpha = 1;
+                this.object.style.pointerEvents = null;
+            } else {
+                this.alpha = 0.7;
+                this.object.style.pointerEvents = 'none';
+            }
+        }
+    }
+    get activMouse() {
+        return this._activMouse;
+    }
 }
 
 export class DComboBoxOld extends DCont {
@@ -3370,8 +3597,10 @@ export class DImage extends DCont {
             this._activMouse = value;
             if (value == true) {
                 this.div.style.pointerEvents = 'auto';
+                this.div.style.userSelect="auto"
             } else {
                 this.div.style.pointerEvents = 'none';
+                this.div.style.userSelect="none"
             }
         }
     }
@@ -3535,8 +3764,10 @@ export class DLabel extends DCont {
             this._activMouse = value;
             if (value == true) {
                 this.div.style.pointerEvents = 'auto';
+                this.div.style.userSelect="auto"
             } else {
                 this.div.style.pointerEvents = 'none';
+                this.div.style.userSelect="none"
             }
         }
     }
@@ -4088,8 +4319,9 @@ export class DSliderBig extends DCont {
             this.slider.width = (this._width - dcmParam._otstup) * 0.7;
             this.input.width = (this._width - dcmParam._otstup) * 0.3 - 4;
             this.input.x = this.slider.width + dcmParam._otstup+4;
-
+            this.label.width=this.slider.width
             this.label2.x = this.input.x - 4 * this.label2.text.length;
+
         }
     }
     get width() {
@@ -4251,6 +4483,7 @@ export class DInput extends DCont {
         this._height = dcmParam.wh;
         this.fun = _fun;
         this._text = _text || 'null';
+        if(_text==""||_text==" ")this._text=""
         this._value = this._text;
 
         var timeoutID = null;
@@ -4261,7 +4494,12 @@ export class DInput extends DCont {
         this._okrug = 0;
         this._color1 = dcmParam._color1;
 
-        this._colorText1 = dcmParam._colorText1;
+        this.boolNum=false;
+        this._min=-999999999999999;
+        this._max=999999999999999;
+
+
+        this._colorText1 = dcmParam._colorTextInput;
         this._fontFamily = dcmParam._fontFamily;
         this._fontSize = dcmParam._fontSize;
         this._textAlign = 'center';
@@ -4326,21 +4564,32 @@ export class DInput extends DCont {
         this.funTimeOut = function () {
             self.dragInput(self.object.value);
         };
-
-        this.dragInput = function (s) {
+       
+        this.dragInput = function (s,b) {
             var str = s;
 
-            if (self._okrug != 0) {
+            if (self.boolNum ==true) {
                 str = str * 1;
+                
 
                 if (typeof str != 'number') str = 0;
                 if (isNaN(str) == true) str = 0;
-                str = Math.round(str * (1 / self._okrug)) / (1 / self._okrug);
+
+                 
+
+                str = Math.round(str * (1 / self.okrug)) / (1 / self.okrug);
+
+                if(str<self.min)str=self.min
+                if(str>self.max)str=self.max
+
+
             }
+
+            
             self._text = str;
             self._value = str;
             self.object.value = self._text;
-            if (self.fun) self.fun();
+            if(b==undefined)if (self.fun) self.fun();
         };
 
         var sp;
@@ -4405,6 +4654,7 @@ export class DInput extends DCont {
 
         this.setNum = function (okrug) {
             this.okrug = okrug;
+            this.boolNum=true
 
             if (dcmParam.mobile == false) {
                 this.object.addEventListener('mousedown', self.mousedown);
@@ -4415,7 +4665,7 @@ export class DInput extends DCont {
 
         this.object.style.width = this._width - 4 + 'px';
         this.object.style.height = this._height - 2 + 'px';
-
+        
         this.div.appendChild(this.object);
 
         this.x = _x || 0;
@@ -4478,13 +4728,40 @@ export class DInput extends DCont {
     }
 
     set value(v) {
-        this._value = v;
-        this._text = v;
+        if(this.boolNum==true){
+            this.dragInput(v,true) 
+           /* var s=v*1
+            if(isNaN(s)!=true){                
+                if(s<this.min)s=this.min
+                if(s>this.max)s=this.max 
 
-        this.object.value = this._text;
+                this._value = s;
+                this._text = s;
+            } */           
+        }else{
+            this._value = v;
+            this._text = v;
+            this.object.value = this._text;
+        }
+        
+        
     }
     get value() {
         return this._value;
+    }
+
+   
+    set min(v) {
+        this._min = v;     
+    }
+    get min() {
+        return this._min;
+    }
+    set max(v) {
+        this._max = v;     
+    }
+    get max() {
+        return this._max;
     }
 
     set text(v) {
@@ -4576,7 +4853,8 @@ export class DTextArea extends DCont {
         this._width = 100;
         this._height = 100;
         this.fun = _fun;
-        this._text = _text || 'null';
+        this._text = _text || 'null';        
+        if(_text==""||_text==" ")this._text=""
         this._value = this._text;
 
         this._numLine = 1;
@@ -4591,7 +4869,7 @@ export class DTextArea extends DCont {
 
         this.funEnter = undefined;
         this._color1 = dcmParam._color1;
-        this._colorText1 = dcmParam._colorText1;
+        this._colorText1 = dcmParam._colorTextInput;
         this._fontFamily = dcmParam._fontFamily;
         this._fontSize = dcmParam._fontSize;
         this._textAlign = 'center';

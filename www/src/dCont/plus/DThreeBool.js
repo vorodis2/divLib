@@ -630,12 +630,15 @@ export class DObjectThree extends DCont{
         this.type = 'DObjectThree'; 
         this.par=par
 
+
+
         this.fun=fun;                 
         this.x=_x;
         this.y=_y;
         this._width=50;
         this._height=20;
         this._title=' ';
+        this._title1 = null;
         this._color = '#fff000';
         this._link = null
         this._scalePic = 0;
@@ -668,8 +671,15 @@ export class DObjectThree extends DCont{
 
             this.button.text=this.title
             this.button.height=this._height
-
+            this.label=new DLabel(this.content,36,24)
+            this.label.fontSize=8
+            this.label.activMouse=false;
+            this.label.visible=false
+            this.label.width=50
+            //this._title1 = null;
+            //this.label.textAlign  ="center" 
             this.sobEvent = "null";
+            this.label.color="#dddddd"
 
             this.mouseOver = function (e) {
                 self.sobEvent="mouseOver";
@@ -697,6 +707,15 @@ export class DObjectThree extends DCont{
 
         this.correctInfo = false;
         this.setInfo = function () {
+           
+            
+            this.title1 = this.obj.title1;
+            if(this.obj && this.obj.obj && this.obj.obj.title1 && dcmParam.mobile==false){                
+                this.title1 = this.obj.obj.title1;
+            }else{
+                this.title1 = null;
+            }
+
             this.title = this.obj.text;
             this.width = this.three._widthBut;
             this.height = this.three._heightBut;
@@ -742,10 +761,26 @@ export class DObjectThree extends DCont{
     set title (value) {
         if(value==this._title)return;
         this._title = value; 
-        if (value) this.button.text = value;
+        if (value) this.button.text = value;        
 
     }
     get title () { return this._title; }
+
+    set title1 (value) {
+        if(value==this._title1)return;
+        this._title1 = value; 
+
+        if (value!=null) {
+            this.label.visible=true;
+            this.label.text = value;
+            
+        }else{
+            this.label.visible=false; 
+        }       
+
+    }
+    get title1 () { return this._title1; }
+
 
     set scalePic(value) {
         if (this._scalePic != value) {
@@ -778,7 +813,7 @@ export class DObjectThree extends DCont{
         if(value==this._width)return;
         this._width = value; 
         this.button.width=this._width   
-
+        this.label.width=this._width   
         if (this.button.height>this.button.width)this.button.height = this.button.width
         if (this.button.height<this.button.width)this.button.height = this.height
         this.drawElement()

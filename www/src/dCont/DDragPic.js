@@ -36,8 +36,19 @@ export function DDragPic(dC) {
     var sT=1;
     this.oSc={x:0,y:0,x:1}
 
+
+    this.tween=undefined
+    if(window.TWEEN){
+        this.tween=new TWEEN.Tween(this.dCont);
+
+    }
+
+
+
     this.start = function(wh,link,object,fUp,alpha){
         if(this.whBase!=null)wh=this.whBase
+
+      
         this.image.link=link;
         this.image.width=wh;
         this.image.height=wh;
@@ -47,7 +58,7 @@ export function DDragPic(dC) {
         sp=undefined;
 
         
-        this.dCont.alpha= alpha ==undefined ? 0 : alpha;
+        this.dCont.alpha =0// alpha ==undefined ? 0 : alpha;
               
         this.dC.add(this.dCont);
 
@@ -63,6 +74,12 @@ export function DDragPic(dC) {
         this.dCont.y=dcmParam.globXY.y/this.oSc.s;
 
         dcmParam.addFunMove(this.mousemove)
+
+        
+        if(this.tween){
+            this.tween.to({alpha:1},500).start();
+        }
+        
        
     }
 
@@ -96,23 +113,21 @@ export function DDragPic(dC) {
 
     //дергает вложеные фунАпы
     this.mouseup = function(e){
+
         if(sp!=undefined){
              for (var i = 0; i < self.arrFunUp.length; i++) {
                 self.arrFunUp[i]()
             } 
-
-            self.stop();
-
-           
         }
+        self.stop();
         
     }
 
     this.stop = function(){               
         if(self.fUp)self.fUp(); 
-             
+ 
         dcmParam.removeFunMove(self.mousemove) 
-        self.dC.remove(self.dCont);
+        if(self.dCont)if(self.dCont.parent)self.dCont.parent.remove(self.dCont);
         self.object=undefined
         sp=undefined;
     }
@@ -146,9 +161,12 @@ export function DDragPic(dC) {
         self.dCont.x=self._x/self.oSc.s+self.pointZdvig.x;
         self.dCont.y=self._y/self.oSc.s+self.pointZdvig.y;
 
-        if(self.dCont.alpha<1){
-            self.dCont.alpha+=0.1;
+        if(self.tween==undefined){
+           if(self.dCont.alpha<1){
+                self.dCont.alpha+=0.1;
+            } 
         }
+        
         /*let dd= self.getDistance(self.dCont,sp)
         let n=dd/50;
         if(n>1)n=1;
@@ -223,7 +241,8 @@ export function DDragPic(dC) {
         self.point.y=ss1;
 
         if(self.fDDD) self.fDDD()
-        if(Math.abs(ss>self.dist)||Math.abs(ss1>self.dist)){
+        if(Math.abs(ss>self.dist)||Math.abs(ss1>self.dist)){ 
+            self.fClik=   undefined        
             self.mouseStop();
             if(self.fDrag!=undefined)self.fDrag(); 
             return;          
@@ -232,11 +251,11 @@ export function DDragPic(dC) {
     }
 
     this.mouseStop = function(){
-        sp=undefined;        
+        sp=undefined;   
         if(self.devas==false){            
-            document.removeEventListener("mouseup", self.mouseup1);
+            document.removeEventListener("mouseup", self.mouseup1);           
         }else{           
-            document.removeEventListener("touchend", self.mouseup1);
+            document.removeEventListener("touchend", self.mouseup1);           
         } 
         dcmParam.removeFunMove(self.mousemove1)  
     }
@@ -247,6 +266,7 @@ export function DDragPic(dC) {
     this.fDrag=0;   
     this.fDDD=undefined  
     this.testDrag = function(dist,fClik,fDrag,fDDD){ 
+        
         sp=undefined;  
         this.dist=dist;
         this.fClik=fClik;

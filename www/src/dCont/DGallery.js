@@ -57,6 +57,8 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.hh = 1;
 	this.hM = 1;
 
+	this.div.boolDiv=true;
+
 	/*this.graphicsMask = new PIXI.Graphics();
 	this.addChild(this.graphicsMask);*/
 	
@@ -436,8 +438,6 @@ export function DGallery (dCont, _x, _y, _fun) {
 		self.dragActiv=false;
 		sp=undefined;
 		if(self.dragNotEvent==true)document.body.style.pointerEvents=null;	
-
-	
 		
 	}
 

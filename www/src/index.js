@@ -10,6 +10,7 @@ import { DButtonDrag, DAroundButton} from './dCont/DPlus.js';
 import {DDragPic} from './dCont/DDragPic.js';
 import {DHole} from './dCont/DHole.js';
 
+import {DHoleDrag} from './dCont/DHoleDrag.js';
 
 
 global.DDragPic = DDragPic;
@@ -49,6 +50,7 @@ global.DHelp=DHelp
 global.DThree=DThree
 global.DGlow=DGlow
 global.DHole=DHole
+global.DHoleDrag = DHoleDrag;
 
 
-export { DCont, DCM,DDragPic, DButton,DGlow,DComboBox, DComboBoxOld, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree,DHole};
+export { DCont, DCM,DDragPic, DButton,DGlow,DComboBox, DComboBoxOld, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree,DHole,DHoleDrag};
