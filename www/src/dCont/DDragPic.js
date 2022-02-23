@@ -21,7 +21,9 @@ export function DDragPic(dC) {
     
     this.image=new DImage(this.dCont, 0,0);
     this.image.div.style.pointerEvents="none";
-    this.dCont.div.style.pointerEvents="none";     
+    this.dCont.div.style.pointerEvents="none";   
+    this.dCont.div.style.userSelect="none";
+    this.image.div.style.userSelect="none";  
     this.array=[];
 
 
@@ -115,8 +117,8 @@ export function DDragPic(dC) {
     this.mouseup = function(e){
 
         if(sp!=undefined){
-             for (var i = 0; i < self.arrFunUp.length; i++) {
-                self.arrFunUp[i]()
+            for (var i = 0; i < self.arrFunUp.length; i++) {
+                self.arrFunUp[i](e);
             } 
         }
         self.stop();
@@ -198,13 +200,19 @@ export function DDragPic(dC) {
 ///////////////////////////////////////////////////////
 ////////////////////////тест драга//////////////////////////////
 
-      
+    
 
     //система проверки клик это или драг
     this.mouseup1 = function(e){       
         self.mouseStop();       
         if(self.fClik!=undefined)self.fClik();
     }
+
+    this.pointNull={x:0,y:0}  
+    this.getDistance = function (p1, p2) {       
+        return Math.sqrt(Math.pow((p1.x - p2.x), 2) + Math.pow((p1.y - p2.y), 2));
+    };
+
 
     this.sp
     this.point={x:0,y:0}  
@@ -239,9 +247,9 @@ export function DDragPic(dC) {
         }   
         self.point.x=ss;
         self.point.y=ss1;
-
-        if(self.fDDD) self.fDDD()
-        if(Math.abs(ss>self.dist)||Math.abs(ss1>self.dist)){ 
+        var dd=self.getDistance(self.point,self.pointNull)
+        if(self.fDDD) self.fDDD();              
+        if(dd>self.dist){ 
             self.fClik=   undefined        
             self.mouseStop();
             if(self.fDrag!=undefined)self.fDrag(); 
@@ -291,19 +299,14 @@ export function DDragPic(dC) {
         set: function (value) {            
             if(this._active!=value){
                 this._active=value;                               
-                if(value==true){   
-
-                    
+                if(value==true){ 
                     if(this.devas==false){
                         document.addEventListener("mouseup", this.mouseup); 
                     }else{
                         document.addEventListener("touchend", this.mouseup); 
                     }
-
                 }else{
-
-                    this.object=undefined
-                    
+                    this.object=undefined                    
                     if(this.devas==false){
                         document.removeEventListener("mouseup", this.mouseup); 
                     }else{
@@ -317,3 +320,5 @@ export function DDragPic(dC) {
         }
     });
 }
+
+

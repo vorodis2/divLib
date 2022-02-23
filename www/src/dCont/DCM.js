@@ -38,9 +38,11 @@ export function DCM() {
     this._fontSize = 16;
     this._fontFamily = 'Arial, Helvetica, sans-serif';
     this._otstup = 2;
+    this._otstupD = 2;
     this._boolLine = true;
     this.crossOrigin=null
 
+    this.timeTween=200
     this.borderRadius = 0;
     this.mobile = false;
     this.mobileVisi = undefined;
@@ -153,13 +155,16 @@ export function DCM() {
 
     if (this.mobile == false) {
         document.body.addEventListener('mouseup', function () {
-            setTimeout(function () {
-                if (self.activInp) {
-                    self.activInp = undefined;
-                    return;
-                }
-                self.input.focus();
-            }, 1);
+           
+            if(self.zbrosDokument==true){  
+                setTimeout(function () {
+                    if (self.activInp) {
+                        self.activInp = undefined;
+                        return;
+                    }
+                    self.input.focus();
+                }, 1);
+            }
         });
     }
 
@@ -446,6 +451,26 @@ export function DCM() {
         return this.colorPolit;
     };
 
+    this.generateRendom =  function (n){
+        if(n==undefined)n=2;        
+        let s='';
+        let s1='';
+        let d0;
+        for (var i = 0; i < n; i++) {           
+            d0=Math.random() * 0xffffffff | 0;
+            s1=(d0 & 0xff).toString(16) + (d0 >> 8 & 0xff).toString(16)+ (d0 >> 16 & 0xff).toString(16)+ (d0 >> 24 & 0xff).toString(16)         
+            if(s1.length<8){
+                for (var j = 0; j < 8-s1.length+1; j++) {
+                    s1+="Z";
+                }
+            }
+            s+= s1 
+            if(i!=n-1)s+="-";
+        }       
+        return s
+    }
+
+
     this.arrFun = [];
     this.removeFunMove = function (fun) {
         for (let i = this.arrFun.length - 1; i >= 0; i--) {
@@ -460,11 +485,12 @@ export function DCM() {
     };
 
     this.globXY = { x: 0, y: 0 };
-
+    this.globMouseMove=null
     this.mousemove = function (e) {
         for (let i = 0; i < self.arrFun.length; i++) {
             self.arrFun[i](e);
         }
+        self.globMouseMove=e
         if (self.mobile == false) {
             self.globXY.x = e.clientX;
             self.globXY.y = e.clientY;
@@ -490,10 +516,17 @@ export function DCM() {
         document.addEventListener('touchmove', self.mousemove);
     }
 
+
     global.dcmParam = this;
+    this.zbrosDokument=true
 
     this.mouseup = function (e) {
-        document.body.style.pointerEvents = 'auto';
+     
+        if(self.zbrosDokument==true){
+            document.body.style.pointerEvents = 'auto';
+           
+        }
+
         if (self.mobile == false) {
             document.removeEventListener('mouseup', self.mouseup);
         } else {
@@ -505,7 +538,12 @@ export function DCM() {
         if (e.target && e.target.value != undefined) {
             return;
         }
-        document.body.style.pointerEvents = 'none';
+
+        if(self.zbrosDokument==true){
+           
+            document.body.style.pointerEvents = 'none';
+        }
+
         if (self.mobile == false) {
             document.addEventListener('mouseup', self.mouseup);
         } else {
@@ -547,6 +585,7 @@ export function DCM() {
     };
 
     this.getFocus= function(){
+      
         for (var i = 0; i < this.array.length; i++) {
             if(this.array[i].boolFocus!=undefined){
                 if(this.array[i].boolFocus==true)return this.array[i]
@@ -555,6 +594,39 @@ export function DCM() {
         return null;
     }
 
+
+/*
+    ////////////////////////////////
+    this.testEvent=function(e,name){            
+        var b=false;
+        if(e.target)if(e.target.offsetParent || e.target.parentElement){
+            b=self.recurs(e.target,name);
+        } 
+        return b
+    }
+
+    var ddd
+    this.recurs=function(div,name){
+        ddd=null
+        if(div.offsetParent!=undefined){
+            ddd=div.offsetParent
+        }
+        if(div.parentElement!=undefined){
+            ddd=div.parentElement
+        }           
+       
+        if(ddd!=null){
+            
+            if(ddd[name]){
+                return true;
+            }
+
+            return this.recurs(ddd)
+        }
+        return false
+    }
+
+    ///////////////////////////////*/
 }
 
 Object.defineProperties(DCM.prototype, {
@@ -723,6 +795,88 @@ export class DWindow extends DCont {
         };
         ////////////////////////////////
 
+        this._otstupD=dcmParam._otstupD
+        this.dragD = function () {
+            if(this.arrayD.length==0)return
+            let yy= this._otstupD;
+            let xx=this._otstupD
+            let yyMax=0  
+            let bool
+       
+            for (var i = 0; i < this.arrayD.length; i++) {  
+                if(this.arrayD[i].pType==1){//под ширину
+                    if(this.arrayD[i].width+this._otstupD*2<this.width){
+                        
+                        if(xx+this.arrayD[i].width+this._otstupD<this.width){
+                            this.arrayD[i].x=xx;
+                            xx+=this.arrayD[i].width+this._otstupD;
+                            if(yyMax<this.arrayD[i].height+this._otstupD){
+                                yyMax=this.arrayD[i].height+this._otstupD
+                            }
+
+                        }else{
+                            
+                            xx=this._otstupD
+                            this.arrayD[i].x=xx;
+                            
+                            yy+=yyMax
+                            yyMax=this.arrayD[i].height+this._otstupD;
+                            
+                        }
+                    }
+
+                    this.arrayD[i].y=yy
+                    if(this.arrayD[i+1] && this.arrayD[i+1].pType!=1){
+                        yy+=yyMax
+                    }else{
+                        if(this.arrayD[i+1]==undefined)yy+=yyMax
+                    }
+                }
+
+                if(this.arrayD[i].pType==0){//под ширину                    
+                    this.arrayD[i].x=this._otstupD
+                    this.arrayD[i].y=yy
+                    this.arrayD[i].width=this.width-this._otstupD*2
+                    yy+=this._otstupD+this.arrayD[i].height;
+                    xx=this._otstupD;  
+                }
+
+            }
+            this.height=32 + yy
+        }
+
+        this.arrayD=[];
+        this.addD = function (o,b) {   
+            if(o.uuid==undefined)o.uuid=  dcmParam.generateRendom(2)   
+            if(this.uuid==undefined)this.uuid=  dcmParam.generateRendom(2)      
+            this.removeD(o)
+            if(b==undefined)b=0;
+            o.pType=b;
+            if(o.parent==undefined || o.parent.uuid!=this.uuid){
+                this.content.add(o);
+            }
+
+            this.arrayD.push(o)
+            this.dragD()
+        }
+        this.removeD = function (o) {
+            if(o.uuid==undefined)o.uuid=  dcmParam.generateRendom(2) 
+            var p=-1  
+            for (var i = 0; i < this.arrayD.length; i++) {
+                if(this.arrayD[i].uuid==o.uuid){
+                    p=i;
+                    break
+                }
+            }  
+            if(p==-1)return null
+            let pp=this.arrayD[i]
+            this.arrayD.splice(p,1) 
+            this.dragD()
+            return pp   
+        }
+        ////////////////////////////
+
+
         this.fubUp = undefined;
         this.fubDrag = undefined;
         var sp = undefined;
@@ -852,12 +1006,24 @@ export class DWindow extends DCont {
     get y() {
         return this.position.y;
     }
+
+    set otstupD(value) {
+        if (this._otstupD != value) {
+            this._otstupD = value;
+            this.dragD();
+        }
+    }
+    get otstupD() {
+        return this.position.otstupD;
+    }
+
     set width(value) {
         if (this._width != value) {
             this._width = value;
             this.panel.width = value;
             this.button.width = value;
             this.buttonScale.x = value - this._wh / 2;
+            this.dragD();
         }
     }
     get width() {
@@ -868,7 +1034,7 @@ export class DWindow extends DCont {
         if (this._height != value) {
             this._height = value;
             this.panel.height = this._height;
-            this.buttonScale.y = value - this._wh / 2;
+            this.buttonScale.y = value - this._wh / 2;            
         }
     }
     get height() {
@@ -2287,6 +2453,7 @@ export class DButton extends DCont {
         this.panel1.div.style.cursor = 'pointer';
         this.label.fontFamily = this._fontFamily;
 
+
         this.mouseup2 = function () {
             self.file.value = null;
             self.file.click();
@@ -3232,7 +3399,11 @@ export class DPanel extends DCont {
         this._height = 100;
         this._color1 = dcmParam._color1;
         this._boolLine = dcmParam._boolLine;
+        this.whLine=1
+
         this._borderRadius = dcmParam.borderRadius;
+
+        
 
         this._glowColor = '#000000';
         this.aC = [1, 1, 1];
@@ -3245,16 +3416,107 @@ export class DPanel extends DCont {
         this.dCont.div.style.borderRadius = this._borderRadius + 'px';
         this.dCont.div.style.background = this._color1;
 
-        this.dCont.div.style.width = this._width  + 'px';
-        this.dCont.div.style.height = this._height  + 'px';
+        
 
         if (this._boolLine == true) {
             this.dCont.div.style.border =
-                '1px solid ' +
+                this.whLine+'px solid ' +
                 dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
+
+            this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
+            this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';    
         } else {
             this.dCont.div.style.border = '0px solid';
+
+            this.dCont.div.style.width = this._width  + 'px';
+            this.dCont.div.style.height = this._height  + 'px';
         }
+
+        ///////////////
+        this._otstupD=dcmParam._otstupD
+        this.dragD = function () {
+            if(this.arrayD.length==0)return
+            let yy= this._otstupD;
+            let xx=this._otstupD
+            let yyMax=0  
+            let bool            
+            for (var i = 0; i < this.arrayD.length; i++) {  
+                if(this.arrayD[i].pType==1){//под ширину
+                    if(this.arrayD[i].width+this._otstupD*2<this.width){
+                        
+                        if(xx+this.arrayD[i].width+this._otstupD<this.width){
+                            this.arrayD[i].x=xx;
+                            xx+=this.arrayD[i].width+this._otstupD;
+                            if(yyMax<this.arrayD[i].height+this._otstupD){
+                                yyMax=this.arrayD[i].height+this._otstupD
+                            }
+
+                        }else{
+                            
+                            xx=this._otstupD
+                            this.arrayD[i].x=xx;
+                            
+                            yy+=yyMax
+                            yyMax=this.arrayD[i].height+this._otstupD;
+                            
+                        }
+                    }
+
+                    this.arrayD[i].y=yy
+                    if(this.arrayD[i+1] && this.arrayD[i+1].pType!=1){
+                        yy+=yyMax
+                    }else{
+                        if(this.arrayD[i+1]==undefined)yy+=yyMax
+                    }
+                }
+
+                if(this.arrayD[i].pType==0){//под ширину                    
+                    this.arrayD[i].x=this._otstupD
+                    this.arrayD[i].y=yy
+                    this.arrayD[i].width=this.width-this._otstupD*2
+                    yy+=this._otstupD+this.arrayD[i].height;
+                    xx=this._otstupD;  
+                }
+
+            }
+            this.height= yy
+        }
+
+        this.arrayD=[];
+        this.addD = function (o,b) {   
+            if(o.uuid==undefined)o.uuid=  dcmParam.generateRendom(2)   
+            if(this.uuid==undefined)this.uuid=  dcmParam.generateRendom(2)      
+            this.removeD(o)
+            if(b==undefined)b=0;
+            o.pType=b;
+            if(o.parent==undefined || o.parent.uuid!=this.uuid){
+                this.content.add(o);
+            }
+
+            this.arrayD.push(o)
+            this.dragD()
+        }
+        this.removeD = function (o) {
+            if(o.uuid==undefined)o.uuid=  dcmParam.generateRendom(2) 
+            var p=-1  
+            for (var i = 0; i < this.arrayD.length; i++) {
+                if(this.arrayD[i].uuid==o.uuid){
+                    p=i;
+                    break
+                }
+            }  
+            if(p==-1)return null
+            let pp=this.arrayD[i]
+            this.arrayD.splice(p,1) 
+            this.dragD()
+            return pp   
+        }
+
+        ///////////////
+
+
+
+
 
         this.content = new DCont(this);
         //this.content.y = this._wh;
@@ -3324,10 +3586,31 @@ export class DPanel extends DCont {
     get y() {
         return this.position.y;
     }
+
+    set otstupD(value) {
+        if (this._otstupD != value) {
+            this._otstupD = value;
+            this.dragD();
+        }
+    }
+    get otstupD() {
+        return this.position.otstupD;
+    }
+
+
+
+
     set width(value) {
         if (this._width != value) {
             this._width = value;
-            this.dCont.div.style.width = this._width  + 'px';
+            
+
+            if (this._boolLine == true) {
+                this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
+            }else{
+                this.dCont.div.style.width = this._width  + 'px';
+            }
+            this.dragD();
             this.dragCanvas();
         }
     }
@@ -3338,7 +3621,12 @@ export class DPanel extends DCont {
     set height(value) {
         if (this._height != value) {
             this._height = value;
-            this.dCont.div.style.height = this._height  + 'px';
+            if (this._boolLine == true) {
+                this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';
+            }else{
+                this.dCont.div.style.height = this._height  + 'px';
+            }
+            
             this.dragCanvas();
         }
     }
@@ -3363,10 +3651,16 @@ export class DPanel extends DCont {
             this._boolLine = value;
             if (this._boolLine == true) {
                 this.dCont.div.style.border =
-                    '1px solid ' +
+                    this.whLine+'px solid ' +
                     dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
+
+                    this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
+                    this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';    
             } else {
                 this.dCont.div.style.border = '0px solid';
+
+                this.dCont.div.style.width = (this._width)  + 'px';
+            this.dCont.div.style.height = (this._height)  + 'px';    
             }
         }
     }
@@ -3381,10 +3675,16 @@ export class DPanel extends DCont {
             var c = dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
             if (this._boolLine == true) {
                 this.dCont.div.style.border =
-                    '1px solid ' +
+                    this.whLine+'px solid ' +
                     dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
+
+                    this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
+                    this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';
             } else {
                 this.dCont.div.style.border = '0px solid';
+
+                this.dCont.div.style.width = (this._width)  + 'px';
+                this.dCont.div.style.height = (this._height)  + 'px'; 
             }
         }
     }
@@ -3468,9 +3768,13 @@ export class DImage extends DCont {
         this.sahLoad = 0;
         this._activMouse = true;
 
+        this._scalePic = 0; //подстраивает при обнове под позиции картинки 
+
         this._glowColor = '#000000';
         this.aC = [1, 1, 1];
         this._glowSah = 0;
+
+       
 
         this._s = 1;
         var dC = new DCont();
@@ -3497,10 +3801,9 @@ export class DImage extends DCont {
         this.loadComplit = function (e) {
             self.picWidth = this.naturalWidth;
             self.picHeight = this.naturalHeight;
-            self._width++;
-            self._height++;
-            self.width = self._width - 1;
-            self.height = self._height - 1;
+
+            self.drag()
+            
             self.sahLoad++;
             self.dragCanvas();
             if (self.fun) self.fun();
@@ -3510,6 +3813,23 @@ export class DImage extends DCont {
                 self.div2.appendChild(self.image);
             }
         };
+
+
+        this.drag = function () {
+            if(this._scalePic==0){
+                self._width++;
+                self._height++;
+                self.width = self._width - 1;
+                self.height = self._height - 1;
+            }else{
+                self.width = Math.round(self.picWidth*this._scalePic);
+                self.height = Math.round(self.picHeight*this._scalePic);
+            }
+        }
+
+
+
+
 
         this.load = function () {
             self.image.onerror = self.loadError;
@@ -3591,6 +3911,18 @@ export class DImage extends DCont {
     get width() {
         return this._width;
     }
+
+    set scalePic(value) {
+        if (this._scalePic != value) {
+            this._scalePic = value;
+            this.drag();
+        }
+    }
+    get scalePic() {
+        return this._scalePic;
+    }
+
+
 
     set activMouse(value) {
         if (this._activMouse != value) {
@@ -4212,6 +4544,8 @@ export class DSlider extends DCont {
         return this._activMouse;
     }
 }
+
+
 export class DSliderBig extends DCont {
     constructor(dCont, _x, _y, fun, _text, _min, _max) {
         super();
@@ -4663,8 +4997,8 @@ export class DInput extends DCont {
             }
         };
 
-        this.object.style.width = this._width - 4 + 'px';
-        this.object.style.height = this._height - 2 + 'px';
+        this.object.style.width = this._width - 6 + 'px';
+        this.object.style.height = this._height - 4 + 'px';
         
         this.div.appendChild(this.object);
 
@@ -4710,7 +5044,7 @@ export class DInput extends DCont {
     set width(v) {
         if (this._width != v) {
             this._width = v;
-            this.object.style.width = this._width - 4 + 'px';
+            this.object.style.width = this._width - 6 + 'px';
         }
     }
     get width() {
@@ -4720,7 +5054,7 @@ export class DInput extends DCont {
     set height(v) {
         if (this._height != v) {
             this._height = v;
-            this.object.style.height = this._height - 2 + 'px';
+            this.object.style.height = this._height - 4 + 'px';
         }
     }
     get height() {
@@ -5120,7 +5454,7 @@ export class DBitmapData {
         // загружаем картинку . путь к картинке или data:base64
         this.load = function (data, isClear) {
             var img = new Image();
-            img.crossOrigin = dcmParam.crossOrigin;
+            img.crossOrigin = "*"//dcmParam.crossOrigin;
             img.onload = function () {
                 if (isClear) {
                     self.clear();
@@ -5611,30 +5945,50 @@ export class DScrollBarH extends DCont {
         this._width = 100;
         this._height = dcmParam.wh;
         this._color = dcmParam._color;
-        this._colorText = dcmParam._colorText;
-        this._fontSize = dcmParam._fontSize;
+        this._color1 = dcmParam._color1;
+        this._colorffset = dcmParam._colorText1;
+
         this._borderRadius = dcmParam.borderRadius;
         this._widthContent = 200; // высота контента
         this._offsetHit = 0;
+        this._boolOf=false
         this._value = 0;
         this._otstup = 0;
         if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
 
+
+
+
+
+        this.panelOf= new DPanel(this, 0, 0);
+        this.panelOf.visible=this._boolOf
+        this.panelOf.color=this._colorffset
+        this.panelOf.boolLine=false
+
         this.panel = new DPanel(this, 0, 0);
+        
+
+        this.startAlpha=0.75;
+        this.sahAlpha=0.25;
 
         this.but = new DPanel(this, 0, 0);
         this.but.color1 = this._color;
+        this.but.alpha=this.startAlpha
+
         this.panelA = new DPanel(this, this._offsetHit, this._offsetHit);
         this.panelA.alpha = 0;
-        /*this.but.fun_mousedown=function(){  			
-  			self.onDragStart()
-  		} */
 
-        /*if(dcmParam.mobile==false){
-  			this.but.div.addEventListener("mousedown", self.onDragStart);
-  		}else{
-  			this.but.div.removeEventListener("touchstart", self.onDragStart);
-  		}	*/
+
+        this.tBut=undefined;
+        this.tBut1=undefined;
+        this.boolTween=true
+        if(window.TWEEN!=undefined){
+            this.tBut=new TWEEN.Tween(this.but)
+            this.tBut1=new TWEEN.Tween(this)
+            this.tBut1.onUpdate(function(){
+                if (self.fun) self.fun();            
+            })
+        }
 
         var sp = undefined;
         var pv, pv2, sss;
@@ -5698,14 +6052,70 @@ export class DScrollBarH extends DCont {
         };
 
         this.panelA.div.addEventListener('mousedown', function (e) {
-            sss = e.offsetX - self.but.width / 2;
+            sss = e.offsetX - self.but.width / 2 - self._offsetHit;
             if (self.but.width + sss > self._width)
                 sss = self._width - self.but.width;
             if (sss < 0) sss = 0;
+
+            var xx=e.offsetX- self._offsetHit;            
+            if(xx>self.but.x && xx<self.but.x+self.but.width){                
+                self.onDragStart();
+                return
+            }
+
+            var vv=(sss / (self._width - self.but.width)) * 100;
+            if(self.boolTween && self.tBut1){                
+                self.tBut1.to({value:vv},dcmParam.timeTween).start(); 
+                return
+            }
+
             self.value = (sss / (self._width - self.but.width)) * 100;
             self.onDragStart(e);
             if (self.fun) self.fun();
         });
+
+        /*
+            this.panelA.div.addEventListener('mousedown', function (e) {
+            sss = e.offsetY - self.but.height / 2 - self._offsetHit;
+            if (self.but.height + sss > self._height)
+                sss = self._height - self.but.height;
+            if (sss < 0) sss = 0;
+            
+            var yy=e.offsetY- self._offsetHit;            
+            if(yy>self.but.y && yy<self.but.y+self.but.height){                
+                self.onDragStart();
+                return
+            }
+            var vv=(sss / (self._height - self.but.height)) * 100;
+            if(self.boolTween && self.tBut1){                
+                self.tBut1.to({value:vv},dcmParam.timeTween).start(); 
+                return
+            }
+
+            self.value = (sss / (self._height - self.but.height)) * 100;
+            
+            if (self.fun) self.fun();
+        });
+
+        */
+
+
+        this.panelA.div.addEventListener('mouseover', function (e) {
+            if(self.startAlpha==1)return
+            if(self.boolTween && self.tBut){                
+                self.tBut.to({alpha:self.startAlpha+self.sahAlpha},dcmParam.timeTween).start(); 
+                return
+            }
+            self.but.alpha=self.startAlpha+self.sahAlpha
+        })
+        this.panelA.div.addEventListener('mouseout', function (e) {
+            if(self.startAlpha==1)return
+            if(self.boolTween && self.tBut){                
+                self.tBut.to({alpha:self.startAlpha},dcmParam.timeTween).start(); 
+                return
+            }
+            self.but.alpha=self.startAlpha
+        })
 
         this._width--;
         this.width = this._width + 1;
@@ -5725,6 +6135,49 @@ export class DScrollBarH extends DCont {
     get y() {
         return this.position.y;
     }
+
+   set color(value) {
+        if (this._color != value) {
+            this._color = value;
+            this.but.color = value; 
+           
+        }
+    }
+    get color() {
+        return this._color;
+    }
+
+    set color1(value) {
+        if (this._color1 != value) {
+            this._color1 = value;
+            this.panel.color1 = value; 
+           
+        }
+    }
+    get color1() {
+        return this._color1;
+    }
+
+    set colorffset(value) {
+        if (this._colorffset != value) {
+            this._colorffset = value;           
+            this.panelOf.color = this._colorffset;          
+        }
+    }
+    get colorffset() {
+        return this._colorffset;
+    }
+    set boolOf(value) {
+        if (this._boolOf != value) {
+            this._boolOf = value;
+            this.panelOf.visible=value      
+        }
+    }
+    get boolOf() {
+        return this._boolOf;
+    }
+
+
     set width(value) {
         if (this._width != value) {
             this._width = value;
@@ -5736,11 +6189,14 @@ export class DScrollBarH extends DCont {
             if (this.but.width < this._wh) this.but.width = this._wh;
 
             this.panel.width = this._width;
-            this.panelA.width = this._width;
+            this.panelA.width = this._width+this._offsetHit*2;
 
             var pv = this.value;
             this._value = -1;
             this.value = pv;
+
+            this.panelOf.width = this.panelA.width
+            this.panelOf.x = -this._offsetHit
         }
     }
     get width() {
@@ -5753,6 +6209,7 @@ export class DScrollBarH extends DCont {
             this.panel.height = value;
             this.but.height = value;
             this.panelA.height = this._height + this._offsetHit * 2;
+            this.panelOf.height = this._height+this._offsetHit*2;
         }
     }
     get height() {
@@ -5763,6 +6220,7 @@ export class DScrollBarH extends DCont {
         if (this._borderRadius != value) {
             this._borderRadius = value;
             this.but.borderRadius = this.panel.borderRadius = this.panelA.borderRadius = value;
+            this.panelOf.borderRadius = value;
         }
     }
     get borderRadius() {
@@ -5819,12 +6277,29 @@ export class DScrollBarH extends DCont {
             this._offsetHit = v;
             this.panelA.height = this._height + this._offsetHit * 2;
             this.panelA.y = -this._offsetHit;
+
+            this.panelA.width = this._width + this._offsetHit * 2;
+            this.panelA.x = -this._offsetHit;
+
+            this.panelA.height = this._height+this._offsetHit*2;
+            this.panelA.y = -this._offsetHit;
+
+
+            this.panelOf.width = this._width+this._offsetHit*2
+            this.panelOf.x = -this._offsetHit
+            this.panelOf.height = this._height+this._offsetHit*2
+            this.panelOf.y = -this._offsetHit
+
         }
     }
     get offsetHit() {
         return this._offsetHit;
     }
 }
+
+
+
+
 
 export class DScrollBarV extends DCont {
     constructor(dCont, _x, _y, _fun) {
@@ -5845,22 +6320,47 @@ export class DScrollBarV extends DCont {
         this._width = dcmParam.wh;
         this._height = 100;
         this._color = dcmParam._color;
-        this._colorText = dcmParam._colorText;
-        this._fontSize = dcmParam._fontSize;
+        this._color1 = dcmParam._color1;
+        this._colorffset = dcmParam._colorText1;
+        
         this._borderRadius = dcmParam.borderRadius;
         this._heightContent = 200; // высота контента
+        
         this._offsetHit = 0;
+        this._boolOf=false
+
         this._value = 0;
         this._otstup = 0;
         if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
 
+        this.panelOf= new DPanel(this, 0, 0);
+        this.panelOf.visible=this._boolOf
+        this.panelOf.color=this._colorffset
+        this.panelOf.boolLine=false
+
         this.panel = new DPanel(this, 0, 0);
+        this.panel.color = this._color1
+
+        this.startAlpha=0.75;
+        this.sahAlpha=0.25;
 
         this.but = new DPanel(this, 0, 0);
         this.but.color1 = this._color;
+        this.but.alpha=this.startAlpha
 
         this.panelA = new DPanel(this, this._offsetHit, this._offsetHit);
-        this.panelA.alpha = 0;
+        this.panelA.alpha = 0.0;
+
+        this.tBut=undefined;
+        this.tBut1=undefined;
+        this.boolTween=true
+        if(window.TWEEN!=undefined){
+            this.tBut=new TWEEN.Tween(this.but)
+            this.tBut1=new TWEEN.Tween(this)
+            this.tBut1.onUpdate(function(){
+                if (self.fun) self.fun();            
+            })
+        }
 
         //this.but.object.style.transform       = 'rotate('+90+'deg)';
 
@@ -5920,19 +6420,72 @@ export class DScrollBarV extends DCont {
         };
 
         this.panelA.div.addEventListener('mousedown', function (e) {
-            sss = e.offsetY - self.but.height / 2;
+            sss = e.offsetY - self.but.height / 2 - self._offsetHit;
             if (self.but.height + sss > self._height)
                 sss = self._height - self.but.height;
             if (sss < 0) sss = 0;
+            
+            var yy=e.offsetY- self._offsetHit;            
+            if(yy>self.but.y && yy<self.but.y+self.but.height){                
+                self.onDragStart();
+                return
+            }
+            var vv=(sss / (self._height - self.but.height)) * 100;
+            if(self.boolTween && self.tBut1){                
+                self.tBut1.to({value:vv},dcmParam.timeTween).start(); 
+                return
+            }
+
             self.value = (sss / (self._height - self.but.height)) * 100;
-            self.onDragStart();
+            
             if (self.fun) self.fun();
         });
+        this.startAlpha=0.75;
+        this.sahAlpha=0.75;
 
-        this._width--;
+        this.panelA.div.addEventListener('mouseover', function (e) {
+            if(self.startAlpha==1)return
+            if(self.boolTween && self.tBut){                
+                self.tBut.to({alpha:self.startAlpha+self.sahAlpha},dcmParam.timeTween).start(); 
+                return
+            }
+            self.but.alpha=self.startAlpha+self.sahAlpha
+        })
+        this.panelA.div.addEventListener('mouseout', function (e) {
+            if(self.startAlpha==1)return
+            if(self.boolTween && self.tBut){                
+                self.tBut.to({alpha:self.startAlpha},dcmParam.timeTween).start(); 
+                return
+            }
+            self.but.alpha=self.startAlpha
+        })
+
+
+        this.panel.width = this._width;
+        this.but.width = this._width;
+        this.panelA.width = this._width + this._offsetHit * 2;
+        this.panelOf.width = this.panelA.width
+
+        if (this._height + this._otstup * 2 >= this._heightContent)
+            this.but.height = this._height - this._otstup * 2;
+        else
+            this.but.height =
+                (this._height * this._height) / this._heightContent;
+        if (this.but.height < this._wh) this.but.height = this._wh;
+        // this.button.height = this._height;
+        this.panel.height = this._height;
+        this.panelA.height = this._height+this._offsetHit*2;
+        this.panelA.y = -this._offsetHit;
+        var pv = this._value;
+        this.value = -1;
+        this.value = pv;
+        this.panelOf.height = this.panelA.height+this._offsetHit*2
+        this.panelOf.y = -this._offsetHit
+
+       /* this._width--;
         this.width = this._width + 1;
         this._height--;
-        this.height = this._height + 1;
+        this.height = this._height + 1;*/
     }
 
     set x(value) {
@@ -5947,12 +6500,58 @@ export class DScrollBarV extends DCont {
     get y() {
         return this.position.y;
     }
+
+
+    set color(value) {
+        if (this._color != value) {
+            this._color = value;
+            this.but.color = value; 
+           
+        }
+    }
+    get color() {
+        return this._color;
+    }
+
+    set color1(value) {
+        if (this._color1 != value) {
+            this._color1 = value;
+            this.panel.color1 = value; 
+           
+        }
+    }
+    get color1() {
+        return this._color1;
+    }
+
+    set colorffset(value) {
+        if (this._colorffset != value) {
+            this._colorffset = value;           
+            this.panelOf.color = this._colorffset;          
+        }
+    }
+    get colorffset() {
+        return this._colorffset;
+    }
+    set boolOf(value) {
+        if (this._boolOf != value) {
+            this._boolOf = value;
+            this.panelOf.visible=value      
+        }
+    }
+    get boolOf() {
+        return this._boolOf;
+    }
+
+    
+
     set width(value) {
         if (this._width != value) {
             this._width = value;
             this.panel.width = value;
             this.but.width = value;
             this.panelA.width = this._width + this._offsetHit * 2;
+            this.panelOf.width = this.panelA.width
             //this.but.object.style.left=-(this.but.width/2-this._width/2)+"px"
             //this.but.object.style.top=(this.but.width/2-this._width/2)+"px"
         }
@@ -5972,10 +6571,13 @@ export class DScrollBarV extends DCont {
             if (this.but.height < this._wh) this.but.height = this._wh;
             // this.button.height = this._height;
             this.panel.height = this._height;
-            this.panelA.height = this._height;
+            this.panelA.height = this._height+this._offsetHit*2;
+            this.panelA.y = -this._offsetHit;
             var pv = this._value;
             this.value = -1;
             this.value = pv;
+            this.panelOf.height = this.panelA.height+this._offsetHit*2
+            this.panelOf.y = -this._offsetHit
         }
     }
     get height() {
@@ -5986,6 +6588,7 @@ export class DScrollBarV extends DCont {
         if (this._borderRadius != value) {
             this._borderRadius = value;
             this.but.borderRadius = this.panel.borderRadius = this.panelA.borderRadius = value;
+            this.panelOf.borderRadius = value;
         }
     }
     get borderRadius() {
@@ -6043,6 +6646,15 @@ export class DScrollBarV extends DCont {
             this._offsetHit = v;
             this.panelA.width = this._width + this._offsetHit * 2;
             this.panelA.x = -this._offsetHit;
+
+            this.panelA.height = this._height+this._offsetHit*2;
+            this.panelA.y = -this._offsetHit;
+
+
+            this.panelOf.width = this._width+this._offsetHit*2
+            this.panelOf.x = -this._offsetHit
+            this.panelOf.height = this._height+this._offsetHit*2
+            this.panelOf.y = -this._offsetHit
         }
     }
     get offsetHit() {
@@ -6263,6 +6875,10 @@ export class DWindowS extends DCont {
         this.content.y = this.otstupVerh;
         this.content.x = this.otstup;
 
+
+
+
+
         //DButSim funLoadImag
         this.butKrest;
         if (_link != undefined) {
@@ -6290,6 +6906,45 @@ export class DWindowS extends DCont {
             this.butKrest.loadImeg(_link);
             this.butKrest.visible = false;
         }
+
+
+        this.dragD = function () {  
+
+        }
+
+
+        this.arrayD=[];
+        this.addD = function (o,b) {   
+            if(o.uuid==undefined)o.uuid=  dcmParam.generateRendom(2)   
+            if(this.uuid==undefined)this.uuid=  dcmParam.generateRendom(2)      
+            this.removeD(o)
+            if(b==undefined)b=0;
+            o.pType=b;
+            if(o.parent==undefined || o.parent.uuid!=this.uuid){
+                this.content.add(o);
+            }
+
+            this.arrayD.push(o)
+            this.dragP()
+        }
+        this.removeD = function (o) {
+            if(o.uuid==undefined)o.uuid=  dcmParam.generateRendom(2) 
+            var p=-1  
+            for (var i = 0; i < this.arrayD.length; i++) {
+                if(this.arrayD[i].uuid==o.uuid){
+                    p=i;
+                    break
+                }
+            }  
+            if(p==-1)return null
+            let pp=this.arrayD[i]
+            this.arrayD.splice(p,1) 
+            this.dragP()
+            return pp   
+        }
+
+
+
 
         var sp = undefined;
 

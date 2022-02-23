@@ -1,8 +1,10 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8">
 <title>divLib</title>	
-<script src="build/divLib.js"></script>
+<script src="build/divLib.js?v=1"></script>
 <script src="build/divLibPlus.js"></script>
+
+<script src="src/lib/tween.min.js"></script>
 <script>
 	var trace = window.console.log.bind(window.console);
 	var array=[];
@@ -22,13 +24,19 @@
 		}
 		
 	}
-
+	function animate() {
+		requestAnimationFrame( animate );
+		TWEEN.update();	
+	}
+	animate()
 
 	function init () {
 		window.onresize = sizeWindow;
 		dinamik = dcmParam=new DCM();
 
 		scane= new DCont(document.body);
+
+		dcmParam.zbrosDokument=false;
 		
 
 		scane= new DCont(document.body);
@@ -67,6 +75,9 @@
 		});
 
 
+
+
+
 	/*	var three=new DThreeBool(content,200,0,function(){
 		
 		})
@@ -103,15 +114,55 @@
 		// plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
 
 		// plus(new DButton(null,0,0,"Button",downMy,"resources/pic/w0.png"));
+
 	
-		var lll=new DInput(content,400,400,"4",function(){
+	/*	var lll=new DInput(content,400,400,"1",function(){
 			trace(">>",this.value);
 		})
 		lll.setNum(0.1);
 		lll.min=1
 
-		plus(lll)	
-		return
+		var lll3=new DButton(content,500,400,"2",function(){
+			
+		})
+
+		var lll2=new DTextArea(content,400,500,"3",function(){
+			
+		})
+		lll2.height=32
+		var lll1=new DButton(content,500,500,"4",function(){
+			
+		})
+
+		var wind=new DPanel(content,300,300,"4",function(){
+			
+		})
+		wind.width=333
+
+		wind.addD(new DButton(null,0,0,"1"),1);
+		
+		wind.addD(new DButton(null,0,0,"2"),1);
+		wind.addD(new DButton(null,0,0,"3"),1);
+		wind.addD(new DButton(null,0,0,"4"),1);
+		wind.addD(new DButton(null,0,0,"5"),1);
+
+		wind.addD(new DButton(null,0,0,"5"));
+
+		wind.addD(new DButton(null,0,0,"5"));
+
+		wind.addD(new DButton(null,0,0,"5"),1);
+
+		pObject.addObject(wind)		
+
+		return;*/
+
+		
+
+
+
+
+		
+		
 
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
 
@@ -197,8 +248,16 @@
 		
 		plus(new DWindow(null,0,0,"DWindow",downMy));
 		plus(new DColor(null,0,0,"#0000ff",downMy));
+
 		plus(new DScrollBarV(content,677,133,downMy))
+
+		
+
 		plus(new DScrollBarH(content,677,133,downMy))
+		
+
+		pObject.addObject(array[array.length-1].obj);
+
 		var g= new DGallery(content,800,300,downMy);
 		var a=[]
 		for (var i = 0; i < 10; i++) {
@@ -285,7 +344,7 @@
 		//
         //
 		// plus(three)
-		pObject.addObject(array[array.length-1].obj);
+		
 
 		trace("g",g);
 

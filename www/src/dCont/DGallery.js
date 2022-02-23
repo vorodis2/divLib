@@ -878,6 +878,8 @@ Object.defineProperties(DGallery.prototype, {
 });
 
 
+
+
 export function DBox(_cont, _x, _y, _fun) {
 	DCont.call(this);
 	this.type = 'DBox';

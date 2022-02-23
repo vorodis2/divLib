@@ -1,10 +1,4 @@
-
-
-
 import { DCont } from './DCont.js';
-
-
-
 
 
 export class DHelp extends DCont {
