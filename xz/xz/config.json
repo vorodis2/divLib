@@ -1,0 +1,14 @@
+{
+    "email": {
+        "from": "vorodis2@gmail.com",
+        "to": "vorodis2@gmail.com"
+    },
+    "endpoints": [
+        {
+            "repo": "vorodis2/divLib",
+            "branch": "master",
+            "action": "something has been changed on the server",
+            "run": "http://vorodis2.com/test/devlibgit/"
+        }
+    ]
+}
