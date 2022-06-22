@@ -420,8 +420,7 @@ export function DSettings (_cont) {
                     this.arrComp[j].visible = true;
 
 
-                   // trace(i,j,"::",this.object.arrComp[i],this.arrComp[j])
-
+                   
                     if(this.object.arrComp[i]._param) if(this.object.arrComp[i]._param.e){
                         if(this.arrComp[j].setE)this.arrComp[j].setE(this.object.arrComp[i]._param.e)
                     }
@@ -759,7 +758,7 @@ export function DSettings (_cont) {
         } 
 
 
-        trace("~~",component)
+        
 
         if (_param != undefined) {
             if (component != null) {
