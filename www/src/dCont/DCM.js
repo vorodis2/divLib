@@ -36,6 +36,7 @@ export function DCM() {
     this._colorTextInput = this._colorText1;
     this._colorActive = '#f28044';
     this._fontSize = 16;
+    this._fontSizeLitte= 10;
     this._fontFamily = 'Arial, Helvetica, sans-serif';
     this._otstup = 2;
     this._otstupD = 2;
@@ -2399,6 +2400,7 @@ export class DButton extends DCont {
         this._glowColor = '#000000';
         this.aC = [1, 1, 1];
         this._glowSah = 0;
+        this._zbrosDokument=dcmParam.zbrosDokument
 
         this._width = 100;
         this._height = dcmParam.wh;
@@ -2484,7 +2486,8 @@ export class DButton extends DCont {
                 dcmParam.hexDec(self._color),
                 -40
             );
-            document.body.style.pointerEvents = 'none';
+            
+            if(self._zbrosDokument)document.body.style.pointerEvents = 'none';
 
             if (self.fun_mousedown) self.fun_mousedown();
             if (dcmParam.mobile == false) {
@@ -2499,7 +2502,9 @@ export class DButton extends DCont {
             bb = true;
             self.panel.color1 = self._color;
             self.panel1.color1 = self._color;
-            document.body.style.pointerEvents = null;
+
+            if(self._zbrosDokument)document.body.style.pointerEvents = null;
+
             if (dcmParam.mobile == false) {
                 document.removeEventListener('mouseup', self.mouseup);
             } else {
@@ -2645,6 +2650,14 @@ export class DButton extends DCont {
                 self.label.x = 0;
             }
 
+            if (this.image != undefined) {
+                if (this.image.parent==undefined){
+                    if (this.image.boolLoadXZ==true){                       
+                        this.dCont.add(this.image);
+                    }
+                }
+            }
+
             this.dragCanvas();
             if (this.funReDrag != undefined) this.funReDrag();
         };
@@ -2673,17 +2686,20 @@ export class DButton extends DCont {
             };
         };
 
-        this.funLoadImag = undefined;
 
+
+        this.funLoadImag = undefined;
         this.loadImeg = function (s) {
             this._link = s;
             if (this.image == undefined) {
                 // this.panel1.parent.remove(this.panel1);
-                this.image = new DImage(this.dCont, 0, 0, null, function () {
+                this.image = new DImage(null, 0, 0, null, function () {
+                    self.image.boolLoadXZ=true;
                     self.reDrag();
                     if (self.funLoadImag != undefined) self.funLoadImag();
                 });
                 this.image.div.style.pointerEvents = 'none';
+                this.image.boolLoadXZ=false;
                 //this.add(this.panel1);/**/
             }
             this.image.link = this._link;
@@ -2769,6 +2785,16 @@ export class DButton extends DCont {
         return this._link;
     }
 
+    set zbrosDokument(value) {
+        if (this._zbrosDokument != value) {
+            this._zbrosDokument = value;
+           
+        }
+    }
+    get zbrosDokument() {
+        return this._zbrosDokument;
+    }
+
     set glowColor(value) {
         if (this._glowColor != value) {
             this._glowColor = value;
@@ -2782,6 +2808,8 @@ export class DButton extends DCont {
     get glowColor() {
         return this._glowColor;
     }
+
+
 
     set glowSah(value) {
         if (this._glowSah != value) {
@@ -2966,6 +2994,139 @@ export class DButton extends DCont {
         return this._activMouse;
     }
 }
+
+/**/
+export class DBArray extends DCont {
+    constructor(dCont, _x, _y, _kol, _fun) {
+        super();
+        this.type = 'DBArray';
+
+        this.dcmParam = dcmParam;
+        this.dcmParam.add(this);
+        var self = this;        
+        this.fun = _fun;
+        if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
+        this.x = _x || 0;
+        this.y = _y || 0;
+
+        this._kol = _kol || 1;
+
+        this._width = 100;
+        this._height = 32;
+        this._scalePic = 0;
+        this._value=0;
+        this._index=this._value;
+        this._boolFond = true;
+
+        this.array=[]
+
+        for (var i = 0; i < this._kol; i++) {
+            this.array[i]=new DButton(null, 0,0," ",function(){ 
+                let v=(self.value+1) % self._kol;                
+                self.value=v;  
+                if(self.fun) self.fun()         
+            })
+            this.array[i].indexArr=i;
+        }
+        this.add(this.array[this._value])
+
+        /*this.button=new DButton(this, 0,0," ",function(){            
+            self.value=false;  
+            if(self.fun) self.fun()         
+        })
+
+        this.button1=new DButton(null, 0, 0," ",function(){          
+            self.value=true; 
+            if(self.fun) self.fun()  
+        })*/ 
+
+
+        this.dragVI=function(){
+            for (var i = 0; i < this.array.length; i++) {
+                if(i==this._value){
+                    if(this.array[i].parent==undefined)this.add(this.array[i]);
+                }else{
+                    if(this.array[i].parent!==undefined)this.remove(this.array[i]);
+                }
+            }
+        }
+    }
+
+    set scalePic(v) {
+        if (this._scalePic != v) {
+            this._scalePic = v;
+            for (let i = 0; i < this.array.length; i++) this.array[i].scalePic=v;                     
+        }
+    }
+    get scalePic() {
+        return this._scalePic;
+    }  
+
+    set boolFond(v) {
+        if (this._boolFond != v) {
+            this._boolFond = v;
+            for (let i = 0; i < this.array.length; i++) this.array[i].boolFond=v;           
+        }
+    }
+    get boolFond() {
+        return this._boolFond;
+    }   
+
+    set width(v) {
+        if (this._width != v) {
+            this._width = v;
+            for (let i = 0; i < this.array.length; i++) this.array[i].width=v;  
+        }
+    }
+    get width() {
+        return this._width;
+    }  
+
+    set height(v) {
+        if (this._height != v) {
+            this._height = v;
+            for (let i = 0; i < this.array.length; i++) this.array[i].height=v;       
+        }
+    }
+    get height() {
+        return this._height;
+    }   
+    
+
+    set value(v) {
+        if (this._value != v) {
+            this._value =this._index = v;
+            this.dragVI()
+        }
+    }
+    get value() {
+        return this._value;
+    }
+
+    set index(v) {
+        if (this._index != v) {
+            this._value =this._index = v;
+            this.dragVI()
+        }
+    }
+    get index() {
+        return this._index;
+    }    
+
+    set x(value) {
+        this.position.x = value;
+    }
+    get x() {
+        return this.position.x;
+    }
+    set y(value) {
+        this.position.y = value;
+    }
+    get y() {
+        return this.position.y;
+    }
+}
+
 
 /**/
 
@@ -4193,6 +4354,9 @@ export class DLabel extends DCont {
         }
     }
     get height() {
+        
+        if(this.dCT.div.clientHeight==0)return this._fontSize
+
         return this.dCT.div.clientHeight;
     }
 
@@ -4819,7 +4983,7 @@ export class DInput extends DCont {
         this._text = _text || 'null';
         if(_text==""||_text==" ")this._text=""
         this._value = this._text;
-
+        this.dci=new DCont(this)
         var timeoutID = null;
 
         this.funEnter = undefined;
@@ -4832,6 +4996,7 @@ export class DInput extends DCont {
         this._min=-999999999999999;
         this._max=999999999999999;
 
+        this._title='';
 
         this._colorText1 = dcmParam._colorTextInput;
         this._fontFamily = dcmParam._fontFamily;
@@ -4844,6 +5009,8 @@ export class DInput extends DCont {
         this.boolFocus = false;
         this.funFocus = undefined;
         this._numLine = 1;
+        this.bYY = true;
+        this.umn = 1;
 
         this.timeFun = 1000;
 
@@ -4937,6 +5104,10 @@ export class DInput extends DCont {
             }
             dcmParam.removeFunMove(self.mousemove);
         };
+
+        //this.bYY = true;
+        //this.umn = 1;
+
         var ss, sss;
         this.mousemove = function (e) {
             if (dcmParam.mobile == false) {
@@ -4948,7 +5119,12 @@ export class DInput extends DCont {
                         b: false,
                     };
                 }
-                var ss = e.clientY - sp.y;
+                
+                if(self.bYY){
+                    ss = (e.clientY - sp.y)*self.umn; 
+                }else{
+                    ss = (e.clientX - sp.x)*self.umn; 
+                }
             } else {
                 if (sp == undefined) {
                     sp = {
@@ -4957,9 +5133,15 @@ export class DInput extends DCont {
                         value: self.value,
                     };
                 }
-
-                ss = e.targetTouches[0].clientY - sp.y;
+                if(self.bYY){
+                    ss = (e.targetTouches[0].clientY - sp.y)*self.umn; 
+                }else{
+                    ss = (e.targetTouches[0].clientY - sp.x)*self.umn; 
+                }
+                
             }
+
+
             if (Math.abs(ss) > 20) {
                 if (typeof sp.value != 'number') sp.value = 0;
                 if (isNaN(sp.value) == true) sp.value = 0;
@@ -4988,7 +5170,7 @@ export class DInput extends DCont {
 
         this.setNum = function (okrug) {
             this.okrug = okrug;
-            this.boolNum=true
+            this.boolNum=true;
 
             if (dcmParam.mobile == false) {
                 this.object.addEventListener('mousedown', self.mousedown);
@@ -4997,13 +5179,92 @@ export class DInput extends DCont {
             }
         };
 
-        this.object.style.width = this._width - 6 + 'px';
+        
         this.object.style.height = this._height - 4 + 'px';
         
-        this.div.appendChild(this.object);
+        this.dci.div.appendChild(this.object);
+
+        ///+++++++++++++++++++++++title++++++++++++++++++++++++++++++++++++
+        this._title=''
+        this._widthTitle=0;
+        this.labelTitle=undefined
+        this.initTitle=function(){
+            if(this.labelTitle!=undefined)return
+                
+            this.labelTitle=new DLabel(this,0,this._height-dcmParam._fontSizeLitte-2,this._title);
+            this.labelTitle.fontSize = dcmParam._fontSizeLitte;
+            this.labelTitle.activMouse=false;
+            
+        }
+        var x1,w2,s1,ww,s2,pp
+        this.dragWW=function(){
+            if(this._title == ''){
+                this.object.style.width = this._width - 6 + 'px';
+                this.dci.x=0
+            }else{
+                ww = this.labelTitle.getTextWidth(this._title)
+                
+                if(this._widthTitle==0){
+                    x1 = ww+6;
+                    w2 = Math.abs(this._width-x1);
+                    this.labelTitle.text=this._title;
+                }else{
+                    x1 = this._widthTitle;
+                    w2 = Math.abs(this._width-x1);
+                    s1 = this._widthTitle/(ww+10)
+                    if(s1>1){
+                        s2=this._title
+                    }else{
+                        pp=Math.round(this._title.length*(s1))-2;
+                        if(pp>=1){
+                            s2=this._title.slice(0, pp)+".."
+                        }else{
+                            s2=""
+                        }
+                        
+                    }
+                    this.labelTitle.text=s2;
+                    
+                    
+                }                
+                this.object.style.width = w2 - 6 + 'px';
+                this.dci.x=x1;
+                
+            }
+            
+        }     
+        this.dragWW()
 
         this.x = _x || 0;
         this.y = _y || 0;
+    }
+
+    set title(value) {
+        if (this._title != value) {
+            this._title = value;
+            let s=this._title+""
+            this.initTitle();
+            this.labelTitle.text=this._title;
+            if(s.length==0){
+                this.labelTitle.visible=false;
+            }else{
+                this.labelTitle.visible=true;                
+            }
+            this.dragWW()
+        }
+    }
+    get title() {
+        return this._title;
+    }
+
+    set widthTitle(value) {
+        if (this._widthTitle != value) {
+            this._widthTitle = value;           
+            this.dragWW()
+        }
+    }
+    get widthTitle() {
+        return this._widthTitle;
     }
 
     set numLine(value) {
@@ -5044,7 +5305,7 @@ export class DInput extends DCont {
     set width(v) {
         if (this._width != v) {
             this._width = v;
-            this.object.style.width = this._width - 6 + 'px';
+            this.dragWW()
         }
     }
     get width() {
@@ -5054,6 +5315,7 @@ export class DInput extends DCont {
     set height(v) {
         if (this._height != v) {
             this._height = v;
+            if(this.labelTitle)this.labelTitle.y=this._height-dcmParam._fontSizeLitte-2
             this.object.style.height = this._height - 4 + 'px';
         }
     }
@@ -5190,16 +5452,10 @@ export class DTextArea extends DCont {
         this._text = _text || 'null';        
         if(_text==""||_text==" ")this._text=""
         this._value = this._text;
-
+        this.dci=new DCont(this)
         this._numLine = 1;
         this.timeFun = 1000;
-        /*		this._color="#008CBA";
-	this._color1="#ffffff";
-	this._colorText="#ffffff";
-	this._colorText1="#999999";
-	this._fontSize = 16;
-	this._fontFamily = "Arial, Helvetica, sans-serif";
-	this._otstup = 2;	*/
+
 
         this.funEnter = undefined;
         this._color1 = dcmParam._color1;
@@ -5289,11 +5545,89 @@ export class DTextArea extends DCont {
             dcmParam.activInp = self;
         });
 
-        this.div.appendChild(this.object);
+        //this.div.appendChild(this.object);
+        this.dci.div.appendChild(this.object);
+
+        ///+++++++++++++++++++++++title++++++++++++++++++++++++++++++++++++
+        this._title=''
+        this._widthTitle=0;
+        this.labelTitle=undefined
+        this.initTitle=function(){
+            if(this.labelTitle!=undefined)return
+                
+            this.labelTitle=new DLabel(this,0,this._height-dcmParam._fontSizeLitte-2,this._title);
+            this.labelTitle.fontSize = dcmParam._fontSizeLitte;
+            this.labelTitle.activMouse=false;
+            
+        }
+        var x1,w2,s1,ww,s2,pp
+        this.dragWW=function(){
+            if(this._title == ''){
+                this.object.style.width = this._width - 6 + 'px';
+                this.dci.x=0
+            }else{
+                ww = this.labelTitle.getTextWidth(this._title)
+                if(this._widthTitle==0){
+                    x1 = ww+6;
+                    w2 = Math.abs(this._width-x1);
+                    this.labelTitle.text=this._title;
+                }else{
+                    x1 = this._widthTitle;
+                    w2 = Math.abs(this._width-x1);
+                    s1 = this._widthTitle/(ww+10)
+                    if(s1>1){
+                        s2=this._title
+                    }else{
+                        pp=Math.round(this._title.length*(s1))-2;
+                        if(pp>=1){
+                            s2=this._title.slice(0, pp)+".."
+                        }else{
+                            s2="";
+                        }
+                        
+                    }
+                    this.labelTitle.text=s2;                    
+                }                
+                this.object.style.width = w2 - 6 + 'px';
+                this.dci.x=x1;
+                
+            }
+            
+        }    
+        this.dragWW()
 
         this.x = _x || 0;
         this.y = _y || 0;
     }
+
+    set title(value) {
+        if (this._title != value) {
+            this._title = value;
+            let s=this._title+""
+            this.initTitle();
+            this.labelTitle.text=this._title;
+            if(s.length==0){
+                this.labelTitle.visible=false;
+            }else{
+                this.labelTitle.visible=true;                
+            }
+            this.dragWW()
+        }
+    }
+    get title() {
+        return this._title;
+    }
+
+    set widthTitle(value) {
+        if (this._widthTitle != value) {
+            this._widthTitle = value;           
+            this.dragWW()
+        }
+    }
+    get widthTitle() {
+        return this._widthTitle;
+    }
+
 
     set numLine(value) {
         if (this._numLine != value) {
@@ -5334,7 +5668,7 @@ export class DTextArea extends DCont {
     set width(v) {
         if (this._width != v) {
             this._width = v;
-            this.object.style.width = this._width - 6 + 'px';
+            this.dragWW()
         }
     }
     get width() {
@@ -5344,6 +5678,7 @@ export class DTextArea extends DCont {
     set height(v) {
         if (this._height != v) {
             this._height = v;
+            if(this.labelTitle)this.labelTitle.y=this._height-dcmParam._fontSizeLitte-2
             this.object.style.height = this._height - 6 + 'px';
         }
     }
@@ -5879,6 +6214,42 @@ export class DBitmapData {
             return mix;
         }
         this.blendColors = blendColors;
+
+
+        function resizeImageFile(b64, fun, _w, _h,_name, _boolB64) {            
+            const img = new Image();
+            img.onload = () => {
+                //fun(img);
+                const elem = document.createElement('canvas');
+        
+                if(_boolB64==undefined)
+                if(_w!=undefined && _w > img.naturalWidth){
+                    fun(null);
+                    return;
+                }
+               
+
+                elem.width = _w==undefined ? img.naturalWidth : _w;
+                elem.height = _h==undefined ? img.naturalHeight : _h;
+            
+                const ctx = elem.getContext('2d');
+                ctx.drawImage(img, 0, 0, elem.width, elem.height);
+
+                if(_boolB64!=undefined){
+                    let b6=elem.toDataURL()                    
+                    fun(b6);
+                    return 
+                }
+                ctx.canvas.toBlob((blob) => {
+                    const image = new File([blob], _name==undefined ? "icon.png" : _name);
+                    fun(image);
+                }, 'image/png');                
+            }
+            img.src = b64;           
+        }
+        this.resizeImageFile=function(b64, fun, _w, _h,_name, _boolB64){
+            resizeImageFile(b64, fun, _w, _h,_name, _boolB64)
+        }
     }
 
     set width(value) {
@@ -6662,6 +7033,7 @@ export class DScrollBarV extends DCont {
     }
 }
 
+
 export function CtrlCV(cont) {
     var self = this;
 
@@ -6787,12 +7159,14 @@ export function CtrlCV(cont) {
         }
         if (e.keyCode === 86) {
             if (self.boolV === false) {
+                
                 self.boolV = true;
                 if (self.boolCntr === true) {
                     self.saveNa();
                 }
             }
         }
+       
     });
 
     document.addEventListener('keyup', function (e) {

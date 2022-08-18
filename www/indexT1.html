@@ -24,7 +24,10 @@
 
 	var dcmParam, scane, content;
 
-	
+
+
+
+
 
 	function init () {
 		document.addEventListener('contextmenu', event => event.preventDefault());
@@ -34,8 +37,14 @@
 		
 
 		scane= new DCont(document.body);
+		//scane.visible=false
 		content= new DCont(scane);
 
+		trace(scane)
+		trace(content)
+		trace("content")
+		trace(scane.div.parentElement);
+		trace(content.div.parentElement);
 		var pObject=new DParamObject(content,2,2,function(){			
 			
 		});

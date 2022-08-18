@@ -74,11 +74,27 @@
 			sizeWindow()
 		});
 
+		var label=new DLabel(null,0,0,"DInput",downMy)
+		trace("============",label.height)
+
+		plus(label);
+		trace("============",label.height)	
+
+		//array[array.length-1].obj.setNum(0.1);
+		pObject.addObject(label);
 
 
+		var lll3=new DBArray(null,0,0,3,function(){
+			trace(this.value)
+		})
+		lll3.scalePic=0.5;
+		lll3.value=2
+		plus(lll3);
 
+		return
 
-	/*	var three=new DThreeBool(content,200,0,function(){
+/*
+		var three=new DThreeBool(content,200,0,function(){
 		
 		})
 		pObject.addObject(three);

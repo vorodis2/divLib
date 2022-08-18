@@ -488,8 +488,8 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	};
 
 	this.pointObject = { min: 0, max: 100 };
-	this.arrayNum = [-10000000, -1000000, -100000, -10000, -5000, -1000, -500, -100, -50, -1, 0, 1, 50, 100, 500, 1000, 5000, 10000 , 100000 , 1000000 , 10000000 ];
 
+	this.arrayNum = [-100000000,-10000000, -1000000, -100000, -10000, -5000, -1000, -500, -100, -50, -1, 0, 1, 50, 100, 500, 1000, 5000, 10000 , 100000 , 1000000 , 10000000 , 100000000 ];
 	var zz = 1;
 	this.diapozon = function (_num) {
 		if(this.usingShablon.length!=0)return

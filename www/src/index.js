@@ -1,5 +1,5 @@
 import { DCont } from './dCont/DCont.js';
-import { DCM, DComboBoxOld, DComboBox,DButton, DGlow,DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DBitmapData,DScrollBarH,DScrollBarV,DWindowS,DButSim} from './dCont/DCM.js';
+import { DCM, DComboBoxOld, DComboBox,DButton,DBArray, DGlow,DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DBitmapData,DScrollBarH,DScrollBarV,DWindowS,DButSim} from './dCont/DCM.js';
 import { DSettings} from './dCont/DSettings.js';
 import { DParamObject} from './dCont/DParamObject.js';
 import { DGallery,DBox} from './dCont/DGallery.js';
@@ -12,7 +12,7 @@ import {DHole} from './dCont/DHole.js';
 
 import {DHoleDrag} from './dCont/DHoleDrag.js';
 
-
+global.DBArray = DBArray;
 global.DDragPic = DDragPic;
 global.DButton = DButton;
 global.DPanel = DPanel;
@@ -53,4 +53,4 @@ global.DHole=DHole
 global.DHoleDrag = DHoleDrag;
 
 
-export { DCont, DCM,DDragPic, DButton,DGlow,DComboBox, DComboBoxOld, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree,DHole,DHoleDrag};
+export { DCont, DCM,DDragPic, DButton, DBArray,DGlow,DComboBox, DComboBoxOld, DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS,DButSim,DHelp,DThree,DHole,DHoleDrag};

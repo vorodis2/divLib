@@ -1261,7 +1261,8 @@ Object.defineProperties(DVisualLoader.prototype, {
         set: function (value) {
             if (this._link === value) return;
             this._link = value;
-
+            let l=this._link;
+            if(window.mhbd)l=window.mhbd.getLink(value)
             
             if (this.link === 'null') {
                 this.image.visible = false;
@@ -1271,7 +1272,7 @@ Object.defineProperties(DVisualLoader.prototype, {
                 this.input.value = this.link;
             } else {
                 this.image.visible = true;
-                this.image.link = this._link;
+                this.image.link = l;
                 this.input.value = this._link;
             }/**/
         },

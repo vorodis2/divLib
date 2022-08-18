@@ -20,7 +20,7 @@
 	import { DCompDev } from "./src/dCont/plus/DCompDev.js";
 	import { DThreeBool } from "./src/dCont/plus/DThreeBool.js";
 	import { DThreeButton } from "./src/dCont/plus/DThreeButton.js";
-
+	import { DSliderMM } from "./src/dCont/plus/DSliderMM.js";
 	var dcmParam, scane, content;
 
 	
@@ -87,13 +87,13 @@
 
 
 		three.setObj(obj1,"array","name");
-		pObject.addObject(three);
+		//pObject.addObject(three);
 
 		three1.setObj(arr,"array","name");
-		pObject.addObject(three1);
+		//pObject.addObject(three1);
 
 		three2.setObj(arr,"array","name");
-		pObject.addObject(three2);
+		//pObject.addObject(three2);
 
 		n.height = three.height;
 		n1.height = three1.height;
@@ -105,7 +105,14 @@
 		var threeB=new DThreeButton(n2,4,4, 'text', function(){pObject.addObject(threeB)})
 		threeB.link="resources/pic/2.png"
 		threeB.height=100
-		threeB.width=190	
+		threeB.width=190
+
+
+		var dSliderMM=new DSliderMM(content,250,100, function(){
+			
+		})		
+		dSliderMM.width=190
+		pObject.addObject(dSliderMM)	
 
 	}
 
