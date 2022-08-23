@@ -4,7 +4,7 @@ import { DCont } from '../DCont.js';
 export class DSliderMM extends DCont {
     constructor(dCont, _x, _y, fun) {
         super();
-        this.type = 'DSlider';
+        this.type = 'DSliderMM';
         if (dcmParam == undefined) dcmParam = new DCM();
         dcmParam.add(this);
         var self = this;
@@ -12,7 +12,7 @@ export class DSliderMM extends DCont {
         this.y = _y || 0;
         if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
         this._width = 100;
-        this._height = 15;
+        this._height = 16;//+12
 
         this.fun = fun;
         this.funChange = undefined;
@@ -26,12 +26,12 @@ export class DSliderMM extends DCont {
         this._value2 = 100;
 
         this._otstup = 2;
-        this._value = 0; // округление value
+        this._value = 0; // округление value  //Fixe clinear
         this._okrug = 100; // округление value
 
         this._value = 0; // округление value
 
-        this.mm = 10000000000000000000000;
+        this.mm = 10000000000000000000000;//Fixe clinear
 
         this.pan = new DPanel(this, 0, this._otstup);
         this.pan.width = this._width;
@@ -169,7 +169,7 @@ export class DSliderMM extends DCont {
                 self.naValue(e.offsetX);
                 if (self.fun) self.fun();
             }
-            trace(this.tip)
+            
             b2=false
             if(this.tip==2){
                 b2=true

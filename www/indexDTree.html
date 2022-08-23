@@ -21,6 +21,11 @@
 	import { DThreeBool } from "./src/dCont/plus/DThreeBool.js";
 	import { DThreeButton } from "./src/dCont/plus/DThreeButton.js";
 	import { DSliderMM } from "./src/dCont/plus/DSliderMM.js";
+
+	import { MSArray,MSortArray } from "./src/dCont/plus/MSortArray.js";
+
+
+
 	var dcmParam, scane, content;
 
 	
@@ -107,12 +112,41 @@
 		threeB.height=100
 		threeB.width=190
 
+		var p=new DPanel(content,250,100)
+		p.width=190;
+		p.height=16+12;
 
 		var dSliderMM=new DSliderMM(content,250,100, function(){
 			
 		})		
 		dSliderMM.width=190
+		dSliderMM.alpha=0.5
 		pObject.addObject(dSliderMM)	
+
+	
+
+
+
+		var ccc=new DCont(scane);
+		ccc.x=200;
+		var a=[456,456,456,678,678,879,80,998,46,42432341,23]
+	/*	var mSortArray=new MSortArray(this,function(s,p){
+
+		})
+		
+		mSortArray.dC=ccc;
+		mSortArray.sizeWindow(333,333,1)
+
+		mSortArray.setArray(a)*/
+
+		var dSArray=new MSArray(null,function(s,p){
+
+		})
+		trace("@@@sssss@@",dSArray.dCont)
+		ccc.add(dSArray.dCont);
+		dSArray.setArray(a);
+		pObject.addObject(dSArray)	
+
 
 	}
 
