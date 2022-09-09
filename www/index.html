@@ -255,7 +255,8 @@
 		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
 		plus(new DInput(null,0,0,"DInput",downMy));
 
-		array[array.length-1].obj.setNum(0.1);
+		//array[array.length-1].obj.setNum(0.1);
+		pObject.addObject(array[array.length-1].obj);
 
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
@@ -272,7 +273,7 @@
 		plus(new DScrollBarH(content,677,133,downMy))
 		
 
-		pObject.addObject(array[array.length-1].obj);
+		
 
 		var g= new DGallery(content,800,300,downMy);
 		var a=[]

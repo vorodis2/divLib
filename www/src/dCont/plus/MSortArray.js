@@ -122,7 +122,7 @@ export class MSArray  {
         this.dCont=new DCont();
         this.otstup=2;
         this.par=par;
-        this.hhh=555;
+        this.hhh=555
 
         if(this.par){
             this.otstup=this.par.otstup;
@@ -612,17 +612,44 @@ export class PKBlok  {
         }
         this.funActiv1=undefined
         
+
+        /**
+         * Ищем значение
+         * о обьект в ктором лежит значение
+         * а масив ключей обьекта
+         * s шаг по массиву ключей
+         */
         this.getOA=function(o,a,s){
-            //trace(o,a,s)
             if(a[s+1]==undefined){
                 return o[a[s]]
             }else{
+                if(typeof a[s]=='object'){
+                    if(a[s].type=="seek"){                       
+                        if(o[a[s].key]==undefined)return null;
+                        if(typeof o[a[s].key]!=='object'){
+                            return null;
+                        }
+                        if(o[a[s].key][0]!==undefined){//это массив
+                            for (var i = 0; i < o[a[s].key].length; i++) {
+                                if(this.isObjArr(o[a[s].key][i],a[s].array)==true){                                    
+                                    return this.getOA(o[a[s].key][i], a, s+1)                                    
+                                } 
+                            }
+                        }
+                    }
+                    return null
+                }                
                 return this.getOA(o[a[s]], a, s+1)
             }
-
-
-
             return null
+        }
+
+        this.isObjArr=function(o,a){           
+            for (var i = 0; i < a.length; i+=2) {
+                if(o[a[i]]==undefined)return false;
+                if(o[a[i]]!=a[i+1])return false;
+            }
+            return true;
         }
 
 
