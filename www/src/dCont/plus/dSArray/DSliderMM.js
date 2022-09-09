@@ -1,4 +1,4 @@
-import { DCont } from '../DCont.js';
+//import { DCont } from '../DCont.js';
 
 
 export class DSliderMM extends DCont {
@@ -12,7 +12,11 @@ export class DSliderMM extends DCont {
         this.y = _y || 0;
         if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
         this._width = 100;
-        this._height = 16;//+12
+        this.wh=20
+        this.OTEXT=12;
+        this._height = this.wh+this.OTEXT;
+        this._colorText1=dcmParam._colorText1;
+        this._colorText=dcmParam._colorText;
 
         this.fun = fun;
         this.funChange = undefined;
@@ -21,21 +25,20 @@ export class DSliderMM extends DCont {
 
         this._min = 0;
         this._max = 100;
+        this._mobile=dcmParam.mobile;
+        
 
-       
-        this._value2 = 100;
+
 
         this._otstup = 2;
-        this._value = 0; // округление value  //Fixe clinear
-        this._okrug = 100; // округление value
-
+        //this._okrug = 100; // округление value
+        this._okrug = 1; // округление value
         this._value = 0; // округление value
+        this._value1 = 100;
 
-        this.mm = 10000000000000000000000;//Fixe clinear
+        this.mm = 10000000000000000000000;
 
-        this.pan = new DPanel(this, 0, this._otstup);
-        this.pan.width = this._width;
-        this.pan.height = this._height - this._otstup * 2;
+        this.pan = new DPanel(this, 0, 0);
         this.pan.color1 = dcmParam.compToHexArray(
             dcmParam.hexDec(dcmParam._color1),
             -20
@@ -45,42 +48,78 @@ export class DSliderMM extends DCont {
         
 
 
-
         this.panel = new DPanel(this, 0, 0);
-        this.panel.width = this.panel.height = this._height;
         this.panel.color1 = this._color;
         this.panel.div.style.cursor = 'pointer';
         this.panel.tip = 1;
         this.panel.div.xzTip=1
 
-        this.label=new DLabel(this.panel,0,-12,"")
+        this.label=new DLabel(this.panel,0,0,this._value+"")
         this.label.activMouse=false;
         this.label.fontSize=10;
 
+        
+        
+        this.panel1 = new DPanel(this, 0, 0);
+        this.panel1.color1 = this._color;
+        this.panel1.div.style.cursor = 'pointer';
+        this.panel1.tip = 2;
+        this.panel1.div.xzTip=2
+        
 
-
-        this.panel2 = new DPanel(this, 0, 0);
-        this.panel2.width = this.panel2.height = this._height;
-        this.panel2.color1 = this._color;
-        this.panel2.div.style.cursor = 'pointer';
-        this.panel2.tip = 2;
-        this.panel2.div.xzTip=2
-
-        this.label2=new DLabel(this.panel2,this.panel2.width-100,-12,"xz")
-        this.label2.activMouse=false;
-        this.label2.fontSize=10;
-        this.label2.textAlign="right"
-
+        this.label1=new DLabel(this.panel1, 0,0,this._value1)
+        this.label1.activMouse=false;
+        this.label1.fontSize=10;
+        this.label1.textAlign="right"
+       
+         
         //this.panel.borderRadius = 50;
-
         //this.pan.borderRadius = 50;
+
+
+        this.dragMobile = function(){
+            if (this._mobile) {
+                this.wh=this._height
+                this.pan.y = this._otstup;
+                this.label1.y = this.label.y =(this._height-this.label.fontSize)/2// (this._height - (this._height - this.wh)) / 2 -  this._otstup * 3;
+                this.panel.y=this.panel1.y=0
+                this.label.colorText1=this._colorText;
+                this.label1.colorText1=this._colorText;
+            }else{
+                this.wh=this._height-this.OTEXT
+                this.pan.y = this._otstup+this.OTEXT;
+                this.label1.y = this.label.y =-this.OTEXT
+                this.panel.y=this.panel1.y=this.OTEXT
+                this.label.colorText1=this._colorText1;
+                this.label1.colorText1=this._colorText1;
+            }
+
+            this.pan.height = this.wh - this._otstup * 2;
+            this.panel.height = this.panel.width = this.wh;
+            this.panel1.height = this.panel1.width = this.wh;
+            this.value1 = this._value1;
+            this.label1.x=this.wh-100;
+
+        }
+        this.dragMobile()
+
 
         this.setMM = function (min,max) {
             this.min=min;
             this.max=max;
             this.value=min;
-            this.value2=max;
+            this.value1=max;
         }
+
+        //TODO
+        /*this.comparison=function(){
+            if (this._min==this._max) {
+                this.panel.x=0;
+                this.panel1.x=0
+            }
+        }*/
+
+
 
         this.borderRadius = dcmParam.borderRadius;
 
@@ -90,20 +129,19 @@ export class DSliderMM extends DCont {
                     this._height / 2) /
                 self._width;
             xxx = this._max - this._min; 
-
             let ww= this._min + xxx * xx;
-            if(ww>this.value2) ww=this.value2               
+            if(ww>this.value1) ww=this.value1               
             this.value = ww;
         };
 
-         this.naValue2 = function (n) {            
+         this.naValue1 = function (n) {            
             xx =(n * ((this._height + self._width) / self._width) -
                     this._height / 2) /
                 self._width;
             xxx = this._max - this._min;  
             let ww= this._min + xxx * xx;
             if(ww<this.value) ww=this.value        
-            this.value2 = ww;
+            this.value1 = ww;
         };
 
         var sp;
@@ -123,21 +161,31 @@ export class DSliderMM extends DCont {
         var b2=false
         var ss, sss;
         this.mousemove = function (e) {
-            
-            if (sp == undefined) {
-                sp = {
-                    x: e.clientX,
-                    value: self.panel.x,
-                    value2: self.panel2.x,
-                    b: false,
-                };
+            if (dcmParam.mobile == false) {
+                if (sp == undefined) {
+                    sp = {
+                        x: e.clientX,
+                        value: self.panel.x,
+                        value1: self.panel1.x,
+                        b: false,
+                    };
+                } 
+                ss = (e.clientX - sp.x) / self.scaleDrag.s;
+            } else {
+                if (sp == undefined) {
+                    sp = {
+                        x: e.targetTouches[0].clientX,
+                        value: self.panel.x,
+                        value1: self.panel1.x,
+                    };
+                }
+                ss = (e.targetTouches[0].clientX - sp.x) / self.scaleDrag.s;
             }
-            ss = (e.clientX - sp.x) / self.scaleDrag.s;
-         
+
             if(b2==false){
                 self.naValue(sp.value + ss + self._height / 2);
             }else{
-                self.naValue2(sp.value2 + ss + self._height / 2);
+                self.naValue1(sp.value1 + ss + self._height / 2);
             }
             
             if (self.fun) self.fun();
@@ -166,10 +214,22 @@ export class DSliderMM extends DCont {
 
         this.mousedown = function (e) {
             if (this.tip === 0) {
-                self.naValue(e.offsetX);
+                var aa=self.panel.width/2
+                let coords = e.target.getBoundingClientRect();
+                let rr1 =(e.clientX - coords.x) / self.scaleDrag.s;
+                var a=Math.abs(e.offsetX-self.panel.x+aa)*self.scaleDrag.s
+                var a1=Math.abs(e.offsetX-self.panel1.x+aa)*self.scaleDrag.s
+      
+                if (a <= a1) {
+                    self.naValue(e.offsetX);
+                } else {
+                    self.naValue1(e.offsetX);
+                }
                 if (self.fun) self.fun();
+                return
             }
-            
+            trace(this.tip)
+
             b2=false
             if(this.tip==2){
                 b2=true
@@ -185,12 +245,13 @@ export class DSliderMM extends DCont {
                     if(this.tip==1)self.naValue(e.offsetX);
                     if(this.tip==2){
                         b2=true
-                        self.naValue2(e.offsetX);
+                        self.naValue1(e.offsetX);
                     }
                 }
                 else {
                     if (e.targetTouches)
                         if (e.targetTouches[0]) {
+                            trace(this.tip,this)
                             //var rr=self.getPosGlob(self.pan)
 
                             self.xyp.x = 0;
@@ -202,7 +263,14 @@ export class DSliderMM extends DCont {
                                 (e.targetTouches[0].clientX - coords.x) /
                                 self.scaleDrag.s;
 
-                            self.naValue(rr1);
+                            //self.naValue(rr1);
+
+                            b2=false
+                            if(this.tip==1)self.naValue(rr1);
+                            if(this.tip==2){
+                                b2=true
+                                self.naValue1(rr1);
+                            }
                         }
                 }
                 if (self.fun) self.fun();
@@ -219,6 +287,7 @@ export class DSliderMM extends DCont {
         };
 
         if (dcmParam.mobile == false) {
+            
             this.panel.div.addEventListener(
                 'mousedown',
                 self.mousedown.bind(this.panel)
@@ -228,28 +297,41 @@ export class DSliderMM extends DCont {
                 self.mousedown.bind(this.pan)
             );
 
-            this.panel2.div.addEventListener(
+            this.panel1.div.addEventListener(
                 'mousedown',
-                self.mousedown.bind(this.panel2)
+                self.mousedown.bind(this.panel1)
             );
 
 
 
             this.pan.div.xz = true;
         } else {
-            this.panel.div.addEventListener(
+            /*this.panel.div.addEventListener(
                 'touchstart',
                 self.mousedown.bind(this)
             );
             this.pan.div.addEventListener(
                 'touchstart',
                 self.mousedown.bind(this)
+            );*/
+            this.panel.div.addEventListener(
+                'touchstart',
+                self.mousedown.bind(this.panel)
             );
+            this.pan.div.addEventListener(
+                'touchstart',
+                self.mousedown.bind(this.pan)
+            );
+
+            this.panel1.div.addEventListener(
+                'touchstart',
+                self.mousedown.bind(this.panel1)
+            );
+
+
             this.pan.div.xz = true;
         }
 
-        this._width++;
-        this.width = this._width - 1;
     }
 
     set x(v) {
@@ -269,6 +351,8 @@ export class DSliderMM extends DCont {
             this._width = v;
             this.pan.width = this._width;
             this.value = this._value;
+            this.value1 = this._value1;
+        
         }
     }
     get width() {
@@ -278,10 +362,7 @@ export class DSliderMM extends DCont {
     set height(v) {
         if (this._height != v) {
             this._height = v;
-
-            this.pan.height = this._height - this._otstup * 2;
-            this.panel.height = this.panel.width = this._height;
-            this.panel2.height = this.panel2.width = this._height;
+            this.dragMobile()
         }
     }
     get height() {
@@ -293,6 +374,7 @@ export class DSliderMM extends DCont {
             this._borderRadius = value;
             this.panel.borderRadius = value;
             this.pan.borderRadius = value;
+            this.panel1.borderRadius = value;
         }
     }
     get borderRadius() {
@@ -306,8 +388,7 @@ export class DSliderMM extends DCont {
         this._value = v;
         var xx = v - this._min;
         var xxx = xx / (this._max - this._min);
-        this.panel.x = (this.pan.width - this._height) * xxx;
-
+        this.panel.x = (this.pan.width - this.wh*2) * xxx;
         this.label.text=this._value;
 
     }
@@ -316,18 +397,18 @@ export class DSliderMM extends DCont {
     }
 
 
-    set value2 (v) {
+    set value1 (v) {
         v = Math.round(v * this._okrug) / this._okrug;
         if (v > this._max) v = this._max;
         if (v < this._min) v = this._min;
-        this._value2 = v;
-        var xx = v - this._min;
-        var xxx = xx / (this._max - this._min);
-        this.panel2.x = (this.pan.width - this._height) * xxx;
-        this.label2.text=this._value2;
+        this._value1 = v;
+        var xx = v - this._min;   
+        var xxx = xx / (this._max - this._min); 
+        this.panel1.x =  this.wh+(this.pan.width - this.wh*2) * xxx;
+        this.label1.text=this._value1;
     }
-    get value2() {
-        return this._value2;
+    get value1() {
+        return this._value1;
     }
 
 
@@ -345,6 +426,8 @@ export class DSliderMM extends DCont {
             this._min = v;
             this.value = this._value;
             //this.object.value=(this._value-this._min)/(this._max-this._min)*this.mm
+            //this.comparison()
+
         }
     }
     get min() {
@@ -354,7 +437,8 @@ export class DSliderMM extends DCont {
     set max(v) {
         if (this._max != v) {
             this._max = v;
-            this.value = this._value;
+            this.value1 = this._value1;
+            //this.comparison()
             //this.object.value=(this._value-this._min)/(this._max-this._min)*this.mm
         }
     }
@@ -362,14 +446,6 @@ export class DSliderMM extends DCont {
         return this._max;
     }
 
-
-
-
-
-
-
-
-  
 
     set activMouse(value) {
         if (this._activMouse != value) {
@@ -385,5 +461,40 @@ export class DSliderMM extends DCont {
     }
     get activMouse() {
         return this._activMouse;
+    }
+
+
+    set mobile(value) {
+        if (this._mobile != value) {
+            this._mobile = value;
+            this.dragMobile()
+            
+        }
+    }
+    get mobile() {
+        return this._mobile;
+    }
+
+
+    set colorText(value) {
+        if (this._colorText1 != value) {
+            this._colorText1 = value;
+            this.dragMobile()
+        }
+    }
+    get colorText() {
+        return this._colorText1;
+        
+    }
+
+
+    set colorTMobl(value) {
+        if (this._colorText1 != value) {
+            this._colorText = value;
+            this.dragMobile()
+        }
+    }
+    get colorTMobl() {
+        return this._colorText;
     }
 }
