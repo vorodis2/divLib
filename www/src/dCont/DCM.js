@@ -33,7 +33,7 @@ export function DCM() {
     this._color1 = '#ffffff';
     this._colorText = '#ffffff'; //dfgdfg
     this._colorText1 = '#999999';
-    this._colorTextInput = this._colorText1;
+
     this._colorActive = '#f28044';
     this._fontSize = 16;
     this._fontSizeLitte= 10;
@@ -1167,13 +1167,14 @@ export class DColor extends DCont {
         this._height = dcmParam.wh;
         this._openBool = false;
         this._activMouse = true;
+        this._fontSize=dcmParam.fontSize
         var boolOp = true;
 
         this.panel = new DPanel(this);
         this.button = new DButton(
             this,
-            this._otstup,
-            this._otstup,
+            0,
+            0,
             ' ',
             function () {
                 if (boolOp == false) return;
@@ -1185,8 +1186,8 @@ export class DColor extends DCont {
 
         this.input = new DInput(
             this,
-            this._otstup,
-            this._otstup,
+            0,
+            0,
             this._color,
             function () {
                 self.color = this.value;
@@ -1206,9 +1207,8 @@ export class DColor extends DCont {
         this.image.visible = false;
         this.panel.width = this._width;
         this.panel.height = this._height;
-        this.button.width = this.button.height =
-            this._height - this._otstup * 2;
-        this.input.width = this.input.height = this._height - this._otstup * 2;
+        this.button.width = this.button.height = this._height ;
+        this.input.width = this.input.height = this._height ;
         this.button.color = this._color;
 
         this.getBigPar = function (o, p) {
@@ -1317,16 +1317,16 @@ export class DColor extends DCont {
     set width(value) {
         if (this._width != value) {
             this._width = value;
-            this.button.x = this._width - this._otstup - this.button._width;
+            this.button.x = this._width  - this.button._width;
             this.panel.width = this._width;
             this.image.width = this._width - this._otstup * 2;
             var ww = this.button.x - this._otstup * 2;
             if (this.label == undefined) {
-                this.input.width = this.button.x - this._otstup * 2;
-                this.input.x = this._otstup;
+                this.input.width = this.button.x- this.input.numLine;
+                this.input.x = 0;
             } else {
                 this.input.width = ww / 2;
-                this.input.x = this._otstup + ww / 2;
+                this.input.x =  ww / 2;
             }
         }
     }
@@ -1337,12 +1337,30 @@ export class DColor extends DCont {
     set height(value) {
         if (this._height != value) {
             this._height = value;
+            this.panel.height = this._height;
+            this.button.width = this.button.height = this._height ;
+            this.input.height = this._height ;
+            let ww=this._width
+            this._width=-1;
+            this.width=ww
         }
     }
     get height() {
         return this._height;
     }
 
+
+    set fontSize(value) {
+        if (this._fontSize != value) {
+            this._fontSize = value;           
+            this.input.fontSize = this._fontSize
+            
+        }
+    }
+    get fontSize() {
+        return this._fontSize;
+    }
+    
     set activMouse(value) {
         if (this._activMouse != value) {
             this._activMouse = value;
@@ -1412,6 +1430,7 @@ export class DColor extends DCont {
         return this._openBool;
     }
 }
+
 /*
 export class DComboBox extends  DCont {
     constructor(dCont, _x, _y, _arr, _fun, _link) {
@@ -2442,6 +2461,9 @@ export class DButton extends DCont {
         this.panel.div.style.borderRadius = this._borderRadius + 'px';
         this.panel1.div.style.borderRadius = this._borderRadius + 'px';
 
+
+
+
         this.label = new DLabel(
             this.dCont,
             5,
@@ -2454,7 +2476,9 @@ export class DButton extends DCont {
         this.label.textAlign = this.textAlign;
         this.panel1.div.style.cursor = 'pointer';
         this.label.fontFamily = this._fontFamily;
-
+        if(window.TWEEN!=undefined){
+            this.tweenL=new TWEEN.Tween(this.label)
+        }
 
         this.mouseup2 = function () {
             self.file.value = null;
@@ -2554,7 +2578,14 @@ export class DButton extends DCont {
                     -20
                 );
             }
-
+            if(self.tween){
+                self.image.alpha=0.75
+                self.tween.to({alpha:1},500).start();
+            }
+            if(self.tweenL){
+                self.label.alpha=0.75
+                self.tweenL.to({alpha:1},500).start();
+            }
             if (self.fun_mouseover) self.fun_mouseover();
         };
         this.mouseout = function () {
@@ -2692,6 +2723,8 @@ export class DButton extends DCont {
         this.loadImeg = function (s) {
             this._link = s;
             if (this.image == undefined) {
+
+                
                 // this.panel1.parent.remove(this.panel1);
                 this.image = new DImage(null, 0, 0, null, function () {
                     self.image.boolLoadXZ=true;
@@ -2700,6 +2733,10 @@ export class DButton extends DCont {
                 });
                 this.image.div.style.pointerEvents = 'none';
                 this.image.boolLoadXZ=false;
+                if(window.TWEEN!=undefined){
+                    this.tween=new TWEEN.Tween(this.image)
+                }
+
                 //this.add(this.panel1);/**/
             }
             this.image.link = this._link;
@@ -4998,14 +5035,18 @@ export class DInput extends DCont {
 
         this._title='';
 
-        this._colorText1 = dcmParam._colorTextInput;
+        //this._colorText1 = dcmParam._colorText1;
         this._fontFamily = dcmParam._fontFamily;
         this._fontSize = dcmParam._fontSize;
         this._textAlign = 'center';
 
         this._borderRadius = dcmParam.borderRadius;
         this._color2 = dcmParam._color;
+        //////////////////////////////////////
+        this._color = this._color1; 
+        this._colorText = dcmParam._colorText1;   
 
+        ////////////////////////////////////
         this.boolFocus = false;
         this.funFocus = undefined;
         this._numLine = 1;
@@ -5018,7 +5059,7 @@ export class DInput extends DCont {
         this.object.type = 'text';
         this.object.value = this._text;
         this.object.style.backgroundColor = this._color1;
-        this.object.style.color = this._colorText1;
+        this.object.style.color = this._colorText;
         this.object.style.border =
             this._numLine +
             'px solid ' +
@@ -5200,7 +5241,7 @@ export class DInput extends DCont {
         this.dragWW=function(){
             if(this._title == ''){
                 this.object.style.width = this._width - 6 + 'px';
-                this.dci.x=0
+                this.dci.x=0                
             }else{
                 ww = this.labelTitle.getTextWidth(this._title)
                 
@@ -5315,8 +5356,15 @@ export class DInput extends DCont {
     set height(v) {
         if (this._height != v) {
             this._height = v;
+            
             if(this.labelTitle)this.labelTitle.y=this._height-dcmParam._fontSizeLitte-2
-            this.object.style.height = this._height - 4 + 'px';
+            this.object.style.height = this._height - 4 + 'px';           
+
+            let yy=0;            
+            if(this._height<=18){
+                yy=-Math.floor(((18-this._height)/2)+1)
+            }            
+            if(this.dci.y!=yy)this.dci.y=yy
         }
     }
     get height() {
@@ -5382,6 +5430,7 @@ export class DInput extends DCont {
     set color1(v) {
         if (this._color1 == v) return;
         this._color1 = v;
+        this._color = v;
         this.object.style.backgroundColor = this._color1;
         this.object.style.border =
             '1px solid ' +
@@ -5391,9 +5440,36 @@ export class DInput extends DCont {
         return this._text;
     }
 
+    //////////////////////////////////////
+    //this._color = this._color2; 
+    //this._colorText = this._colorText1;
+
+    set color(v) {
+        if (this._color == v) return;
+        this._color = v;
+        this.color1 = v;        
+    }
+    get color() {
+        return this._color;
+    }      
+   
+    set colorText(v) {
+        if (this._colorText == v) return;
+        this._colorText = v;
+        this._colorText1 = v;
+        this.object.style.color = this._colorText;
+    }
+    get colorText() {
+        return this._colorText;
+    }
+
+    ////////////////////////////////////
+
+
     set colorText1(v) {
         if (this._colorText1 == v) return;
         this._colorText1 = v;
+        this._colorText = v;
         this.object.style.color = this._colorText1;
     }
     get colorText1() {
@@ -5433,6 +5509,9 @@ export class DInput extends DCont {
     get activMouse() {
         return this._activMouse;
     }
+
+
+
 }
 
 export class DTextArea extends DCont {
@@ -5455,17 +5534,37 @@ export class DTextArea extends DCont {
         this.dci=new DCont(this)
         this._numLine = 1;
         this.timeFun = 1000;
-
-
-        this.funEnter = undefined;
-        this._color1 = dcmParam._color1;
-        this._colorText1 = dcmParam._colorTextInput;
+/*
+//this._colorText1 = dcmParam._colorText1;
         this._fontFamily = dcmParam._fontFamily;
         this._fontSize = dcmParam._fontSize;
         this._textAlign = 'center';
 
         this._borderRadius = dcmParam.borderRadius;
         this._color2 = dcmParam._color;
+        //////////////////////////////////////
+        this._color = this._color1; 
+        this._colorText = dcmParam._colorText1;   
+
+        ////////////////////////////////////
+
+
+*/
+
+        this.funEnter = undefined;
+        this._color1 = dcmParam._color1;
+        //this._colorText1 = dcmParam._colorText1;
+        this._fontFamily = dcmParam._fontFamily;
+        this._fontSize = dcmParam._fontSize;
+        this._textAlign = 'center';
+
+        this._borderRadius = dcmParam.borderRadius;
+        this._color2 = dcmParam._color;
+        //////////////////////////////////////
+        this._color = this._color1; 
+        this._colorText = dcmParam._colorText1;   
+
+        ////////////////////////////////////
 
         this.boolFocus = false;
         this.funFocus = undefined;
@@ -5474,7 +5573,7 @@ export class DTextArea extends DCont {
         //this.object.type = 'textArea';
         this.object.value = this._text;
         this.object.style.backgroundColor = this._color1;
-        this.object.style.color = this._colorText1;
+        this.object.style.color = this._colorText;
         this.object.style.border =
             this._numLine +
             'px solid ' +
@@ -5679,7 +5778,13 @@ export class DTextArea extends DCont {
         if (this._height != v) {
             this._height = v;
             if(this.labelTitle)this.labelTitle.y=this._height-dcmParam._fontSizeLitte-2
-            this.object.style.height = this._height - 6 + 'px';
+            this.object.style.height = this._height - 4 + 'px';
+
+            let yy=0;            
+            if(this._height<=18){
+                yy=-Math.floor(((18-this._height)/2)+1)
+            }            
+            if(this.dci.y!=yy)this.dci.y=yy
         }
     }
     get height() {
@@ -5726,11 +5831,34 @@ export class DTextArea extends DCont {
         return this._text;
     }
 
+    set color(v) {
+        if (this._color == v) return;
+        this._color = v;
+        this.color1 = v;        
+    }
+    get color() {
+        return this._color;
+    }      
+   
+    set colorText(v) {
+        if (this._colorText == v) return;
+        this._colorText = v;
+        this._colorText1 = v;
+        this.object.style.color = this._colorText;
+    }
+    get colorText() {
+        return this._colorText;
+    }
+
+    ////////////////////////////////////
+
+
     set colorText1(v) {
         if (this._colorText1 == v) return;
         this._colorText1 = v;
+        this._colorText = v;
         this.object.style.color = this._colorText1;
-    }
+    }        
     get colorText1() {
         return this._colorText1;
     }

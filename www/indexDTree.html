@@ -20,13 +20,10 @@
 	import { DCompDev } from "./src/dCont/plus/DCompDev.js";
 	import { DThreeBool } from "./src/dCont/plus/DThreeBool.js";
 	import { DThreeButton } from "./src/dCont/plus/DThreeButton.js";
-	import { DSliderMM } from "./src/dCont/plus/dSArray/DSliderMM.js";
+	import { DSliderMM } from "./src/dCont/plus/DSliderMM.js";
 
-	import { DSortArray } from "./src/dCont/plus/DSortArray.js";
-	import { DSArray } from "./src/dCont/plus/dSArray/DSArray.js";
+	import { MSArray,MSortArray } from "./src/dCont/plus/MSortArray.js";
 
-
-	import { DButtons} from "./src/dCont/plus/dSArray/DButtons.js";
 
 
 	var dcmParam, scane, content;
@@ -43,24 +40,10 @@
 		content= new DCont(scane);
 
 		var pObject=new DParamObject(content,2,2,function(s){			
-			//trace(s)
+			trace(s)
 		});
 		pObject.width=222;
 
-		// var ccc=new DCont(scane);
-		// ccc.x=300;
-
-		// var a=["resources/pic/0.png",256,"456","resources/pic/1.png","resources/pic/2.png","678","resources/pic/Ellipse.svg",true,false,998,46,4241,23]
-		
-		// var dSArray=new DSortArray(this,function(s,p){
-
-		// })
-		// dSArray.dC=ccc
-		// dSArray.setArray(a)
-		// dSArray.sizeWindow(666,444,1)
-
-		// return
-/*
 
 	 	var sah = 1;
 	 	var pic =  function(n) {
@@ -133,47 +116,42 @@
 		p.width=190;
 		p.height=16+12;
 
-		
+		/*var content1= new DCont(scane);
+		content1.scale=0.9
+		content1.x=222*/
 
 		var dSliderMM=new DSliderMM(content,250,100, function(){
 			
-		})	*/	
-
-	
-		/*var dButtons= new DButtons(content,250,100,["a","0","1"], function(){
-			
-		})
-		pObject.addObject(dButtons)
-
-
-		setTimeout(function() {
-			dButtons.array=["a","0","1","0","1"]
-
-		}, 1550);
+		})		
 
 	
 
-		return*/
+
 
 		var ccc=new DCont(scane);
-		ccc.x=300;
-		/*ccc.add(dButtons.dCont);*/
+		ccc.x=200;
+		var a=[456,456,"456","67w8","678",879,80,998,46,4431.567,23]
 
-		/*ccc.add(dSArray.dCont);
-		dSArray.setArray(a);
-		pObject.addObject(dSArray)*/
-
-		/*var ccc=new DCont(scane);
-		ccc.x=400;*/
-
+		let sss='[{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679354.468001001 25500330.668002997 4.422999996691942"},{"@label":"pipeEnd","@value":"6679350.846001 25500335.519002993 4.381999999284744"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"1.13","@refStart":"3","@refEnd":"4"}}]'
+		let aa=JSON.parse(sss);
 		
-		//var a=[456,456,456,678,678,879,80,998,46,4241,23]
-		//var a=[456,256,"456","678",true,true,false,998,46,4241,23]
-		
-		var a=["https://i.pinimg.com/564x/28/05/22/2805224fa6cce1e2150c586d9779d78c.jpg",256,"456","resources/pic/1.png","resources/pic/2.png","678","resources/pic/Ellipse.svg",true,false,998,46,4241,23]
 
-		//var a=["resources/pic/0.png","resources/pic/1.png","resources/pic/2.png","resources/pic/Ellipse.svg","456",546]
-	/*	var mSortArray=new MSortArray(this,function(s,p){
+		let aoo=[
+			{key:["object","@name"], type:"string",name:"name"},
+			{key:["object","@refStart"], type:"string",name:"refStart"},
+			{key:["object","@refEnd"], type:"string",name:"refEnd"},
+			{key:["object","CircPipe","@diameter"], type:"string",name:"diameter"}, 
+			{key:[
+				"object",
+				{type:"seek",key:"Feature",array:['@code','IM_pipe','@source','inframodel']},
+				{type:"seek",key:"Property",array:['@label','elevType']},
+				"@value"
+				], type:"string",name:"elevType"}, 
+		]
+
+		//aa.splice(1,1)
+		trace(aa)
+		/*var mSortArray=new MSortArray(this,function(s,p){
 
 		})
 		
@@ -182,50 +160,14 @@
 
 		mSortArray.setArray(a)*/
 
-		var dSArray=new DSArray(null,function(s,p){
+		var dSArray=new MSArray(null,function(s,p){
 
 		})
-
-
-
-		//trace("@@@sssss@@",dSArray.dCont)
-
-
-
-
+		trace("@@@sssss@@",dSArray.dCont)
 		ccc.add(dSArray.dCont);
-		var arrParam=[
-            		{key:null, type:"string",name:"string"},
-			        {key:null, type:"number",name:"number"}, 
-			        {key:null, type:"boolean",name:"boolean"}, 
-            		{key:null, type:"image",name:"imageName"},
+		dSArray.setArray(aa,aoo);
+		pObject.addObject(dSArray)	
 
-            		
-            		]
-
-		dSArray.setArray(a,arrParam);
-		pObject.addObject(dSArray)
-
-
-
-		/*setTimeout(function() {
-			trace("@@@sssss@@",dSArray.dCont)
-			dSArray.setArray(a1);
-		},3333)
-*/
-		// setTimeout(function() {
-		// 	this.arrParam=[
-  //          		{key:null, type:"string",name:"string"},
-  //          		{key:null, type:"string",name:"string"},
-  //          		{key:null, type:"string",name:"string"},
-  //          		{key:null, type:"string",name:"string"},
-  //          		{key:null, type:"string",name:"string"},
-  //          	]
-		// 	var a=[456,"fghfdhfghfgh","fghfdhfghfgh","fghfdhfghfgh","fghfdhfghfgh",456,678,678,879,80,998,46,42432341,23]
-		// 	dSArray.setArray(a,this.arrParam);
-
-		// }, 1000);
-		
 
 	}
 
