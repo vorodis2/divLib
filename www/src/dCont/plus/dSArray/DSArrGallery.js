@@ -242,7 +242,7 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
             this.arrImage[i].visible=false
         }
 
-
+        var ww=this._otstup*2+this._wh
 
         for (var i = 0; i < this.pKey.array.length; i++) {
             bb=this.pKey.array[i]
@@ -252,7 +252,10 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
                 }
                 qq=this.getImage();
                 qq.link=this.object.aPram[i];
+                qq.x=ww;
 
+
+/*
                 if(qq.width!=this._wComp){
                     qq.height=this._wh-this._otstup*2;
                     qq.width=this._wh-this._otstup*2;
@@ -266,7 +269,7 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
                 
                 aa=this.getLab()
                 tl =this.object.aPram[i].length
-                aa.text=this.object.aPram[i]
+                aa.text=this.gettt(this.object.aPram[i],this.pKey.array[i].width 
                 /////////////////////////
                 //this.drawText(tl,aa)
 
@@ -288,19 +291,21 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
                 }
                 aa.x=this._otstup+this._wh*2+i*this._wComp
                 aa.y=(this._wh-aa._height)/2
-               
+               */
 
 
             }else{
 
-                if(!this.object.aPram[i]){
-                    continue
+                if(this.object.aPram[i]!=null){  
+                    cc=this.getLab()
+                    cc.text=this.gettt(this.object.aPram[i],this.pKey.array[i].width-this._otstup*2) 
+                    cc.width=this.pKey.array[i].width-this._otstup*2
+                    cc.x=ww+this._otstup
+                    cc.y=(this._wh-cc._height)/2
                 }
-                cc=this.getLab()
-                cc.text=this.object.aPram[i];
                 ///////////////////////////
 
-
+/*
                 tl =this.object.aPram[i].length
                 let bb = Math.floor(this._wComp/this.lab.fontSize)
                 if (tl > bb) {
@@ -321,10 +326,11 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
                     cc.y=1
                     cc.y=0
                     
-                }
-                cc.x=this._otstup*2+this._wh+i*this._wComp
-                cc.y=(this._wh-cc._height)/2
+                }*/
+                
             }
+
+            ww+=this.pKey.array[i].width
         }
 
 
@@ -364,8 +370,25 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
         return ss
     }
 
+    this.gettt=function(s,w){
+        let ss=''
+        let n = Math.floor(w/(this.lab.fontSize*0.8))
+
+       
+        if(n>=s.length){
+            ss=s
+        }else{
+            ss=s.substr(0, n-2)+".."
+            
+        }
+        
+
+        return ss
+    }
+
 
     this.drawText=function(tl,aa){
+
         
         let bb = this._wComp/this.lab.fontSize
         if (tl > bb) {

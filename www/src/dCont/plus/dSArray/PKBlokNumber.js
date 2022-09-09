@@ -109,7 +109,7 @@ export class PKBlokNumber extends PKBlok {
         this.sort=function(a,b){
             aaa=a.aPram[self.idArr]
             bbb=b.aPram[self.idArr]
-            trace(aaa,bbb )
+            
             if(aaa==null && bbb==null)return 0; 
             if(aaa==null)return 1; 
             if(bbb==null)return -1;

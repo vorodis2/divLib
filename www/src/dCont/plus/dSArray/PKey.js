@@ -85,11 +85,13 @@ export class PKey{
                 this.get(arr[i])
             }
             this.width=0
+            let b=false
             for (var i = 0; i < this.array.length; i++) {
                 this.array[i].dCont.x=this.width
-                this.width+=this._wComp;
-            }
-            
+                this.width+=this.array[i].width;
+                this.array[i].setBoolColor(b)
+                b=!b
+            }            
         }
 
 
@@ -192,7 +194,7 @@ export class PKey{
            
             for (var i = 0; i < this.array.length; i++) {
                 this.array[i].dCont.x=i*this._wComp;               
-                //trace(i,this.array[i].dCont)
+               
             }
 
             this.width=0

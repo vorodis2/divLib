@@ -20,10 +20,11 @@
 	import { DCompDev } from "./src/dCont/plus/DCompDev.js";
 	import { DThreeBool } from "./src/dCont/plus/DThreeBool.js";
 	import { DThreeButton } from "./src/dCont/plus/DThreeButton.js";
-	import { DSliderMM } from "./src/dCont/plus/DSliderMM.js";
 
-	import { MSArray,MSortArray } from "./src/dCont/plus/MSortArray.js";
 
+	import { DSArray } from "./src/dCont/plus/dSArray/DSArray.js";
+
+	import { DButtons } from "./src/dCont/plus/dSArray/DButtons.js";
 
 
 	var dcmParam, scane, content;
@@ -120,27 +121,24 @@
 		content1.scale=0.9
 		content1.x=222*/
 
-		var dSliderMM=new DSliderMM(content,250,100, function(){
-			
-		})		
+	
 
 	
 
 
 
 		var ccc=new DCont(scane);
-		ccc.x=200;
-		var a=[456,456,"456","67w8","678",879,80,998,46,4431.567,23]
-
-		let sss='[{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679354.468001001 25500330.668002997 4.422999996691942"},{"@label":"pipeEnd","@value":"6679350.846001 25500335.519002993 4.381999999284744"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"1.13","@refStart":"3","@refEnd":"4"}}]'
+		
+		let sss='[{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679356.775000998 25500326.778003 5.3969999961555"},{"@label":"pipeEnd","@value":"6679354.468001001 25500330.668002997 4.422999996691942"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"42.22","@refEnd":"111"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679354.468001001 25500330.668002997 4.422999996691942"},{"@label":"pipeEnd","@value":"6679350.846001 25500335.519002993 4.381999999284744"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"1.13"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679350.846001 25500335.519002993 4.381999999284744"},{"@label":"pipeEnd","@value":"6679347.139001001 25500340.213002987 4.2259999960660934"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"4.21","@refStart":"qqq"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679347.139001001 25500340.213002987 4.2259999960660934"},{"@label":"pipeEnd","@value":"6679343.552000997 25500344.790003017 4.084000002592802"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"3.96"}},{"object":{"@name":"pipe_xz66","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679327.762001001 25500365.105003007 3.495999999344349"},{"@label":"pipeEnd","@value":"6679325.819000999 25500367.621003002 3.5060000009834766"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"0.51"}}]'
 		let aa=JSON.parse(sss);
 		
 
 		let aoo=[
-			{key:["object","@name"], type:"string",name:"name"},
-			{key:["object","@refStart"], type:"string",name:"refStart"},
+			//{key:["object","@name"], type:"string",name:"name",width:55},
+			///{key:["object","@refStart"], type:"string",name:"refStart"},
 			{key:["object","@refEnd"], type:"string",name:"refEnd"},
-			{key:["object","CircPipe","@diameter"], type:"string",name:"diameter"}, 
+			//{key:["object","CircPipe","@diameter"], type:"string",name:"diameter"},
+
 			{key:[
 				"object",
 				{type:"seek",key:"Feature",array:['@code','IM_pipe','@source','inframodel']},
@@ -150,6 +148,7 @@
 		]
 
 		//aa.splice(1,1)
+		let aa1=[aa[1]]
 		trace(aa)
 		/*var mSortArray=new MSortArray(this,function(s,p){
 
@@ -160,13 +159,27 @@
 
 		mSortArray.setArray(a)*/
 
-		var dSArray=new MSArray(null,function(s,p){
-
+		var dSArray=new DSArray(ccc, 500,50,function(){
+			trace("##########")
 		})
 		trace("@@@sssss@@",dSArray.dCont)
-		ccc.add(dSArray.dCont);
-		dSArray.setArray(aa,aoo);
+		
+		dSArray.setArray(aa1,aoo);
+		//dSArray.setArray(["1234567890",".,/3dsdcvbd sf sf sfsf s","drg","","aaa","bbb","aaa","aaa"]);
+
 		pObject.addObject(dSArray)	
+
+		setTimeout(function() {
+			trace("@@@sssss@@",dSArray.getArr())
+		}, 3000);
+
+/*
+		let dd=new DButtons(ccc, 300,50,["1","2"],function(){
+			trace("##########")
+		})
+
+		pObject.addObject(dd)	*/	
+
 
 
 	}

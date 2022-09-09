@@ -19,6 +19,8 @@ export class PKBlok  {
         this._bIndex  = false; 
         this.key="null"
 
+        this.width=this._wComp;
+
 
         this.panel=new DPanel(this.dCont)
         this.panel.width=this._wComp;
@@ -48,16 +50,35 @@ export class PKBlok  {
         this.funActiv1=undefined
         
         this.getOA=function(o,a,s){
-
             if(a[s+1]==undefined){
                 return o[a[s]]
             }else{
+                if(typeof a[s]=='object'){
+                    if(a[s].type=="seek"){                       
+                        if(o[a[s].key]==undefined)return null;
+                        if(typeof o[a[s].key]!=='object'){
+                            return null;
+                        }
+                        if(o[a[s].key][0]!==undefined){//это массив
+                            for (var i = 0; i < o[a[s].key].length; i++) {
+                                if(this.isObjArr(o[a[s].key][i],a[s].array)==true){                                    
+                                    return this.getOA(o[a[s].key][i], a, s+1)                                    
+                                } 
+                            }
+                        }
+                    }
+                    return null
+                }                
                 return this.getOA(o[a[s]], a, s+1)
             }
-
-
-
             return null
+        }
+        this.isObjArr=function(o,a){           
+            for (var i = 0; i < a.length; i+=2) {
+                if(o[a[i]]==undefined)return false;
+                if(o[a[i]]!=a[i+1])return false;
+            }
+            return true;
         }
 
 
@@ -69,6 +90,7 @@ export class PKBlok  {
                 if(typeof obj =="string" ) p=obj
                 arr.push(p)
             }else{
+                
                 let pp=this.getOA(obj, this.obj.key, 0)                
                 if(pp==undefined || pp==null){
                     arr.push(null)
@@ -79,9 +101,19 @@ export class PKBlok  {
             }
         }
 
+
+
+
+
+
         this.setObj=function(o){
             this.initComp()
             this.obj=o;
+            if(o.width!=undefined){
+                this.width=o.width;
+                this.drawWComp()
+                
+            }
             this.active  = true 
             this.dLabel.text= o.name   
         }
@@ -120,8 +152,9 @@ export class PKBlok  {
 
         this.postDrawWComp=undefined
         this.drawWComp=function(){
-            this.panel.width=this._wComp;
-            this.panel1.width=this._wComp-this._otstup*2;
+
+            this.panel.width=this.width;
+            this.panel1.width=this.width-this._otstup*2;
             this.dLabel.width=this.panel.width;
             this.chek.x=this.panel.width-16-this._otstup;
             if(this.postDrawWComp!=undefined)this.postDrawWComp()
@@ -134,7 +167,7 @@ export class PKBlok  {
         this.drawOtstup=function(){
             this.panel1.x=this._otstup;
             this.panel1.y=this._otstup;
-            this.panel1.width=this._wComp-this._otstup*2;
+            this.panel1.width=this.width-this._otstup*2;
             this.panel1.height=dcmParam.fontSize+this._otstup*2+this._wh
             this.dLabel.y=this._otstup;
             this.chek.x=this.panel.width-16-this._otstup;
@@ -147,6 +180,15 @@ export class PKBlok  {
         this.drawWh=function(){
             this.panel1.height=dcmParam.fontSize+this._otstup*2+this._wh;
             if(this.postDrawWh!=undefined)this.postDrawWh()
+        }
+
+
+        this.setBoolColor=function(b){
+            /*if(b){
+                this.panel.color=dcmParam.compToHexArray(dcmParam.hexDec(dcmParam.color1), -10);
+            }else{
+                this.panel.color=dcmParam.color1
+            }*/
         }
         
 
@@ -192,6 +234,7 @@ export class PKBlok  {
     set wComp(value) {
         if (this._wComp != value) {
             this._wComp = value;
+            this.width=value;
             this.drawWComp()
 
           

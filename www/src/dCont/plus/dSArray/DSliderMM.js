@@ -228,7 +228,7 @@ export class DSliderMM extends DCont {
                 if (self.fun) self.fun();
                 return
             }
-            trace(this.tip)
+            
 
             b2=false
             if(this.tip==2){
@@ -251,7 +251,7 @@ export class DSliderMM extends DCont {
                 else {
                     if (e.targetTouches)
                         if (e.targetTouches[0]) {
-                            trace(this.tip,this)
+                         
                             //var rr=self.getPosGlob(self.pan)
 
                             self.xyp.x = 0;
