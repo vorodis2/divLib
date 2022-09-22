@@ -37,7 +37,7 @@ export class PKBlokBoolean extends PKBlok {
         this.initComp=function(){
             if(this.comp!=undefined)return
            
-            this.comp= new DButtons(this.panel, 0, 0,["a","0","1"], this.sob)
+            this.comp= new DButtons(this.panel, 0, 0,3, this.sob)
             this.reDraw()
 
         } 
@@ -46,8 +46,9 @@ export class PKBlokBoolean extends PKBlok {
             this.comp.x=this._otstup*2
             this.comp.y=this._otstup*2+dcmParam.fontSize;
             this.comp.width=this.panel1.width - this._otstup*4
-            this.comp.height=this._wh;
-            this.comp.otstup=this._otstup;
+            this.comp.height=this._wh+this.comp.label1.fontSize;
+            this.comp.otstup=this._otstup
+            //trace(this.comp)
             
         }
 

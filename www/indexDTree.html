@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <title>testAdmin1</title>
 
-
+<script src="src/lib/tween.min.js"></script>
 <script src="build/divLib.js"></script>
 
 
@@ -26,6 +26,8 @@
 
 	import { DButtons } from "./src/dCont/plus/dSArray/DButtons.js";
 
+	import { DDCanvas } from "./src/dCont/plus/dSArray/DDCanvas.js";
+
 
 	var dcmParam, scane, content;
 
@@ -41,93 +43,52 @@
 		content= new DCont(scane);
 
 		var pObject=new DParamObject(content,2,2,function(s){			
-			trace(s)
+			//trace(dButtons.width, dButtons.height)
 		});
 		pObject.width=222;
 
 
-	 	var sah = 1;
-	 	var pic =  function(n) {
-	 		let linkPic  = 'resources/DThree/'
-	 		let typePic  = 'w.png'
-	 		sah = n != undefined ? n : sah
-	 		let ret =  linkPic+sah+typePic
-	 		sah += 1
-
-	 		return ret
-	 	}
 
 
-		var n = new DPanel(content, 500, 85)
-		n.width = 150 
-		n.height = 150 
-		var three=new DThree(n.content,4,4,function(){pObject.addObject(three)})
-
-		var n1 = new DPanel(content, 500, 230)
-		n1.width = 200 
-		n1.height = 150 
-		var three1=new DThreeBool(n1,4,4,function(){pObject.addObject(three1)})
-
-		var n2 = new DPanel(content, 230, 230)
-		n2.width = 200 
-		n2.height = 150 
-		var three2=new DThreeBool(n2,4,4,function(o){
-			pObject.addObject(three2)
-			// trace(this)
-			// trace(o)
-		})
-		three2.width=100
-
-
-
-		var obj1={uuid:Math.random(),name:"План",link:pic(1),array:
-		[{uuid:Math.random(),name:"Список",link:pic(2),array:[]},{uuid:Math.random(),name:"Добавить",link:pic(3),array:[]}]}
-
-		var objA=[{uuid:Math.random(), name:"Список", link:pic(2),array:[obj1]}, {uuid:Math.random(),name:"Добавить",link:pic(3),array:[]}]
-
-		var arr=[]
-		arr.push({uuid:Math.random(),name:"План",link:pic(1),array:objA})
-		arr.push({uuid:Math.random(),name:"Текстуры",link:pic(4),array:objA})
-		arr.push({uuid:Math.random(),name:"Объект 3D",link:pic(5),array:objA})
-		arr.push({uuid:Math.random(),name:"Материал",link:pic(6),array:[]})
-
-
-		three.setObj(obj1,"array","name");
-		//pObject.addObject(three);
-
-		three1.setObj(arr,"array","name");
-		//pObject.addObject(three1);
-
-		three2.setObj(arr,"array","name");
-		//pObject.addObject(three2);
-
-		n.height = three.height;
-		n1.height = three1.height;
-
-		var n2 = new DPanel(content, 700, 285)
-		n2.width = 200 
-		n2.height = 150 
-
-		var threeB=new DThreeButton(n2,4,4, 'text', function(){pObject.addObject(threeB)})
-		threeB.link="resources/pic/2.png"
-		threeB.height=100
-		threeB.width=190
-
-		var p=new DPanel(content,250,100)
-		p.width=190;
-		p.height=16+12;
-
-		/*var content1= new DCont(scane);
-		content1.scale=0.9
-		content1.x=222*/
-
-	
-
-	
-
-
+		
 
 		var ccc=new DCont(scane);
+		/*var dButtons=new DButtons(ccc, 300,50,5,function(){
+			trace(this.index)
+		})
+        pObject.addObject(dButtons)*/
+
+
+
+	
+
+		var dDCanvas=new DDCanvas(ccc, 300,50)
+		pObject.addObject(dDCanvas)
+		
+		//trace("sfsdf",dDCanvas.buttonTest)
+
+		let t=new TWEEN.Tween(dDCanvas.buttonTest)
+		//t.to({x:400},4000).start(); 
+		/*t.onUpdate(function(){
+			dDCanvas.buttonTest
+		})*/
+
+
+		// this.tBut1.onUpdate(function(){
+  //               if (self.fun) self.fun();            
+  //           })
+
+		function tick() {				
+			TWEEN.update();	
+			requestAnimationFrame(tick);
+			
+		}
+		 tick();
+
+		return
+
+
+		
 		
 		let sss='[{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679356.775000998 25500326.778003 5.3969999961555"},{"@label":"pipeEnd","@value":"6679354.468001001 25500330.668002997 4.422999996691942"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"42.22","@refEnd":"111"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679354.468001001 25500330.668002997 4.422999996691942"},{"@label":"pipeEnd","@value":"6679350.846001 25500335.519002993 4.381999999284744"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"1.13"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679350.846001 25500335.519002993 4.381999999284744"},{"@label":"pipeEnd","@value":"6679347.139001001 25500340.213002987 4.2259999960660934"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"4.21","@refStart":"qqq"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679347.139001001 25500340.213002987 4.2259999960660934"},{"@label":"pipeEnd","@value":"6679343.552000997 25500344.790003017 4.084000002592802"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"3.96"}},{"object":{"@name":"pipe_xz66","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679327.762001001 25500365.105003007 3.495999999344349"},{"@label":"pipeEnd","@value":"6679325.819000999 25500367.621003002 3.5060000009834766"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"0.51"}}]'
 		let aa=JSON.parse(sss);
@@ -160,18 +121,20 @@
 		mSortArray.setArray(a)*/
 
 		var dSArray=new DSArray(ccc, 500,50,function(){
-			trace("##########")
+			
 		})
-		trace("@@@sssss@@",dSArray.dCont)
 		
-		dSArray.setArray(aa1,aoo);
+		
+		
+		 dSArray.setArray(aa1,aoo);
+		// dSArray.setArray([true,true]);
 		//dSArray.setArray(["1234567890",".,/3dsdcvbd sf sf sfsf s","drg","","aaa","bbb","aaa","aaa"]);
 
 		pObject.addObject(dSArray)	
 
-		setTimeout(function() {
+		/*setTimeout(function() {
 			trace("@@@sssss@@",dSArray.getArr())
-		}, 3000);
+		}, 3000);*/
 
 /*
 		let dd=new DButtons(ccc, 300,50,["1","2"],function(){

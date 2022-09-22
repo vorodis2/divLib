@@ -11,7 +11,6 @@ import { DSArrGallery } from './DSArrGallery.js';
 export class DSArray extends DCont {
     constructor(dCont, _x, _y, fun) {
         super();
-
         this.type = 'DSArray';
         if (dcmParam == undefined) dcmParam = new DCM();
         dcmParam.add(this);
@@ -19,7 +18,7 @@ export class DSArray extends DCont {
         this.x = _x || 0;
         this.y = _y || 0;
         if (dCont != undefined)
-            if (dCont.add != undefined) dCont.add(this);
+        if (dCont.add != undefined) dCont.add(this);
         this.fun = fun;
         var self = this
         this.dCont = new DCont(this);

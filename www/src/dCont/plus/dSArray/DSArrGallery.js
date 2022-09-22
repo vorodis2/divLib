@@ -1,4 +1,4 @@
-import { DButtons } from './DButtons.js';
+//import { DButtons } from './DButtons.js';
 
 /*
      класс отвечающи за отрисовку масивов
@@ -378,7 +378,7 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
         if(n>=s.length){
             ss=s
         }else{
-            ss=s.substr(0, n-2)+".."
+            ss=s.substr(0, n-2)+".." 
             
         }
         
