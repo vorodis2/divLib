@@ -244,6 +244,7 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
 
         var ww=this._otstup*2+this._wh
 
+
         for (var i = 0; i < this.pKey.array.length; i++) {
             bb=this.pKey.array[i]
             if(bb.type=="PKBlokImage"){
@@ -253,49 +254,7 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
                 qq=this.getImage();
                 qq.link=this.object.aPram[i];
                 qq.x=ww;
-
-
-/*
-                if(qq.width!=this._wComp){
-                    qq.height=this._wh-this._otstup*2;
-                    qq.width=this._wh-this._otstup*2;
-                    qq.x=this._otstup*2+this._wh+i*this._wComp
-                    qq.y=1
-                    qq.y=0
-                    
-                }
-                // qq.y=(this._wh-qq._height-this._otstup*2)/2
-                qq.y=this._otstup
-                
-                aa=this.getLab()
-                tl =this.object.aPram[i].length
-                aa.text=this.gettt(this.object.aPram[i],this.pKey.array[i].width 
-                /////////////////////////
-                //this.drawText(tl,aa)
-
-                let bb = Math.floor((this._wComp-this._wh-this._otstup)/this.lab.fontSize)
-                if (tl > bb) {
-                   gg=aa.text.slice(tl-bb,tl)
-                }else{
-                    gg=aa.text
-                }
-                aa.text=gg
-                /////////////////////////////////////
-                aa.textAlign="left"
-                if(aa.width!=this._wComp){
-                    aa.width=this._wComp
-                    aa.x=this._otstup+this._wh*2+i*this._wComp
-                    aa.y=1
-                    aa.y=0
-                    
-                }
-                aa.x=this._otstup+this._wh*2+i*this._wComp
-                aa.y=(this._wh-aa._height)/2
-               */
-
-
             }else{
-
                 if(this.object.aPram[i]!=null){  
                     cc=this.getLab()
                     cc.text=this.gettt(this.object.aPram[i],this.pKey.array[i].width-this._otstup*2) 
@@ -303,31 +262,6 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
                     cc.x=ww+this._otstup
                     cc.y=(this._wh-cc._height)/2
                 }
-                ///////////////////////////
-
-/*
-                tl =this.object.aPram[i].length
-                let bb = Math.floor(this._wComp/this.lab.fontSize)
-                if (tl > bb) {
-                   gg=cc.text.slice(tl-bb,tl)
-                }else{
-                    gg=cc.text
-                }
-                cc.text=gg
-
-
-
-
-
-                //////////////////////////////
-                if(cc.width!=this._wComp){
-                    cc.width=this._wComp
-                    cc.x=this._otstup*2+this._wh+i*this._wComp
-                    cc.y=1
-                    cc.y=0
-                    
-                }*/
-                
             }
 
             ww+=this.pKey.array[i].width
@@ -371,30 +305,23 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
     }
 
     this.gettt=function(s,w){
+        s+=""
         let ss=''
-        let n = Math.floor(w/(this.lab.fontSize*0.8))
-
-       
+        let n = Math.floor(w/(this.lab.fontSize*0.8))       
         if(n>=s.length){
             ss=s
         }else{
-            ss=s.substr(0, n-2)+".." 
-            
+            ss=s.substr(0, n-2)+".."             
         }
-        
-
         return ss
     }
 
 
-    this.drawText=function(tl,aa){
-
-        
+    this.drawText=function(tl,aa){        
         let bb = this._wComp/this.lab.fontSize
         if (tl > bb) {
             let gg=aa.text.slice(tl-bb,tl)
-        }
-        
+        }       
     }
 
 

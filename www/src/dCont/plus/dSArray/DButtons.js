@@ -39,7 +39,9 @@ export class DButtons extends DCont {
         this._width=this.aa;
         this._height=this.aa;
 
-        //создает кнопку 
+        //создает кнопку
+        var button 
+        this.createZamen=undefined
         this.getButton = function(){
             //делет видимыми кнопки в масиве
             for (var i = 0; i < this.arrayCash.length; i++) {
@@ -48,7 +50,12 @@ export class DButtons extends DCont {
                     return this.arrayCash[i]
                 }
             }
-            let button=new DButtonXZ(this,0,0," ",this.sob)
+            if (this.createZamen != undefined) {
+                button=this.createZamen()
+            }else{
+                button=new DButtonXZ(this,0,0," ",this.sob)
+            }
+            
             //размещене и параметры кнопка
             button.idArr=this.arrayCash.length
             button.width=this._wh;
@@ -72,6 +79,7 @@ export class DButtons extends DCont {
                 let p=(this.idArr+1)%self._kol
                 
                 self.index=p
+                if(self.fun)self.fun()
                 return
             }
 
@@ -85,9 +93,9 @@ export class DButtons extends DCont {
             
             for (var i = 0; i < this.arrayCash.length; i++) {
                 if (this.arrayCash[i].idArr==this._index) {
-                    this.arrayCash[i].color=this._colorActive;
-                }else{
                     this.arrayCash[i].color=this._color;
+                }else{
+                    this.arrayCash[i].color=dcmParam.compToHexArray(dcmParam.hexDec(this._color), -20);
                 }
             }
 
@@ -250,8 +258,7 @@ export class DButtons extends DCont {
     set index(v) {
         if (this._index != v) {
             this._index = v;
-            this.dragIndex()
-           
+            this.dragIndex()           
         }
     }
     get index() {

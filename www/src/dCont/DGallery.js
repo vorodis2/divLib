@@ -437,8 +437,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.mouseup=function(e){		
 		self.dragActiv=false;
 		sp=undefined;
-		if(self.dragNotEvent==true)document.body.style.pointerEvents=null;	
-		
+		if(self.dragNotEvent==true)document.body.style.pointerEvents=null;		
 	}
 
 	var yyy=0

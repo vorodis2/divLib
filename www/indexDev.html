@@ -1,0 +1,153 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>divLib</title>	
+<script src="build/divLib.js?v=1"></script>
+<script src="build/divLibPlus.js"></script>
+
+<script src="src/lib/tween.min.js"></script>
+<script>
+	var trace = window.console.log.bind(window.console);
+	var array=[];
+	var pObject,content,dinamik, testContent
+	var ww=150
+	var dcmParam;
+	function downMy(s) {
+		//trace(this)
+		//setDin(this)			
+	}
+
+	function setDin(o) {
+		if(dinamik.uuid!=o.uuid){					
+			dinamik=o;			
+			if(dinamik.type!=undefined)pObject.window.title=dinamik.type			
+			pObject.addObject(dinamik);
+		}
+		
+	}
+	function animate() {
+		requestAnimationFrame( animate );
+		TWEEN.update();	
+	}
+	animate()
+
+	function init () {
+		window.onresize = sizeWindow;
+		dinamik = dcmParam=new DCM();
+
+		scane= new DCont(document.body);
+
+		dcmParam.zbrosDokument=false;
+		
+
+		scane= new DCont(document.body);
+		content= new DCont(scane);
+		//content.scale=0.65
+		content.position.x=320;
+		
+		pObject=new DParamObject(scane,2,2,function(){			
+			sizeWindow()
+		});
+
+
+		var dDCanvas=new DDCanvas(null, 300,50)
+
+		plus(dDCanvas);
+
+	
+
+
+		let aa=[{kolPoint3D:10},{kolPoint3D:11},{}]
+		
+
+		let aoo=[
+			{key:["kolPoint3D"], type:"number",name:"kolPoint3D"},
+		]
+		var dSArray=new DSArray(null, 500,50,function(){
+			
+		})	
+		dSArray.setArray(aa,aoo);
+		dSArray.height=200
+		plus(dSArray);
+
+	
+	}
+		
+	function plus (obj) {		
+		var p=new DPanel(content,0,0);
+		var p1=new DPanel(p,ww,2);
+		p.width=ww*2+10;
+		p1.width=ww+6;
+		p.height=obj.height+12;
+		p1.height=obj.height+6;
+		obj.x=2;
+		obj.y=2;
+		p1.add(obj);
+		p.object=obj
+		p.panel=p1
+		obj.width=ww;
+
+		p.obj=obj;
+
+		var l1=new DLabel(p,24,2,obj.type);
+		var l=new DLabel(p,2,p1.height-8,"height:"+obj.height);
+		p.label=l
+		l.alpha=0.75;
+		l.fontSize=10;
+		array.push(p)
+
+
+		var b=new DButton(p,2,2,">",function(){
+			setDin(this.obj)
+		});
+		b.obj=obj;
+		b.width=16;
+		b.height=16;
+		b.color="#dddddd";
+
+		sizeWindow();
+	}
+
+	function drahHH () {
+		for (var i = 0; i < array.length; i++) {
+
+			array[i].height=array[i].obj.height+12;
+			array[i].panel.height=array[i].obj.height+6;
+			array[i].label.y=array[i].obj.height-8
+			array[i].label.text="height:"+array[i].obj.height
+		}
+	}
+	
+
+	function sizeWindow () {
+		drahHH()			
+		var h = document.documentElement.clientHeight;
+		var y=36;
+		var x=0;
+		for (var i = 0; i < array.length; i++) {
+			array[i].y=y;
+			array[i].x=x;
+			y+=array[i].height+2;
+			if(y>h){
+				y=2;
+				x+=ww*2+12
+				array[i].y=y;
+				array[i].x=x;
+				y+=array[i].height+2;	
+			}
+		}
+	}
+</script></head><body onload="init()"></body></html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

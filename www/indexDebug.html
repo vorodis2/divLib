@@ -1,0 +1,65 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8">
+<title>testAdmin1</title>
+
+<script src="src/lib/tween.min.js"></script>
+<script src="build/divLib.js"></script>
+
+
+<style type="text/css">
+	#stats { position: absolute; top:0; left: 200px; }
+</style>
+
+</head>
+<meta name="viewport" content="width=device-width,height=device-height,user-scalable=no user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<body>
+
+<script  type="module">
+	window.trace = window.console.log.bind(window.console);
+	import { DDebug } from "./src/dCont/plus/dDebug/DDebug.js";
+	//import { DButtons } from "./src/dCont/DButtons.js";
+
+
+	var dcmParam, scane, content, dDebug,dCont;
+
+	
+	function init () {
+		document.addEventListener('contextmenu', event => event.preventDefault());
+		dcmParam=new DCM();
+
+		scane= new DCont(document.body);
+		dCont= new DCont(scane);
+		var dCont1= new DCont(dCont);
+
+		dDebug=new DDebug(dCont1,0,0,"xz11")
+
+		// var db=new DButtons(dCont,111,111,["sdf,","xdfsdgdfsg"],function(){
+
+		// })
+		// db.setTArr(["xz","XZ","sdfks se f sf  e","sdfks se f sf  e 123456789"])
+
+		function tick() {				
+			TWEEN.update();	
+			requestAnimationFrame(tick);
+			
+		}
+		tick();
+		window.onresize = sizeWindow;
+		sizeWindow()
+	}
+	function sizeWindow () {
+		var w = document.documentElement.clientWidth;
+		var h = document.documentElement.clientHeight;
+		dCont.scale=1
+		dDebug.sizeWindow(w,h,dCont.scale)
+	}
+
+	init()
+</script>
+
+	
+</body ></html>
+
+
+
+

@@ -1,0 +1,705 @@
+var Stats=function(){var n=Date.now(),p=n,g=0,q=Infinity,r=0,h=0,t=Infinity,u=0,v=0,w=0,f=document.createElement("div");window.onload=function(){document.getElementById("stats").style.top=document.documentElement.clientHeight-100+"px"};f.id="stats";f.addEventListener("mousedown",function(b){b.preventDefault();x(++w%2)},!1);f.style.cssText="position:fixed; width:65px; height: 40px;border-width: 3px 3px 1px 1px;border-style: solid;border-color: rgb(255, 255, 255);border-image: initial; opacity:0.9;cursor:pointer";
+var a=document.createElement("div");a.id="fps";a.style.cssText="padding:0 0 3px 3px;text-align:left;background-color:#002";f.appendChild(a);var k=document.createElement("div");k.id="fpsText";k.style.cssText="color:#0ff;font-family:Helvetica,Arial,sans-serif;font-size:7px;font-weight:bold;line-height:10px";k.innerHTML="FPS";a.appendChild(k);var c=document.createElement("div");c.id="fpsGraph";c.style.cssText="position:relative;width:54px;height:27px;background-color:#0ff";for(a.appendChild(c);54>c.children.length;){var l=
+document.createElement("span");l.style.cssText="display:block; width:1px;height:22px;float:left;background-color:#113";c.appendChild(l)}var d=document.createElement("div");d.id="ms";d.style.cssText="padding:0 0 3px 3px;text-align:left;background-color:#020;display:none";f.appendChild(d);var m=document.createElement("div");m.id="msText";m.style.cssText="color:#0f0;font-family:Helvetica,Arial,sans-serif;font-size:7px;font-weight:bold;line-height:10px";m.innerHTML="MS";d.appendChild(m);var e=document.createElement("div");
+e.id="msGraph";e.style.cssText="position:relative;width:57px;height:27px;background-color:#0f0";for(d.appendChild(e);57>e.children.length;)l=document.createElement("span"),l.style.cssText="display:block;width:1px;height:22px;float:left;background-color:#131",e.appendChild(l);var x=function(b){w=b;switch(w){case 0:a.style.display="block";d.style.display="none";break;case 1:a.style.display="none",d.style.display="block"}};return{REVISION:11,domElement:f,setMode:x,begin:function(){n=Date.now()},end:function(){var b=
+Date.now();g=b-n;q=Math.min(q,g);r=Math.max(r,g);m.textContent=g+" MS ("+q+"-"+r+")";var a=Math.min(25,25-g/200*25);e.appendChild(e.firstChild).style.height=a+"px";v++;b>p+1E3&&(h=Math.round(1E3*v/(b-p)),t=Math.min(t,h),u=Math.max(u,h),k.textContent=h+" FPS ("+t+"-"+u+")",a=Math.min(25,25-h/100*25),c.appendChild(c.firstChild).style.height=a+"px",p=b,v=0);return b},update:function(){n=this.end()}}};
+
+
+
+
+export class DDebug extends DCont{
+    constructor(dCont, _x, _y, _key) {
+        super();
+        var self=this
+        this.type="DCompDev"
+        this._active=true
+        this.visible=this._active
+        if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);         
+        this.x=_x||0; 
+        this.y=_y||0;
+        this.key=_key||"DevWindow";
+        this._minimize=false
+        this.ls=new LocalStorage(function(){},this.key)
+
+
+        this.array=[]
+
+        this.param=new Param().param;
+
+        this._width=this.param.sizeBase2*3+this.param.otstup*3;
+        this._height=this.param.sizeBase2+this.param.otstup*2;
+
+        
+        this.wind=new DWindow(this,0,0," ",function(){
+            self.minimize=this.minimize;           
+            //if(self.fun)self.fun("minimize",this.minimize); 
+            self.saveLS.dragPos();
+        });
+
+        this.wind.fubDrag = function(){            
+            self._width=self.wind.width;
+            self._height=self.wind.height-32;
+            self.reDrag()
+            self.saveLS.dragPos();
+        }
+        this.wind.dragBoolWH=true;
+
+        this.ssss = new SSSS(this); 
+        this.saveLS = new SaveLS(this);
+        this.dbs=new DButtons(self.wind,32,0,["divLib","plus","dPar","hlam"],function(){
+            self.wind.startDrag();
+        });
+        this.dbs.otstup=0
+        this.dbs.color=this.wind.button.color
+
+
+        this.array[this.array.length]=this.pobject = new PObject(this);
+        
+
+        
+
+
+        
+
+
+        this.sizeWN = function(w, h, s) {                     
+            for (var i = 0; i < this.array.length; i++) {
+                if (this.array[i].sizeWindow) this.array[i].sizeWindow(w, h, s)
+            }
+        }
+
+        this.reDrag=function(){
+            this.wind.width=this._width;
+            this.wind.height=this._height+32;
+
+            let ww = this._width - this.param.otstup*3;
+            let hh = this._height - this.param.otstup*2;
+            let ss = 1;
+            this.sizeWN(ww,hh,ss)
+        }
+
+
+
+
+     
+        var w, h, s;
+        this.sizeWindow = function(_w, _h, _s) {
+            if (_w) {
+                w = _w;
+                h = _h;
+                s = _s;
+            }                        
+            this.saveLS.sizeWindow(w,h,s)           
+        }
+
+        function tick() {               
+            if(self._active==true){                
+                self.ssss.update();
+            }
+            requestAnimationFrame(tick);            
+        }
+        tick();
+        this.reDrag(); 
+
+        this.addObject=function(obj){
+            this.pobject.addObject(obj);
+        }
+
+
+    }
+
+
+
+    set minimize(value) {
+        if(this._minimize!=value){
+            this._minimize = value; 
+            if(this._minimize){
+                this.wind.button.width=32; 
+                this.saveLS.testPXY()
+                 
+            }else{
+                this.wind.button.width=this.wind.width; 
+            }
+            
+
+            this.wind.minimize=this._minimize;
+        }       
+    }   
+    get minimize() { return  this._minimize;} 
+
+  
+
+
+    set width(value) {
+        if(this._width!=value){
+            this._width = value;
+            this.reDrag()
+        }       
+    }   
+    get width() { return  this._width;}   
+
+    set height(value) {
+        if(this._height!=value){
+            this._height = value;
+            this.reDrag()
+        }       
+    }   
+    get height() { return  this._height;}   
+}
+
+export class SaveLS {
+    constructor(par) {
+        this.type = "SaveLS";
+        var self = this;
+        this.par = par;
+        this.wind= this.par.wind
+        this.ls=this.par.ls
+        this.px=0
+        this.py=0
+
+        this.dragPos=function(b){
+            if(w==undefined)return
+            let ww=(w/s)-this.wind.button.width;
+            this.px=this.wind.x/ww;
+            if(this.px<0)this.px=0
+            if(this.px>1)this.px=1    
+                
+            let hh=(h/s)-this.wind.height;
+            if(this.wind.minimize)hh=(h/s)-this.wind.button.height;
+            this.py=this.wind.y/hh;
+            if(this.py<0)this.py=0
+            if(this.py>1)this.py=1
+
+            this.wind.x=ww*this.px;
+            this.wind.y=hh*this.py;
+
+            
+
+            if(b==undefined)this.save()
+        }
+
+
+
+
+        this.testPXY=function(){
+            if(this.px>=0.99){
+                let ww=(w/s)-32;
+                this.wind.x=ww*this.px;
+            }
+
+            if(this.py>=0.99){
+                let hh=(h/s)-32;
+                this.wind.y=hh*this.py;
+            }
+        }
+
+        this.save=function(){
+            this.ls.object["sls_px"]=this.px;
+            this.ls.object["sls_py"]=this.py;
+            this.ls.object["sls_width"]=this.par.width;
+            this.ls.object["sls_height"]=this.par.height;
+            this.ls.object["sls_minimize"]=this.par.minimize;           
+            this.ls.save()
+        }
+
+        this.otSave=function(){
+            this.par.minimize=this.ls.object["sls_minimize"]
+            if(w){
+                this.px=this.ls.object["sls_px"]
+                this.py=this.ls.object["sls_py"]
+                let ww=(w/s)-this.wind.button.width;
+                this.wind.x=ww*this.px;
+                let hh=(h/s)-this.wind.height;
+                if(this.wind.minimize)hh=(h/s)-this.wind.button.height;
+                this.wind.y=hh*this.py;
+
+                if(this.ls.object["sls_width"])this.par.width=this.ls.object["sls_width"]
+                if(this.ls.object["sls_height"])this.par.height=this.ls.object["sls_height"]    
+            }
+            
+        }
+
+        setTimeout(function() {
+            if(self.ls.object["sls_px"]!=undefined){
+                self.otSave()
+            }
+
+        }, 0);
+       
+        var w, h, s;
+        this.sizeWindow = function(_w, _h, _s) {
+            if (_w) {
+                w = _w;
+                h = _h;
+                s = _s;
+            } 
+            this.otSave()
+            
+        }
+    }
+}
+
+
+export class PObject {
+    constructor(par) {
+        this.type = "PObject";
+        var self = this;
+        this.par = par;
+        this.param=this.par.param
+
+        var scale=0.6;
+        this.object
+        this.dCont=new DCont(this.par.wind.content)
+        this.panel=new DPanel(this.dCont,this.param.otstup,this.param.otstup);
+
+        this.panel.width=this.param.sizeBase2
+
+        this.dClip=new DClip(this.panel);       
+        this.dClip.x=this.param.otstup;
+        this.dClip.y=this.param.otstup;
+        this.dClip.width=this.panel.width
+        this.dClip.sbv=1
+
+        this.dC=new DCont(this.dClip.content);
+        this.dC.scale=scale;
+
+
+        var pObject=new DParamObject(this.dC,2,2,function(s){           
+            //trace(dButtons.width, dButtons.height)
+        },1);
+        pObject.width=(this.param.sizeBase2-this.param.otstup*2)/scale;
+
+
+        this.addObject=function(obj){
+            this.object=obj;
+            pObject.addObject(obj)           
+            this.dClip.heightContent=pObject.height*scale;
+        }
+        this.addObject(this.dClip)
+        
+        var w, h, s;
+        this.sizeWindow = function(_w, _h, _s) {
+            if (_w) {
+                w = _w;
+                h = _h;
+                s = _s;
+            }
+            this.panel.height=h-this.param.otstup;
+            this.dClip.height=this.panel.height-this.param.otstup;
+        }
+
+    }
+}
+
+
+
+export class DClip extends DCont {
+    constructor(dCont, _x, _y) {
+        super();
+        this.type = 'DClip';
+        if (dcmParam == undefined) dcmParam = new DCM();
+        dcmParam.add(this);
+        this.x = _x || 0;
+        this.y = _y || 0;
+        if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
+        this._width = 100;
+        this._height = 100;
+        this._heightContent=100;
+        this._sbv = 0;
+        var self=this;
+
+        this._value = 0;       
+        this.dd = new DCont(this);
+        this.content = new DCont(this.dd);
+
+
+        this.ddSS = new DCont(this);
+        this.ddSS.visible=false;
+        this.scrollBarV = new DScrollBarV(this.ddSS, this._width - this.otstup1, 0, function () {
+            // self.content.y = -this.scrolValue;
+            //self.scrolPos(false);
+           
+            self.value=this.value;
+        });
+        this.scrollBarV.offsetHit=3;
+        this.scrollBarV.width=2;
+        this.scrollBarV.alpha=0.5;
+
+        this.bb=true
+        let hh
+        this.dragValue = function () {
+            hh=this.hhh;
+            if(hh<0)hh=0;
+            this.scrollBarV.value=this._value;
+            this.content.y=-hh*this._value/100;           
+
+            this.bb=true;
+            if(hh==0)this.bb=false;
+            this.scrollBarV.visible=this.bb
+        }
+
+        
+        var delta, p;
+        var sah=5;
+        this.mousewheel = function (e) { 
+            delta=-1;
+            p=e.delta
+            if(e.wheelDelta==undefined){
+                p=e.wheelDelta
+            }
+            if(e.delta)if(e.delta<0)delta=1;
+            if(e.deltaY)if(e.deltaY<0)delta=1;
+            if(e.detail)if(e.detail<0)delta=1;
+
+            
+            if(e.wheelDelta!=undefined){
+                if(e.wheelDelta>0)delta=-1;
+                else delta=1;
+            }
+            p=delta;
+            trace(p,sah)
+            self.value+=p*sah;            
+        };
+
+        this.div.addEventListener('mousewheel', this.mousewheel)
+        this.div.addEventListener("DOMMouseScroll", this.mousewheel);
+
+
+        var sp=undefined;   
+        this.dragActiv=false
+        this.mouseDown=function(e){     
+            self.dragActiv=true;
+            sp=undefined;            
+        }
+
+        this.mouseup=function(e){       
+            self.dragActiv=false;
+            sp=undefined;                
+        }
+
+        var yyy=0
+        this.mousemove=function(e){         
+            if(self.dragActiv==false)return;
+            if(self.scrollBarV.visible == false)return; 
+            if(dcmParam.mobile==false){
+                if(sp==undefined){
+                    sp={                    
+                        y:e.clientY,                    
+                        y1:self.value
+                    };
+                }  
+                sp.ys=e.clientY         
+            }else{
+                if(sp==undefined){
+                    sp={                    
+                        y:e.targetTouches[0].clientY,                   
+                        y1:self.value
+                    };
+                }
+                sp.ys=e.targetTouches[0].clientY
+            }
+            yyy=(sp.y-sp.ys); 
+            self.value=sp.y1 + yyy/(self.hhh/100); 
+        }   
+
+
+        if(dcmParam.mobile==false){         
+            this.content.div.addEventListener("mousedown", this.mouseDown);
+            window.addEventListener("mouseup", this.mouseup);
+            
+        }else{
+            this.content.div.addEventListener("touchstart", this.mouseDown);
+            window.addEventListener("touchend", this.mouseup);
+            
+        }
+        dcmParam.addFunMove(self.mousemove)
+
+
+
+        this.drag = function () {
+            this.dd.div.style.clip = "rect(0px "+this._width+"px "+this._height+"px 0px)";
+
+        }; 
+        this.drag();  
+
+    }
+
+    set x(v) {
+        this.position.x = v;
+    }
+    get x() {
+        return this.position.x;
+    }
+    set y(v) {
+        this.position.y = v;
+    }
+    get y() {
+        return this.position.y;
+    }
+
+    set value(v) {
+        if(v<0)v=0;
+        if(v>100)v=100;
+        
+        if (this._value != v) {
+            this._value = v;                       
+            this.dragValue();
+        }
+    }
+    get value() {
+        return this._value;
+    }
+
+
+    set width(v) {
+        if (this._width != v) {
+            this._width = v;
+            if(this._sbv!==2)this.scrollBarV.x=-this.scrollBarV.width;
+            else this.scrollBarV.x=this._width -this.scrollBarV.width;
+            this.drag(); 
+
+        }
+    }
+    get width() {
+        return this._width;
+    }
+
+    set height(v) {
+        if (this._height != v) {
+            this._height = v;
+            this.hhh=this._heightContent-this._height
+            this.scrollBarV.height= v;
+            this.drag();
+            this.dragValue();   
+        }
+    }
+    get height() {
+        return this._height;
+    }
+
+    set heightContent(v) {
+        if (this._heightContent != v) {
+            this._heightContent = v;
+            this.hhh=this._heightContent-this._height
+            this.scrollBarV.heightContent = v;
+            this.dragValue();
+            //this.drag();
+        }
+    }
+    get heightContent() {
+        return this._heightContent;
+    }
+
+    
+    set sbv(v) {
+        if (this._sbv != Math.round(v)) {
+            this._sbv = Math.round(v);
+            if(this._sbv==0){
+                this.ddSS.visible=false;
+            }else{
+                this.ddSS.visible=true;
+            }
+            
+            if(this._sbv!==2)this.scrollBarV.x=-this.scrollBarV.width;
+            else this.scrollBarV.x=this._width -this.scrollBarV.width;
+
+            this.drag();            
+        }
+    }
+    get sbv() {
+        return this._sbv;
+    }
+}
+
+
+
+
+export class SSSS {
+    constructor(par) {
+        this.type = "SSSS";
+        var self = this;
+        this.par = par;
+
+
+        this.dcS=new DCont()
+        this.par.wind.add(this.dcS,0)
+        this.par.wind.add(this.par.wind.buttonMin)
+
+        //new DPanel(this.dcS)
+        this.dcS.div.style.clip = "rect(1px "+30+"px "+30+"px 1px)";
+
+        var stats=new Stats() 
+        stats.setMode(0)
+        stats.domElement.style.position = 'fixed';
+        this.dcS.div.appendChild(stats.domElement);
+        stats.domElement.style.top = '-10px';
+        stats.domElement.style.left = '-2px';
+        var sb=false 
+        setTimeout(function() {            
+            sb=true;
+        }, 1000);
+
+
+
+        this.update=function(){
+            stats.update();
+            if(!sb){
+                stats.domElement.style.top = '-10px';
+                stats.domElement.style.left = '-28px'; 
+            }
+        }
+    }
+}
+
+
+
+export class Param  {
+///Основные параметры прилдожения мигрируют, не писать сюда ничего!!!!!!
+    constructor() {         
+        this.type="Param";      
+        this.param={}  
+
+        this.param.color="#008cba";
+        this.param.colorFont="#ffffff";
+        this.param.color1="#999999";
+        this.param.colorActive="#f28044";
+
+        this.param.otstup=2;
+        this.param.otMy=10;
+
+        this.param.wh=40;
+        this.param.wh2=32;
+        this.param.wb=150;
+        this.param.sizeBase=292;
+        this.param.sizeBase2=150;
+        
+        this.param.mobile=false
+        this.param.whb=32;
+        this.param.whCr=840;
+
+        
+        
+
+        this.param.fontSize=16;
+        this.param.fontSize1=24;
+        this.param.fontSizeLittel=10;
+   
+        this.param.debug=false
+
+        
+        this.param.bRadius=24;
+
+
+        this.param.whPic=256;
+        this.param.kolVolid=10;
+
+
+        this.param.fontFamily="Montserrat"
+        this.param.maxW=350
+        this.param.maxH=350
+
+        this.param.borderRadius = 0;
+        this.param.glowColor="#979797"
+        this.param.glowSah=0
+
+
+
+
+        this.param.host = "https://xz.ru/";
+        this.param.server=this.param.host+"api/v1/";
+        this.param.serverNa = this.param.host + "www/";
+
+        this.param.nameLS="___credentials2"        
+
+        this.param.version_reliz=1;
+        this.param.version_dev=8;
+        this.param.versi="v "+this.param.version_reliz+".0"+this.param.version_dev;
+        
+        this.param.token=null;
+        
+        this.param.objects3d=undefined;
+        this.param.materials=undefined;
+        this.param.textures=undefined;
+        this.param.objectBase=undefined;
+        this.param.scenes3d=undefined;
+
+
+        this.param.arrayName=[
+            "objects3d",
+            "materials",
+            "textures",
+            "scenes3d",
+            "materials_sorts",
+            "objects3d_sorts",
+            /*"group","group1","group2","group3","langs","auth/users"*/
+        ]; 
+
+        
+
+        this.param.parentId=0;
+        this.param.simMani="₽"
+        this.param.objectBase={}
+
+
+       
+
+        this.param.langs = ['ru','en'];           
+    }
+}
+
+
+
+export function LocalStorage(fun,_key) {
+    this.fun = fun;
+    var self = this;
+    this.object;
+    this.key = _key||'shirt';
+    this.object; // тут храняться все данные с localStorage
+    var b;
+    // инициализация localStorage
+    this.initLoad=function() {
+        b=true;
+        this.object = window.localStorage[this.key];
+        if(this.object == "undefined")b=false;
+        if(this.object == undefined)b=false;
+        
+        // проверка пуст ли  localStorage
+        if(b == false) {
+            this.object = this.getStartObj(); // если localStorage пуст, записываем обьект с функции getStartObj
+        }else {
+            this.object = JSON.parse(this.object); // если localStorage не пуст записываем содержимое предварительно
+        }   
+        if(this.fun)self.fun();
+    }
+    
+    // если localStorage пуст, записываем обьект
+    this.getStartObj = function() {
+        /*var obj = {
+            activ:false,
+            dubag:false,
+            menu:{},
+            xz:{}
+        };*/
+        return {}//obj;
+    }
+
+    // сохраняем в localStorage данные
+    this.save = function() {        
+        window.localStorage[this.key] = JSON.stringify(self.object);
+    }
+
+    // сохраняем в localStorage данные
+    this.clear = function() {
+        window.localStorage[this.key] = undefined;
+    }
+    self.initLoad();
+    //setTimeout(function() {self.initLoad();}, 1);
+        
+}
+
+
+
+
+
+
+

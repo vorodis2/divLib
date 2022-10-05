@@ -4,7 +4,7 @@ import { PKey } from './PKey.js';
 import { DSArrGallery } from './DSArrGallery.js';
 
 /*
-    основной класс связывающий все другие
+    Парсер массивов
 */
 
 

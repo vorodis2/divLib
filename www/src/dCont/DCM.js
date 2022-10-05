@@ -761,11 +761,24 @@ export class DWindow extends DCont {
                 self.startDrag();
             }
         };
-
+        this.xx=23542
+        this.yy=23542
         this.buttonMin = new DButton(this, 0, 0, ' ', function () {
-            self.minimize = !self.minimize;
+            if (self._dragBool != false) {               
+                if (self.xx==self.x &&  self.yy==self.y){}else {
+                    return
+                }
+            }
+            self.minimize = !self.minimize;                  
             if (self.fun) self.fun();
         });
+        this.buttonMin.fun_mousedown = function () {
+            self.xx=self.x
+            self.yy=self.y
+            if (self._dragBool != false) {
+                self.startDrag();
+            }
+        };
 
         this.button.textAlign = 'left'; //"center"//
         this.buttonMin.textAlign = 'left'; //"center"//

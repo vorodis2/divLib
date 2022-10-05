@@ -246,7 +246,7 @@ export class DDCanvas extends DCont {
         }
 
 
-        this.debag = new Debag(this.dCont, function(s, p, p1) {
+       /* this.debag = new Debag(this.dCont, function(s, p, p1) {
 
             let r1 = { x: p[0].x, y: p[0].y, width: p[1].y - p[0].y, height: p[1].x - p[0].x }
 
@@ -256,11 +256,9 @@ export class DDCanvas extends DCont {
             for (var i = 0; i < p.length; i++) {
                 self.setPoint(p[i])//, self.radius, self._depth, self._color, self._alp)
             }
-           /* self.setLine(p[2], p[3], self._depth, self._color, self._alp)
-            self.setRect(r1, self._depth, self._color, self._alp)
-            self.setRPs(p[1], p[2], self._depth, self._color, self._alp)*/
+          
 
-        })
+        })*/
         this.setSetka()
 
 
@@ -318,7 +316,7 @@ export class DDCanvas extends DCont {
             this.panel.width = this.widthContent;
             this.clear()
             this.setSetka()
-            this.debag.width = this._width;
+           // this.debag.width = this._width;
         }
     }
     get width() {
@@ -334,9 +332,9 @@ export class DDCanvas extends DCont {
             this.panel1.height = this._height;
             this.panel.height = this.heightContent;
             this.clear()
-            this.setSetka()
+            this.setSetka();
             
-            this.debag.height = this._height;
+           // this.debag.height = this._height;
         }
     }
     get height() {
