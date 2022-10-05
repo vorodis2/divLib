@@ -3,6 +3,7 @@ import {DThreeBool	} from './dCont/plus/DThreeBool.js';
 
 
 
+
 global.DCompDev = DCompDev;
 global.DThreeBool = DThreeBool;
 

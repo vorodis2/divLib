@@ -10,6 +10,7 @@
 	#stats { position: absolute; top:0; left: 200px; }
 </style>
 
+
 </head>
 <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 <body>
@@ -28,6 +29,9 @@
 
 	import { DDCanvas } from "./src/dCont/plus/dSArray/DDCanvas.js";
 
+	import { DRadius } from "./src/dCont/plus/dSArray/DRadius.js";
+
+	import { DPreloader } from "./src/dCont/plus/dSArray/DPreloader.js";
 
 	var dcmParam, scane, content;
 
@@ -49,10 +53,18 @@
 
 
 
-
+		
 		
 
 		var ccc=new DCont(scane);
+
+		var dPreloader=new DPreloader(ccc, 300,50)
+		pObject.addObject(dPreloader)
+		//trace(dLoader)
+		//dPreloader.text="dvhbhvgc"
+		/*var dRadius=new DRadius(ccc, 600,100)
+		pObject.addObject(dRadius)*/
+
 		/*var dButtons=new DButtons(ccc, 300,50,5,function(){
 			trace(this.index)
 		})
@@ -62,7 +74,7 @@
 
 	
 
-		var dDCanvas=new DDCanvas(ccc, 300,50)
+		/*var dDCanvas=new DDCanvas(ccc, 300,50)
 		pObject.addObject(dDCanvas)
 		
 		//trace("sfsdf",dDCanvas.buttonTest)
@@ -74,16 +86,12 @@
 		})*/
 
 
-		// this.tBut1.onUpdate(function(){
-  //               if (self.fun) self.fun();            
-  //           })
-
-		function tick() {				
+		/*function tick() {				
 			TWEEN.update();	
 			requestAnimationFrame(tick);
 			
 		}
-		 tick();
+		 tick();*/
 
 		return
 
