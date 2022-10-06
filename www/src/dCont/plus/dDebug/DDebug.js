@@ -5,7 +5,7 @@ e.id="msGraph";e.style.cssText="position:relative;width:57px;height:27px;backgro
 Date.now();g=b-n;q=Math.min(q,g);r=Math.max(r,g);m.textContent=g+" MS ("+q+"-"+r+")";var a=Math.min(25,25-g/200*25);e.appendChild(e.firstChild).style.height=a+"px";v++;b>p+1E3&&(h=Math.round(1E3*v/(b-p)),t=Math.min(t,h),u=Math.max(u,h),k.textContent=h+" FPS ("+t+"-"+u+")",a=Math.min(25,25-h/100*25),c.appendChild(c.firstChild).style.height=a+"px",p=b,v=0);return b},update:function(){n=this.end()}}};
 
 
-
+import { XZDivLib } from './XZDivLib.js';
 
 export class DDebug extends DCont{
     constructor(dCont, _x, _y, _key) {
@@ -20,7 +20,7 @@ export class DDebug extends DCont{
         this.key=_key||"DevWindow";
         this._minimize=false
         this.ls=new LocalStorage(function(){},this.key)
-
+        this._index=-1
 
         this.array=[]
 
@@ -35,8 +35,10 @@ export class DDebug extends DCont{
             //if(self.fun)self.fun("minimize",this.minimize); 
             self.saveLS.dragPos();
         });
+        this.dCont=new DCont(this.wind.content)
 
-        this.wind.fubDrag = function(){            
+        this.wind.fubDrag = function(){ 
+
             self._width=self.wind.width;
             self._height=self.wind.height-32;
             self.reDrag()
@@ -47,11 +49,16 @@ export class DDebug extends DCont{
         this.ssss = new SSSS(this); 
         this.saveLS = new SaveLS(this);
         this.dbs=new DButtons(self.wind,32,0,["divLib","plus","dPar","hlam"],function(){
+            self.index=this.index
+            self.saveLS.dragPos();
             self.wind.startDrag();
         });
         this.dbs.otstup=0
         this.dbs.color=this.wind.button.color
 
+        this.arrCom=[]
+        this.arrCom[0] = this.xzDivLib = new XZDivLib(this);
+        this.array[this.array.length]=this.arrCom[0]
 
         this.array[this.array.length]=this.pobject = new PObject(this);
         
@@ -107,6 +114,23 @@ export class DDebug extends DCont{
 
 
     }
+    set index(value) {
+        if(this._index!=value){
+            this._index = value; 
+            this.dbs.index = this._index; 
+            trace("this._index=",this._index)
+            for (var i = 0; i < this.arrCom.length; i++) {
+                if(i==this._index){
+                    this.arrCom[i].active=true
+                }else{
+                    this.arrCom[i].active=false
+                }
+            }
+        }       
+    }   
+    get index() { return  this._index;} 
+
+
 
 
 
@@ -114,11 +138,15 @@ export class DDebug extends DCont{
         if(this._minimize!=value){
             this._minimize = value; 
             if(this._minimize){
+
                 this.wind.button.width=32; 
                 this.saveLS.testPXY()
-                 
+                this.dbs.visible = false;
+
             }else{
-                this.wind.button.width=this.wind.width; 
+                this.wind.button.width=this.wind.width;
+                this.dbs.visible = true; 
+
             }
             
 
@@ -198,25 +226,30 @@ export class SaveLS {
             this.ls.object["sls_py"]=this.py;
             this.ls.object["sls_width"]=this.par.width;
             this.ls.object["sls_height"]=this.par.height;
-            this.ls.object["sls_minimize"]=this.par.minimize;           
+            this.ls.object["sls_minimize"]=this.par.minimize;  
+            this.ls.object["sls_index"]=this.par.index;          
             this.ls.save()
         }
 
         this.otSave=function(){
             this.par.minimize=this.ls.object["sls_minimize"]
             if(w){
+                if(this.ls.object["sls_width"])this.par.width=this.ls.object["sls_width"]
+                if(this.ls.object["sls_height"])this.par.height=this.ls.object["sls_height"]  
+
                 this.px=this.ls.object["sls_px"]
                 this.py=this.ls.object["sls_py"]
                 let ww=(w/s)-this.wind.button.width;
                 this.wind.x=ww*this.px;
                 let hh=(h/s)-this.wind.height;
                 if(this.wind.minimize)hh=(h/s)-this.wind.button.height;
-                this.wind.y=hh*this.py;
-
-                if(this.ls.object["sls_width"])this.par.width=this.ls.object["sls_width"]
-                if(this.ls.object["sls_height"])this.par.height=this.ls.object["sls_height"]    
-            }
-            
+                if(this.wind.minimize){
+                    this.wind.button.width=32;  
+                }
+                this.wind.y=hh*this.py;  
+                
+                if(this.ls.object["sls_index"]!=undefined)this.par.index=this.ls.object["sls_index"]                  
+            }            
         }
 
         setTimeout(function() {
