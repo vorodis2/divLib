@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <title>divLib</title>	
 <script src="build/divLib.js?v=1"></script>
-<script src="build/divLibPlus.js"></script>
+
 
 <script src="src/lib/tween.min.js"></script>
 <script>
@@ -36,8 +36,8 @@
 
 		scane= new DCont(document.body);
 
-		dcmParam.zbrosDokument=false;
-		
+		//dcmParam.zbrosDokument=false;
+		//dcmParam.borderRadius=4
 
 		scane= new DCont(document.body);
 		content= new DCont(scane);
@@ -73,111 +73,9 @@
 		pObject=new DParamObject(scane,2,2,function(){			
 			sizeWindow()
 		});
-/*
-		var label=new DLabel(null,0,0,"DInput",downMy)
-		trace("============",label.height)
-
-		plus(label);
-		trace("============",label.height)	
-
-		//array[array.length-1].obj.setNum(0.1);
-		pObject.addObject(label);
-
-
-		var lll3=new DBArray(null,0,0,3,function(){
-			trace(this.value)
-		})
-		lll3.scalePic=0.5;
-		lll3.value=2
-		plus(lll3);
-
-		return*/
-
-/*
-		var three=new DThreeBool(content,200,0,function(){
-		
-		})
-		pObject.addObject(three);
-		three.width=333
-
-
-
-		var obj1={uuid:Math.random(),name:"name1",title1:"x234234z",link:"resources/pic/1.png",array:[{uuid:Math.random(),link:"resources/pic/1.png",array:[]},{uuid:Math.random(),link:"resources/pic/1.png",array:[{uuid:Math.random(),link:"resources/pic/1.png",array:[]}]}]}
-		three.setObj(obj1,"array","name")
-
-		new DInput(content,400,0,"",downMy)
-		return*/
-
-
-		//new DPanel(scane,400,236,"DInput",downMy)
 
 		
 
-
-		/*new DInput(scane,400,200,"DInput",downMy)
-
-
-
-
-		
-
-		plus(new DInput(null,0,0,"DInput",downMy));
-
-		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
-
-		return*/
-
-		// plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
-
-		// plus(new DButton(null,0,0,"Button",downMy,"resources/pic/w0.png"));
-
-	
-	/*	var lll=new DInput(content,400,400,"1",function(){
-			trace(">>",this.value);
-		})
-		lll.setNum(0.1);
-		lll.min=1
-
-		var lll3=new DButton(content,500,400,"2",function(){
-			
-		})
-
-		var lll2=new DTextArea(content,400,500,"3",function(){
-			
-		})
-		lll2.height=32
-		var lll1=new DButton(content,500,500,"4",function(){
-			
-		})
-
-		var wind=new DPanel(content,300,300,"4",function(){
-			
-		})
-		wind.width=333
-
-		wind.addD(new DButton(null,0,0,"1"),1);
-		
-		wind.addD(new DButton(null,0,0,"2"),1);
-		wind.addD(new DButton(null,0,0,"3"),1);
-		wind.addD(new DButton(null,0,0,"4"),1);
-		wind.addD(new DButton(null,0,0,"5"),1);
-
-		wind.addD(new DButton(null,0,0,"5"));
-
-		wind.addD(new DButton(null,0,0,"5"));
-
-		wind.addD(new DButton(null,0,0,"5"),1);
-
-		pObject.addObject(wind)		
-
-		return;*/
-
-		
-
-
-
-
-		
 		
 
 		plus(new DButton(null,0,0,"Button",downMy,"resources/pic/0.png"));
@@ -193,56 +91,14 @@
 
 
 
-		/*var oo={x:0}
-		var formData= new FormData(); 
-        formData.append('file', "imageFile"); 
-
-        oo.data=formData
-
-
-        pObject.addObject(oo)
-
-        return*/
-
-
-/*
-		this._vusot=20
-
-<<<<<<< HEAD
-=======
-
-
-		/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-	
-	
-		/*let dHole=new DHole(scane, 333,100,null,function(){
-
-		}, false)
-
-
-
-
-
-		*/
-
-		
-
-		/*let ddd=new DHole(scane, 533,300,null,function(){
-			trace(this.rect)
-		}, false)
-
-		pObject.addObject(ddd); 
-		
-		return*/
-
-	
-
-
 		/////////////////////////////
-		
+		var ii=new DImage(null,0,0,null)
+		ii.glowColor="#000000"
+		ii.glowSah=3
 
-
-		plus(new DImage(null,0,0,"resources/pic/0.png"));
+		plus(ii);
+		ii.link="resources/pic/0.png"
+		//return
 		plus(new DLabel(null,0,0,"text My"));
 
 		plus(new DGlow(null,0,0));
@@ -253,15 +109,15 @@
 		
 		plus(new DSlider(null,0,0,downMy));
 		plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
-		plus(new DInput(null,0,0,"DInput",downMy));
+		plus(new DInput(null,0,0,"DInput2",downMy));
 
 		//array[array.length-1].obj.setNum(0.1);
 		pObject.addObject(array[array.length-1].obj);
-
+		//return
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
 		
-		
+		plus(new DButtons(null,0,0,["xz","xz1","xz2"],downMy));
 		
 		plus(new DWindow(null,0,0,"DWindow",downMy));
 		plus(new DColor(null,0,0,"#0000ff",downMy));
@@ -339,13 +195,10 @@
         rrr.height = 40;
         rrr.x = 100;
         rrr.y = 150;
-        var rrr23 = new DComboBoxOld(content,677,0,["xz","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10","xz1","xz2", "xz3", "xz4", "xz5", "xz6", "xz7", "xz8", "xz9", "xz10"],function(){
-
-        })
-        plus(rrr23)
-		var three=new DThreeBool(content,900,0,function(){
+       
+		/*var three=new DThreeBool(content,900,0,function(){
 		
-		})
+		})*/
 		// three.mouseUpFun=function(o){
 	    //
 	    //
@@ -361,18 +214,18 @@
 		//
         //
 		// plus(three)
-		
+		/*
 
 		trace("g",g);
 
 
 		var obj1={uuid:Math.random(),name:"name1",link:"resources/pic/1.png",array:[{uuid:Math.random(),link:"resources/pic/1.png",array:[]},{uuid:Math.random(),link:"resources/pic/1.png",array:[{uuid:Math.random(),link:"resources/pic/1.png",array:[]}]}]}
 
-		three.setObj(obj1,"array","name")
+		three.setObj(obj1,"array","name")*/
 		//three.setObj(obj1,"array")
 		//three.setObj(g,"children","type")
 
-
+		
 		var nnnnn=new DButton(scane,500,336,"DInput",downMy)
 		nnnnn.startFile()
 

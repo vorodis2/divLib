@@ -3,6 +3,17 @@
 export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 	DSettings.call(this);
 	this.type = 'DParamObject';
+
+	this.infoThis=`
+        var dPO= new DParamObject(this.dCont,0,0,function(){})//, 1 - будет DPanel
+        dPO.tipRide=false//читает сетеры, true будет читать обьект весь!!
+        dPO.startUp()//включает ап проверка значений первый уровень
+        typeYesArray//только эти параметры, 
+        typeNotArray//исключает
+        typeArray//читает по любасу
+
+    `
+
 	if(dcmParam==undefined)dcmParam=new DCM();
   	dcmParam.add(this);
 
@@ -489,9 +500,10 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 
 	this.pointObject = { min: 0, max: 100 };
 
-	this.arrayNum = [-100000000,-10000000, -1000000, -100000, -10000, -5000, -1000, -500, -100, -50, -1, 0, 1, 50, 100, 500, 1000, 5000, 10000 , 100000 , 1000000 , 10000000 , 100000000 ];
+	this.arrayNum = [-100000000000,-100000000,-10000000, -1000000, -100000, -10000, -5000, -1000, -500, -100, -50, -1, 0, 1, 50, 100, 500, 1000, 5000, 10000 , 100000 , 1000000 , 10000000 , 100000000, 100000000000 ];
 	var zz = 1;
 	this.diapozon = function (_num) {
+		
 		if(this.usingShablon.length!=0)return
 		this.pointObject.min = 0;
 		this.pointObject.max = 10;
@@ -521,11 +533,11 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 		
 		if (slider.type == 'DSliderBig') {
 			if (slider.isDinamMinMax === false) return;
-			if (slider.visiMinMax == false) slider.visiMinMax = true;
+			if (slider.visiMinMax == false) slider.visiMinMax = true;			
 			this.omm = this.diapozon(slider.value);
 			slider.min = this.omm.min;
 			slider.max = this.omm.max;
-			slider.value = slider.value;
+			slider.value = slider.value;			
 		}
 	};
 
@@ -767,6 +779,41 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 		self.updateScroll();
 
 	};
+
+	//фишка, включает апер, и проверяет после отпуска параметры
+	let pax,vv,mmm
+	this.mouseup = function (e) {
+		
+		for (var i = 0; i < self.arrComp2.length; i++) {			
+			pax=self.arrComp2[i].param			
+			if(self.oP[pax]!=undefined && self.arrComp2[i].value!=undefined && self.oP[pax]!=self.arrComp2[i].value){
+				vv=self.oP[pax]
+				
+				if(self.arrComp2[i].type=="DSliderBig"){
+					mmm=self.diapozon(vv);
+					self.arrComp2[i].min=mmm.min;
+					self.arrComp2[i].max=mmm.max;					
+				}
+				self.arrComp2[i].value=vv
+			}
+		}
+	}
+
+	
+	var bup=false;
+	this.startUp = function () {		
+		if(bup==true)return		
+		bup=true
+		if (dcmParam.mobile == false) {
+            document.addEventListener('mouseup', self.mouseup);
+        } else {
+            document.addEventListener('touchend', self.mouseup);
+        }
+
+	}
+
+
+
 }
 
 DParamObject.prototype.constructor = DParamObject;

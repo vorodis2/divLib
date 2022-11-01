@@ -50,21 +50,33 @@ export class PKBlok  {
         this.funActiv1=undefined
         
         this.getOA=function(o,a,s){
+           
+            if(o==undefined)return null
             if(a[s+1]==undefined){
                 return o[a[s]]
             }else{
                 if(typeof a[s]=='object'){
-                    if(a[s].type=="seek"){                       
+                    if(a[s].type=="seek"){
+                                          
                         if(o[a[s].key]==undefined)return null;
+                         
                         if(typeof o[a[s].key]!=='object'){
                             return null;
                         }
+
+                   
+
                         if(o[a[s].key][0]!==undefined){//это массив
                             for (var i = 0; i < o[a[s].key].length; i++) {
+                              
                                 if(this.isObjArr(o[a[s].key][i],a[s].array)==true){                                    
                                     return this.getOA(o[a[s].key][i], a, s+1)                                    
                                 } 
                             }
+                        }else{
+                            if(this.isObjArr(o[a[s].key],a[s].array)==true){                                    
+                                return this.getOA(o[a[s].key], a, s+1)                                    
+                            } 
                         }
                     }
                     return null
@@ -90,7 +102,7 @@ export class PKBlok  {
                 if(typeof obj =="string" ) p=obj
                 arr.push(p)
             }else{
-                
+               
                 let pp=this.getOA(obj, this.obj.key, 0)                
                 if(pp==undefined || pp==null){
                     arr.push(null)

@@ -1,6 +1,8 @@
 
 
 
+
+
 export class XZDivLib{
     constructor(par,fun) {
         
@@ -31,10 +33,24 @@ export class XZDivLib{
         
             if(dfg==true)return;
             dfg=true;
+
+
+            for (var i = 0; i < this.aDo.length; i+=2) {                
+                plus(this.aDo[i], this.aDo[i+1])
+            }
+
+            plus(dcmParam);
             plus(new DButton(null,0,0,"Button",downMy,base64));
+
+            plus(new DButtons(null,0,0,["xz","ritq  qe"],downMy,base64));
             plus(new DPanel(null,0,0));
             plus(new DImage(null,0,0,base64));
-            plus(new DLabel(null,0,0,"text My"));
+
+            let bm=new DBitmapData(32,32)
+            bm.dragRendom();
+
+            plus(bm);
+            plus(new DLabel(null,0,0,"DLabel"));
             plus(new DGlow(null,0,0));
             plus(new DSlider(null,0,0,downMy));
             plus(new DSliderBig(null,0,0,downMy,"DSliderBig",50,150));
@@ -43,9 +59,14 @@ export class XZDivLib{
             plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
             plus(new DWindow(null,0,0,"DWindow",downMy));
             plus(new DColor(null,0,0,"#0000ff",downMy));
-            plus(new DScrollBarV(content,677,133,downMy)) 
-            plus(new DScrollBarH(content,677,133,downMy))
+            plus(new DScrollBarV(content,0,0,downMy)) 
+            plus(new DScrollBarH(content,0,0,downMy))
             plus(new DComboBox(content,0,0,["xz","xz1"],downMy))
+
+            plus(new DButtons(content,0,0,["xz","xz1"],downMy))
+
+
+
 
             var g= new DGallery(content,800,300,downMy);
             var a=[]
@@ -53,68 +74,122 @@ export class XZDivLib{
                 a.push({src:base64})
             }
             g.start(a);
-            g.kolII=2
+            g.kolII=2;
             plus(g);
+            var pp=new DParamObject(content,0,0,downMy)
+            plus(pp)
             
 
-            var three=new DThree(content,900,0,downMy)
+            var three=new DThree(content,0,0,downMy)
             var obj1={uuid:Math.random(),name:"name1",link:base64,array:[{uuid:Math.random(),link:base64,array:[]},{uuid:Math.random(),link:base64,array:[{uuid:Math.random(),link:base64,array:[]}]}]}
             three.setObj(obj1,"array","name")
             plus(three)
+
+
+            let dClip=new DClip(null, 0,0,downMy);
+            let bp=new DBitmapData(50,255)
+            bp.dragRendom();
+            dClip.content.add(bp.getDCont());
+            dClip.heightContent=255;
+            dClip.sbv=1;
+            plus(dClip);
+
+
+
+            if(self.par.ls.object["xzdl_index"]!=undefined){
+                setTimeout(function() {                    
+                    setIndex(self.par.ls.object["xzdl_index"])
+                }, 10);
+            }
      
+        }
+
+        this.aDo=[]
+        this.setObj = function(o,n){
+            if(dfg==true){
+                this.addPlus(o, n)
+            }else{
+                this.aDo.push(o, n)
+            }
         }
 
 
 
         function downMy(s,p,p1) {
-            trace(s,p,p1,this.type,this)
-            //setDin(this)          
+            //console.warn(s,p,p1,this.type,this)    
+            if(this.idArrPoz!=undefined){
+                setIndex(this.idArrPoz)
+            }                 
         }
 
         var lInfo=new DLabel(this.dCont,otstup,otstup,"null");
         lInfo.fontSize=dcmParam._fontSizeLitte;
 
         var dTextArea=new DTextArea(this.dCont,0,0,"null");
-        dTextArea.fontSize=dcmParam._fontSizeLitte;
-        dTextArea.height=dcmParam._fontSizeLitte*5
-        function plus (obj) {   
+        dTextArea.fontSize=dcmParam._fontSizeLitte+2;
+        dTextArea.height=dTextArea.fontSize*6
+        dTextArea.textAlign='left'
+        function plus (obj, name) {   
             if(obj.height && obj.height>50)obj.height=50
+            if(obj.height==undefined)   obj.height=50 
+
 
             var p=new DPanel(content,0,0);
+            var l1=new DLabel(p,dcmParam._fontSizeLitte+otstup*2,otstup,name||obj.type);
+            var b1=new DButton(p,otstup,otstup," ",function(){
+                setDin(this)
+            });
             var p1=new DPanel(p,otstup,otstup+dcmParam._fontSizeLitte+otstup);
             p.width=ww+otstup*4;
             p1.width=ww+otstup*2;
             p.height=obj.height+otstup*5+dcmParam._fontSizeLitte;
 
             p1.height=obj.height+otstup*2;
+
+
             obj.x=otstup;
             obj.y=otstup;
-            p1.add(obj);
+            if(obj.type=="DParamObject" ||obj.type==='DCM'||obj.type==='DBitmapData') {
+                if(obj.w)p1.add(obj.w);
+                if(obj.getDCont!=undefined)p1.add(obj.getDCont());
+            } else{
+                p1.add(obj);
+                
+            }         
+            
+
             p.object=obj
             p.panel=p1
             obj.width=ww;
 
             p.obj=obj;
 
-            var l1=new DLabel(p,dcmParam._fontSizeLitte+otstup*2,otstup,obj.type);
+            
             l1.fontSize=dcmParam._fontSizeLitte
 
-            /*var l=new DLabel(p,2,p1.height-8,"height:"+obj.height);
-            p.label=l
-            l.alpha=0.75;
-            l.fontSize=10;*/
-
-            array.push(p)
-
+            array.push(p);
 
             var b=new DButton(p,otstup,otstup," ",function(){
-                setDin(this.obj)
+                setDin(this)
             });
+            
+
+            b.idArr=array.length-1
+            obj.idArrPoz=array.length-1
             b.obj=obj;
             b.width=dcmParam._fontSizeLitte;
             b.height=dcmParam._fontSizeLitte;
             b.borderRadius=22
             b.color="#dddddd";
+            p.button=b;
+            b.pan=p;
+            b.pan1=p1;
+
+            
+            b1.width=p.width;
+            b1.height=p.height;
+            b1.alpha=0.01
+            b1.idArr=array.length-1
 
             drahHH();
         }
@@ -138,12 +213,95 @@ export class XZDivLib{
             }
         }
 
+        function setDin (o){            
+            setIndex(o.idArr)
+            self.par.ls.object["xzdl_index"]=o.idArr;          
+            self.par.ls.save();
+        }
+
+        var dind=-1
+        function setIndex (idArr){
+            if(dind==idArr)return
+            dind=idArr
+            for (var i = 0; i < array.length; i++) {
+                if(i==idArr){
+                    array[i].button.color=dcmParam._colorActive;
+                    array[i].color=dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color1), -20);
+                    array[i].panel.color=dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color1), -80);
+                    self.fun("addObject", array[i].object);
+                    let ss="Нет информации в классе infoThis";
+                    if(array[i].object.infoThis)ss=array[i].object.infoThis;
+                    setTTT(ss)
+                }else{
+                    array[i].button.color=dcmParam._color;
+                    array[i].color=dcmParam._color1
+                    array[i].panel.color=dcmParam._color1
+                }
+            }
+        }
+
+
+        function setTTT (str){
+            
+            let arr=str.split("\n");
+            
+            let bb
+            
+            for (var i = 0; i < arr.length; i++) {                     
+                bb=true;
+                for (var j = 0; j < arr[i].length; j++) {
+                    if(arr[i][j]!=" "){
+                        bb=false;
+                        break
+                    }
+                    
+                }
+                if(bb==true){
+                    arr.splice(i,1)
+                    i=0
+                }else{
+                    break
+                }                
+            }
+
+            for (var i = 0; i < arr.length; i++) {                     
+                bb=true;
+                if(arr[i]=="//xz")break
+                let sdf=''
+                for (var j = 0; j < arr[i].length; j++) {
+                    if(arr[i][j]==" "){                       
+                        
+                    }else{
+                        bb=false;
+                        
+                    } 
+                    if(bb==false)sdf+= arr[i][j]                 
+                }
+                arr[i]=sdf
+            }
+
+
+            let sss="";
+            for (var i = 0; i < arr.length; i++) {
+                if(arr[i]=="")continue
+                if(i==0){
+                    sss+=arr[i]
+                }else{
+                    sss+="\n"+arr[i]
+                }                
+            }
+           
+            dTextArea.text=sss
+        }
+
+
+
 
 
         var ssc=1
         
         var w, h, s;
-        var www, hhh,hhh1
+        var www, hhh,hhh1;
         this.sizeWindow = function(_w, _h, _s) {
             if (_w) {
                 w = _w
@@ -159,7 +317,7 @@ export class XZDivLib{
             hhh1=dTextArea.y-otstup
 
             ssc=hhh1/(this.param.sizeBase2*2);
-            trace(ssc,(this.param.sizeBase2*2),hhh1)
+            
             if(ssc<0.25)ssc=0.25
             if(ssc>1)ssc=1
             content.scale= ssc  
@@ -175,8 +333,7 @@ export class XZDivLib{
 
     set active(value) {
         if(this._active!=value){
-            this._active = value; 
-            trace(this._active)
+            this._active = value;             
             if(this._active){
                 this.dC.add(this.dCont)
                 this.init()

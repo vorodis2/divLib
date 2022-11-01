@@ -2,9 +2,44 @@
 
 import { DCont } from './DCont.js';
 
-export function DGallery (dCont, _x, _y, _fun) {
+export function DGallery (dCont, _x, _y, _fun, _par) {
 	DCont.call(this);
 	this.type = 'DGallery';
+	this.infoThis=`
+            var gallery= new DWindow(this.dCont,0,0,function(){})//, par 
+//xz
+export class GalleryXZ extends DGallery {
+    constructor(dCont, x, y, fun, par) { 
+        super(dCont, x, y, fun); 
+        this.par =  par;   
+        this.type="GalleryXZ";        
+        this.createZamen=function(){            
+            return new BoxXZ(this.content, 0, 0, this.downBtn, this);
+        }
+    }
+}
+export class BoxXZ extends DBox {
+    constructor(dCont, x, y, fun, par) { 
+        super( dCont, x, y, fun);                
+        this.par=par
+        var self=this;
+        this.type="BoxXZ";      
+        this.draw = function () {  
+            if (this.postDraw) this.postDraw();
+        };
+        this.startLoad = function (_obj) {           
+            this.object = _obj;           
+            self.image.link = "/link.png или obj.icon"
+            self.image.visible = true; 
+            this.label.text="из _obj.text или"
+            this.label.visible = true; 
+            this.activ=true;
+            self.funLoad(); 
+        }    
+    }
+}             
+        `
+
 	var self = this;
 	this.dcmParam=dcmParam; 
   	this.dcmParam.add(this)
@@ -13,6 +48,7 @@ export function DGallery (dCont, _x, _y, _fun) {
 	this.x = _x || 0;
 	this.y = _y || 0;
 	this.fun = _fun;
+	this.par = _par;
 	this._panelBool=false;
 
 	this._prosentH=0;
@@ -1238,3 +1274,10 @@ Object.defineProperties(DBox.prototype, {
 		}
 	}
 });
+
+
+
+
+
+
+

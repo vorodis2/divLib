@@ -7,6 +7,10 @@ export class DCreatIcon extends DCont{
         super();
         var self=this
         this.type="DCreatIcon"
+        this.infoThis=`
+            var ddc = new DCreatIcon(this.dCont,0,0,"xz",function(){});
+            FIXE дошарить svg, блоки, рекст и текст
+        `
 
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);         
         this.x=_x||0; 
@@ -526,7 +530,6 @@ export class DCreatIcon extends DCont{
         }
     }   
     get lineColor() { return  this._lineColor;}
-
 }
 
 
@@ -1206,6 +1209,7 @@ export class DCDrow {
                     this.ctx.lineJoin = "round"
                     this.ctx.moveTo(body.position.x, body.position.y);
                     this.ctx.quadraticCurveTo(body.position2.x, body.position2.y, body.position1.x, body.position1.y);
+                    
                     this.ctx.stroke();
                 }
 
@@ -1595,8 +1599,8 @@ export class DCKorBit {
                     bb=true
                 }
             }
-            if(bb){
-                
+            
+            if(bb){                
                 let oc=dcmParam.parseColor(c)
                 let pp
                 for (var i = 0; i < b.width; i++) {
@@ -1640,8 +1644,7 @@ export class DCBody {
         this.ww=1;
         this.hh=1;    
 
-        this.adddPPP=function(point){ 
-            
+        this.adddPPP=function(point){             
             this.array.push({x:point.x,y:point.y})
         }
 

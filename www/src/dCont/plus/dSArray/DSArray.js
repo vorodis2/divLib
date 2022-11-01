@@ -25,7 +25,7 @@ export class DSArray extends DCont {
         this._otstup = dcmParam._otstup;
 
         this.width = 200;
-        this._height = 400;
+        this._height = 200;
         this._wh = 24;
         this._wComp = 150;
         this._kol = 32;

@@ -72,7 +72,7 @@ export class DPreloader extends DCont {
 
         this.reDraw=function(){
             let aa =Math.abs(this._whComp/this._height)
-            trace(aa)
+           
             this.dRadius.x= -this._whComp/2+(this._otstup*2)*aa
             this.dRadius.y= -this._whComp/2+(this._otstup*2)*aa
             this.dRadius.radius=this._whComp-this._size-(this._otstup*2)*aa*2;
@@ -96,10 +96,7 @@ export class DPreloader extends DCont {
             let aa1=self.dRadius.angel1
             let ss=(aa1-aa)%360*/
 
-            //trace(self.dRadius.angel,self.dRadius.angel1) 
-            /*if ((aa1-aa) >= 360) {
-                trace("2",ss)
-            }*/
+            
 
 
 

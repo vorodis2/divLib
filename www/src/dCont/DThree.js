@@ -6,7 +6,10 @@ export  function DThree(dCont, _x, _y, fun){
     DCont.call(this);
     this.type = 'DThree';
     var self = this; 
-    
+    this.infoThis=`
+        var dThree= new DThree(this.dCont,0,0,function(){})
+        можно расшаривать 
+    `
     this.dcmParam=dcmParam; 
     this.dcmParam.add(this)
     if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);

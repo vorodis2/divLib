@@ -741,7 +741,7 @@ export function DSettings (_cont) {
             }
             
             component = new DSliderBig(this.content, 0, 0, this.down, _name, min, max);
-
+            component.boolDiapozon=true;
             
             
             component.okrug = okrug;

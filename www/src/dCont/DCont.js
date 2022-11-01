@@ -6,6 +6,7 @@ export class DCont {
   	constructor(divORCont) {
   		//super();
   		this.type="DCont";
+  		this.boolDCont=true;
   		var self=this;
 
     	this.div= document.createElement('div');
@@ -37,10 +38,8 @@ export class DCont {
 			o.y+=c.position._y;
 			if(c.visible==false)o.y+=99999
 		
-			if(c.parent!=undefined){
-				//if(c.parent.type=="DCont"){
-					self.funXYP(c.parent, o)
-				//}
+			if(c.parent!=undefined){				
+				self.funXYP(c.parent, o)				
 			}
 		}
 
@@ -144,6 +143,22 @@ export class DCont {
 			}			
 			
 		}
+
+		///////////////////////scaleBig-----------------
+		this.scaleDrag = { s: 1 };  
+        this.testScale = function (c, o) {
+            if (c.scale) o.s *= c.scale;
+            if (c.parent) {
+                self.testScale(c.parent, o);
+            }
+        };
+        this.getScaleScane=function(){
+            this.scaleDrag.s = 1;
+            this.testScale(this,this.scaleDrag)
+            return this.scaleDrag.s
+        }
+
+		//---------------------------
   	}
 
 

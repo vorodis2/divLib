@@ -6,9 +6,13 @@ Date.now();g=b-n;q=Math.min(q,g);r=Math.max(r,g);m.textContent=g+" MS ("+q+"-"+r
 
 
 import { XZDivLib } from './XZDivLib.js';
+import { DDPlus } from './DDPlus.js';
+
+import { DDBase } from './DDBase.js';
+import { DDCont } from './DDCont.js';
 
 export class DDebug extends DCont{
-    constructor(dCont, _x, _y, _key) {
+    constructor(dCont, _x, _y, _key, param) {
         super();
         var self=this
         this.type="DCompDev"
@@ -19,12 +23,17 @@ export class DDebug extends DCont{
         this.y=_y||0;
         this.key=_key||"DevWindow";
         this._minimize=false
+        this._dragBool=true;
+        this._boolStatus=false;
         this.ls=new LocalStorage(function(){},this.key)
         this._index=-1
 
         this.array=[]
 
         this.param=new Param().param;
+        if(param) this.param=param;
+
+
 
         this._width=this.param.sizeBase2*3+this.param.otstup*3;
         this._height=this.param.sizeBase2+this.param.otstup*2;
@@ -35,6 +44,7 @@ export class DDebug extends DCont{
             //if(self.fun)self.fun("minimize",this.minimize); 
             self.saveLS.dragPos();
         });
+        this.wind.dragBool=this._dragBool;
         this.dCont=new DCont(this.wind.content)
 
         this.wind.fubDrag = function(){ 
@@ -48,7 +58,7 @@ export class DDebug extends DCont{
 
         this.ssss = new SSSS(this); 
         this.saveLS = new SaveLS(this);
-        this.dbs=new DButtons(self.wind,32,0,["divLib","plus","dPar","hlam"],function(){
+        this.dbs=new DButtons(self.wind,32,0,["0. divLib","1. plus","2. dBase","3. getDCont"],function(){
             self.index=this.index
             self.saveLS.dragPos();
             self.wind.startDrag();
@@ -57,16 +67,48 @@ export class DDebug extends DCont{
         this.dbs.color=this.wind.button.color
 
         this.arrCom=[]
-        this.arrCom[0] = this.xzDivLib = new XZDivLib(this);
-        this.array[this.array.length]=this.arrCom[0]
+        this.arrCom[0] = this.xzDivLib = new XZDivLib(this,function(s,p){
+            if(s=="addObject")self.addObject(p)
+        });
+        this.arrCom[1] = this.ddPlus = new DDPlus(this,function(s,p){
+            if(s=="addObject")self.addObject(p)
+        });
+        this.arrCom[2] = this.ddBase= new DDBase(this,function(s,p){
+            if(s=="addObject")self.addObject(p)
+        });
 
+        this.arrCom[3] = this.dDCont= new DDCont(this,function(s,p){
+            if(s=="addObject")self.addObject(p)
+        });
+
+        this.array[this.array.length]=this.arrCom[0]
+        this.array[this.array.length]=this.arrCom[1]
+        this.array[this.array.length]=this.arrCom[2]
+        this.array[this.array.length]=this.arrCom[3]
         this.array[this.array.length]=this.pobject = new PObject(this);
         
 
-        
+        this.addPlus = function(obj){
+            this.ddPlus.addPlus(obj);
+        }
 
+        this.setObj = function(obj, idArr, name ){
+            if(this.array[idArr]){
+                if(this.array[idArr].setObj){
+                    this.array[idArr].setObj(obj,name)
+                }
+            }
+        }
 
-        
+        this.getBase = function(name){
+            return this.ddBase.getBase(name)
+        }
+        this.setBase = function(name, obj){
+            this.ddBase.setBase(name, obj)
+        }
+        this.getDDcont = function(){
+            return this.dDCont.getDDcont()
+        }
 
 
         this.sizeWN = function(w, h, s) {                     
@@ -118,7 +160,7 @@ export class DDebug extends DCont{
         if(this._index!=value){
             this._index = value; 
             this.dbs.index = this._index; 
-            trace("this._index=",this._index)
+            
             for (var i = 0; i < this.arrCom.length; i++) {
                 if(i==this._index){
                     this.arrCom[i].active=true
@@ -155,7 +197,25 @@ export class DDebug extends DCont{
     }   
     get minimize() { return  this._minimize;} 
 
-  
+    set dragBool(value) {
+        if(this._dragBool!=value){
+            this._dragBool = value;           
+            
+
+            this.wind.dragBool=this._dragBool;
+        }       
+    }   
+    get dragBool() { return  this._dragBool;}
+
+    set boolStatus(value) {
+        if(this._boolStatus!=value){
+            this._boolStatus = value;            
+
+            this.ssss.boolStatus=this._boolStatus;
+        }       
+    }   
+    get boolStatus() { return  this._boolStatus;}    
+
 
 
     set width(value) {
@@ -198,6 +258,11 @@ export class SaveLS {
             if(this.py<0)this.py=0
             if(this.py>1)this.py=1
 
+            if(this.par._dragBool==false){
+                this.px=1;
+                this.py=0;
+            }    
+
             this.wind.x=ww*this.px;
             this.wind.y=hh*this.py;
 
@@ -239,6 +304,11 @@ export class SaveLS {
 
                 this.px=this.ls.object["sls_px"]
                 this.py=this.ls.object["sls_py"]
+                if(this.par._dragBool==false){
+                    this.px=1;
+                    this.py=0;
+                }
+
                 let ww=(w/s)-this.wind.button.width;
                 this.wind.x=ww*this.px;
                 let hh=(h/s)-this.wind.height;
@@ -248,11 +318,17 @@ export class SaveLS {
                 }
                 this.wind.y=hh*this.py;  
                 
-                if(this.ls.object["sls_index"]!=undefined)this.par.index=this.ls.object["sls_index"]                  
+                if(this.ls.object["sls_index"]!=undefined){
+                    setTimeout(function() {
+                        
+                        self.par.index=self.ls.object["sls_index"] 
+                    }, 1);                 
+                }                 
             }            
         }
 
         setTimeout(function() {
+         
             if(self.ls.object["sls_px"]!=undefined){
                 self.otSave()
             }
@@ -280,18 +356,22 @@ export class PObject {
         this.par = par;
         this.param=this.par.param
 
-        var scale=0.6;
+        var scale=0.75;
         this.object
         this.dCont=new DCont(this.par.wind.content)
         this.panel=new DPanel(this.dCont,this.param.otstup,this.param.otstup);
 
         this.panel.width=this.param.sizeBase2
 
-        this.dClip=new DClip(this.panel);       
+        this.dClip=new DClip(this.panel,11,0,function(){
+            self.par.ls.object["PObject_value"]=this.value
+            self.par.ls.save()
+        });       
         this.dClip.x=this.param.otstup;
         this.dClip.y=this.param.otstup;
         this.dClip.width=this.panel.width
-        this.dClip.sbv=1
+        this.dClip.sbv=1;
+        
 
         this.dC=new DCont(this.dClip.content);
         this.dC.scale=scale;
@@ -302,11 +382,14 @@ export class PObject {
         },1);
         pObject.width=(this.param.sizeBase2-this.param.otstup*2)/scale;
 
+        pObject.startUp()
 
         this.addObject=function(obj){
             this.object=obj;
             pObject.addObject(obj)           
             this.dClip.heightContent=pObject.height*scale;
+
+            
         }
         this.addObject(this.dClip)
         
@@ -321,226 +404,11 @@ export class PObject {
             this.dClip.height=this.panel.height-this.param.otstup;
         }
 
-    }
-}
 
-
-
-export class DClip extends DCont {
-    constructor(dCont, _x, _y) {
-        super();
-        this.type = 'DClip';
-        if (dcmParam == undefined) dcmParam = new DCM();
-        dcmParam.add(this);
-        this.x = _x || 0;
-        this.y = _y || 0;
-        if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
-        this._width = 100;
-        this._height = 100;
-        this._heightContent=100;
-        this._sbv = 0;
-        var self=this;
-
-        this._value = 0;       
-        this.dd = new DCont(this);
-        this.content = new DCont(this.dd);
-
-
-        this.ddSS = new DCont(this);
-        this.ddSS.visible=false;
-        this.scrollBarV = new DScrollBarV(this.ddSS, this._width - this.otstup1, 0, function () {
-            // self.content.y = -this.scrolValue;
-            //self.scrolPos(false);
-           
-            self.value=this.value;
-        });
-        this.scrollBarV.offsetHit=3;
-        this.scrollBarV.width=2;
-        this.scrollBarV.alpha=0.5;
-
-        this.bb=true
-        let hh
-        this.dragValue = function () {
-            hh=this.hhh;
-            if(hh<0)hh=0;
-            this.scrollBarV.value=this._value;
-            this.content.y=-hh*this._value/100;           
-
-            this.bb=true;
-            if(hh==0)this.bb=false;
-            this.scrollBarV.visible=this.bb
+        if(self.par.ls.object["PObject_value"]!=undefined){            
+            self.dClip.value=self.par.ls.object["PObject_value"]
         }
 
-        
-        var delta, p;
-        var sah=5;
-        this.mousewheel = function (e) { 
-            delta=-1;
-            p=e.delta
-            if(e.wheelDelta==undefined){
-                p=e.wheelDelta
-            }
-            if(e.delta)if(e.delta<0)delta=1;
-            if(e.deltaY)if(e.deltaY<0)delta=1;
-            if(e.detail)if(e.detail<0)delta=1;
-
-            
-            if(e.wheelDelta!=undefined){
-                if(e.wheelDelta>0)delta=-1;
-                else delta=1;
-            }
-            p=delta;
-            trace(p,sah)
-            self.value+=p*sah;            
-        };
-
-        this.div.addEventListener('mousewheel', this.mousewheel)
-        this.div.addEventListener("DOMMouseScroll", this.mousewheel);
-
-
-        var sp=undefined;   
-        this.dragActiv=false
-        this.mouseDown=function(e){     
-            self.dragActiv=true;
-            sp=undefined;            
-        }
-
-        this.mouseup=function(e){       
-            self.dragActiv=false;
-            sp=undefined;                
-        }
-
-        var yyy=0
-        this.mousemove=function(e){         
-            if(self.dragActiv==false)return;
-            if(self.scrollBarV.visible == false)return; 
-            if(dcmParam.mobile==false){
-                if(sp==undefined){
-                    sp={                    
-                        y:e.clientY,                    
-                        y1:self.value
-                    };
-                }  
-                sp.ys=e.clientY         
-            }else{
-                if(sp==undefined){
-                    sp={                    
-                        y:e.targetTouches[0].clientY,                   
-                        y1:self.value
-                    };
-                }
-                sp.ys=e.targetTouches[0].clientY
-            }
-            yyy=(sp.y-sp.ys); 
-            self.value=sp.y1 + yyy/(self.hhh/100); 
-        }   
-
-
-        if(dcmParam.mobile==false){         
-            this.content.div.addEventListener("mousedown", this.mouseDown);
-            window.addEventListener("mouseup", this.mouseup);
-            
-        }else{
-            this.content.div.addEventListener("touchstart", this.mouseDown);
-            window.addEventListener("touchend", this.mouseup);
-            
-        }
-        dcmParam.addFunMove(self.mousemove)
-
-
-
-        this.drag = function () {
-            this.dd.div.style.clip = "rect(0px "+this._width+"px "+this._height+"px 0px)";
-
-        }; 
-        this.drag();  
-
-    }
-
-    set x(v) {
-        this.position.x = v;
-    }
-    get x() {
-        return this.position.x;
-    }
-    set y(v) {
-        this.position.y = v;
-    }
-    get y() {
-        return this.position.y;
-    }
-
-    set value(v) {
-        if(v<0)v=0;
-        if(v>100)v=100;
-        
-        if (this._value != v) {
-            this._value = v;                       
-            this.dragValue();
-        }
-    }
-    get value() {
-        return this._value;
-    }
-
-
-    set width(v) {
-        if (this._width != v) {
-            this._width = v;
-            if(this._sbv!==2)this.scrollBarV.x=-this.scrollBarV.width;
-            else this.scrollBarV.x=this._width -this.scrollBarV.width;
-            this.drag(); 
-
-        }
-    }
-    get width() {
-        return this._width;
-    }
-
-    set height(v) {
-        if (this._height != v) {
-            this._height = v;
-            this.hhh=this._heightContent-this._height
-            this.scrollBarV.height= v;
-            this.drag();
-            this.dragValue();   
-        }
-    }
-    get height() {
-        return this._height;
-    }
-
-    set heightContent(v) {
-        if (this._heightContent != v) {
-            this._heightContent = v;
-            this.hhh=this._heightContent-this._height
-            this.scrollBarV.heightContent = v;
-            this.dragValue();
-            //this.drag();
-        }
-    }
-    get heightContent() {
-        return this._heightContent;
-    }
-
-    
-    set sbv(v) {
-        if (this._sbv != Math.round(v)) {
-            this._sbv = Math.round(v);
-            if(this._sbv==0){
-                this.ddSS.visible=false;
-            }else{
-                this.ddSS.visible=true;
-            }
-            
-            if(this._sbv!==2)this.scrollBarV.x=-this.scrollBarV.width;
-            else this.scrollBarV.x=this._width -this.scrollBarV.width;
-
-            this.drag();            
-        }
-    }
-    get sbv() {
-        return this._sbv;
     }
 }
 
@@ -552,36 +420,64 @@ export class SSSS {
         this.type = "SSSS";
         var self = this;
         this.par = par;
-
+        this._boolStatus=false
 
         this.dcS=new DCont()
         this.par.wind.add(this.dcS,0)
         this.par.wind.add(this.par.wind.buttonMin)
+        
+        var sb=false
+        var stats
+        this.init=function(){
+            if(stats!=undefined)return
+            this.dcS1=new DCont()    
+            //new DPanel(this.dcS)
+            this.dcS.div.style.clip = "rect(1px "+30+"px "+30+"px 1px)";
 
-        //new DPanel(this.dcS)
-        this.dcS.div.style.clip = "rect(1px "+30+"px "+30+"px 1px)";
+            stats=new Stats() 
+            stats.setMode(0)
+            stats.domElement.style.position = 'fixed';
+            this.dcS1.div.appendChild(stats.domElement);
+            stats.domElement.style.top = '-10px';
+            stats.domElement.style.left = '-2px';
+             
+            setTimeout(function() {
+                sb=true;
+            }, 1000);
 
-        var stats=new Stats() 
-        stats.setMode(0)
-        stats.domElement.style.position = 'fixed';
-        this.dcS.div.appendChild(stats.domElement);
-        stats.domElement.style.top = '-10px';
-        stats.domElement.style.left = '-2px';
-        var sb=false 
-        setTimeout(function() {            
-            sb=true;
-        }, 1000);
+        }
 
+       
+        trace("@@",this._boolStatus)
 
 
         this.update=function(){
+            if(this._boolStatus==false)return
+            
             stats.update();
             if(!sb){
                 stats.domElement.style.top = '-10px';
                 stats.domElement.style.left = '-28px'; 
             }
         }
+
+        this.boolStatus = this.par.boolStatus
     }
+
+    set boolStatus(value) {
+        if(this._boolStatus!=value){
+            trace("@@@@@@@@@@@@@@@@@@",value)
+            this._boolStatus = value;            
+            if(this._boolStatus==true){
+                this.init()
+                this.dcS.add(this.dcS1)
+
+            }else{
+                this.dcS.remove(this.dcS1)
+            }
+        }       
+    }   
+    get boolStatus() { return  this._boolStatus;}  
 }
 
 
@@ -597,7 +493,7 @@ export class Param  {
         this.param.color1="#999999";
         this.param.colorActive="#f28044";
 
-        this.param.otstup=2;
+        this.param.otstup=5//2;
         this.param.otMy=10;
 
         this.param.wh=40;
@@ -726,7 +622,7 @@ export function LocalStorage(fun,_key) {
         window.localStorage[this.key] = undefined;
     }
     self.initLoad();
-    //setTimeout(function() {self.initLoad();}, 1);
+    
         
 }
 

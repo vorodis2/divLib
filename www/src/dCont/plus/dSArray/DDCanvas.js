@@ -16,6 +16,17 @@ export class DDCanvas extends DCont {
     constructor(dCont, _x, _y) {
         super();
         this.type = 'DDCanvas';
+        this.infoThis=`
+            var ddc = new DDCanvas(this.dCont,0,0);
+            ddc.setSetka()              //sah, depth, color, alp)
+            ddc.setText(point,text)     //, fontSize, color, alp) 
+            ddc.setPoint(point)         //, radius, depth, color, alp)
+            ddc.setLine(point, point1)  //, depth, color, alp)
+            ddc.setRPs(point, point1)   //, depth, color, alp)
+            ddc.setRect(rect)           //, depth, color, alp)
+        `    
+
+
         if (dcmParam == undefined) dcmParam = new DCM();
         dcmParam.add(this);
         this.x = _x || 0;
@@ -27,11 +38,15 @@ export class DDCanvas extends DCont {
 
         this._width = 200;
         this._height = 200;
-        this._otstup = dcmParam._otstup;
+
+        this._bSetkaText=true;
+        this._bSetkaCobe=false;
+        this._bDrag=false;
+        
 
         
-        this._pointX = 30;                           //Здвиг осей
-        this._pointY = 40;
+        this._pointX = 0;                           //Здвиг осей
+        this._pointY = 0;
 
 
         this.fontSize = dcmParam._fontSizeLitte;   //толщина текста
@@ -42,50 +57,61 @@ export class DDCanvas extends DCont {
         this.sah = 10;                             //шаг сетки 
         this.radius = 2;                           //радиус точек и других обЬектов
         this._mashtab = 10;                        //маштаб сетки
-        this.otX = 20;                             //отступ по x
-        this.otY = this._otstup*2+this.fontSize;                             //отступ по y
-        this.alpSetka = 0.05; 
+        
+        this._canPlus=25
+        this._otXY =0
+        this.alpSetka = 0.1; 
 
 
-        this.widthContent = this._width+this.otX+this._otstup;
-        this.heightContent = this._height+this.otY-this._otstup;
+        this.widthContent = this._width+this._otXY;
+        this.heightContent = this._height+this._otXY;
         let cc = null;
 
         //нижняя панель(подложка)
-        this.panel = new DPanel(this, 0, 0)
-        this.panel.width = this.widthContent;
-        this.panel.height = this.heightContent;
+        //this.panel = new DPanel(this, 0, 0)
+      
 
 
         //панель содержащая в себе canva
-        this.panel1 = new DPanel(this.panel, 0, 0)
-        this.panel1.x = this.otX+this._otstup*2;
-        this.panel1.y = this.otY
-        this.panel1.width = this.width - this._otstup*2;
-        this.panel1.height = this.height - this._otstup*2;
+        this.panel1 = new DPanel(this, this._otXY, this._otXY)
+
+        this.panel1.width = this.width;
+        this.panel1.height = this.height;
+        this.panel1.visible=this._bDrag;
 
         //панель при наведении показывающая нахождение курсора
         this.panel2 = new DPanel(this.panel1, 0, 0)
         this.panel2.visible=false
-        this.panel2.alpha=this.alpSetka
+        //this.panel2.alpha=this.alpSetka
   
 
         //обьявление канвы 
+        this.dCC=new DCont(this)
+        this.dCC.x=-this._canPlus
+        this.dCC.y=-this._canPlus
         this.canvas = document.createElement('canvas'); // канвас для картинки
         this.ctx = this.canvas.getContext('2d');
         this.canvas.style.position = 'fixed';
         this.canvas.style.pointerEvents = 'none';
-        this.canvas.width=this.widthContent;
-        this.canvas.height=this.heightContent;
+        this.canvas.width=this.widthContent+this._canPlus*2;
+        this.canvas.height=this.heightContent+this._canPlus*2;
+        this.dCC.div.appendChild(this.canvas)
+        
 
-        this.panel.div.appendChild(this.canvas)
         
-        
+        this.getX = function(num) {
+            return Math.round(this._pointX+this._otXY + num+this._canPlus);
+        }
+        this.getY = function(num) {
+            return Math.round(this._pointY+this._otXY+num+this._canPlus)
+        }
+
+
         this.moveTo = function(x,y) {
-            this.ctx.moveTo(Math.round(this._pointX+this.otX+x+this._otstup*2), Math.round(this._pointY+this.otY+y));
+            this.ctx.moveTo(this.getX(x), this.getY(y));
         }
         this.lineTo = function(x,y) {
-            this.ctx.lineTo(Math.round(this._pointX+this.otX+x+this._otstup*2), Math.round(this._pointY+this.otY+y));
+            this.ctx.lineTo(this.getX(x), this.getY(y));
         }
 
         
@@ -98,54 +124,85 @@ export class DDCanvas extends DCont {
             if (color == undefined) color = this.color
             if (alp == undefined) alp = this.alpSetka  
 
-            this.ctx.beginPath();
-            this.ctx.lineWidth = depth + "";
-            cc = dcmParam.parseColor(color)
-            this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
-            
-            xx1 = -Math.floor(this._pointX / (this.sah*this._mashtab))*(this.sah*this._mashtab);
-            for (var i = xx1; i < this._width-this._pointX-this._otstup*2; i+=sah*this._mashtab) {
-                this.moveTo(i, 0-this._pointY);
-                this.lineTo(i, this._height-this._pointY-this._otstup*2);
+
+            if(this._bSetkaCobe==false){
+
+                
+
+                this.ctx.beginPath();
+                this.ctx.lineWidth = depth + "";
+                cc = dcmParam.parseColor(color)
+                this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
+                
+                xx1 = -Math.floor(this._pointX / (this.sah*this._mashtab))*(this.sah*this._mashtab);
+                for (var i = xx1; i < this._width-this._pointX; i+=sah*this._mashtab) {
+                    this.moveTo(i, 0-this._pointY);
+                    this.lineTo(i, this._height-this._pointY);
+                }
+
+                yy1 = -Math.floor(this._pointY / (this.sah*this._mashtab))*(this.sah*this._mashtab);
+                for (var i = yy1; i < this._height-this._pointY; i+=(this.sah*this._mashtab)) {
+                    this.moveTo(0-this._pointX, i );
+                    this.lineTo(this._width-this._pointX, i  );
+                }
+
+                this.ctx.stroke();
+               
+                this.ctx.beginPath();
+                this.ctx.lineWidth = depth + "";
+                cc = dcmParam.parseColor(color)
+                alp*=2
+                this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + 0.5 + ')';
+                
+                if (this._pointY >= 0 && this._pointY<=this._height) {
+                    this.moveTo(-this._pointX, 0);
+                    this.lineTo(-this._pointX+this._width, 0);
+                }
+
+                if (this._pointX >= 0 && this._pointX<=this._width) {
+                    this.moveTo(0, -this._pointY);
+                    this.lineTo(0, -this._pointY+this._height);
+                }
+
+                this.ctx.stroke();
+            }else{
+                this.ctx.beginPath();
+              
+                cc = dcmParam.parseColor(color)
+                //this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
+                this.ctx.fillStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
+               //this.ctx.fillRect(10, 10, 100, 100);
+                let b=true
+                var j=0
+
+                yy1 = -Math.floor(this._pointY / (this.sah*this._mashtab))*(this.sah*this._mashtab);
+                for (var j = yy1; j < this._height-this._pointY; j+=(this.sah*this._mashtab)) {
+                    xx1 = -Math.floor(this._pointX / (this.sah*this._mashtab))*(this.sah*this._mashtab);
+                    if(b==false)xx1+=(this.sah*this._mashtab)
+                    for (var i = xx1; i < this._width-this._pointX; i+=sah*this._mashtab*2) {
+                        this.ctx.fillRect(this.getX(i), this.getX(j), (this.sah*this._mashtab), (this.sah*this._mashtab));
+                        this.ctx.fill();                   
+                    } 
+                    b=!b; 
+
+
+                }
+
+                
             }
 
-            yy1 = -Math.floor(this._pointY / (this.sah*this._mashtab))*(this.sah*this._mashtab);
-            for (var i = yy1; i < this._height-this._pointY-this._otstup*2; i+=(this.sah*this._mashtab)) {
-                this.moveTo(0-this._pointX, i );
-                this.lineTo(this._width-this._pointX-this._otstup*2, i  );
-            }
-
-            this.ctx.stroke();
-           
-            this.ctx.beginPath();
-            this.ctx.lineWidth = depth + "";
-            cc = dcmParam.parseColor(color)
-            alp*=2
-            this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
-            
-            if (this._pointY >= 0 && this._pointY<=this._height) {
-                this.moveTo(-this._pointX, 0);
-                this.lineTo(-this._pointX+this._width-this._otstup*2, 0);
-            }
-
-            if (this._pointX >= 0 && this._pointX<=this._width) {
-                this.moveTo(0, -this._pointY);
-                this.lineTo(0, -this._pointY+this._height-this._otstup*2);
-           }
-
-            this.ctx.stroke();
-
+            if(this._bSetkaText==false)return
             for (var i = xx1; i < this._width; i+=sah*this._mashtab) {
                 this.ctx.textAlign = "center";
-                point.x=i+this._otstup*2;
-                point.y=-this.otY-this._pointY+this._otstup;         
+                point.x=i;
+                point.y=-this._pointY-5;         
                 this.setText(point,Math.round(i/this._mashtab*1000)/1000+"")
             }
 
             for (var i = yy1; i < this._height; i+=sah*this._mashtab) {
                 this.ctx.textAlign = "right"; 
-                point.x=-this._pointX+this._otstup
-                point.y=i-this.fontSize/2;      
+                point.x=-this._pointX-5
+                point.y=i+this.fontSize/4;      
                 this.setText(point,Math.round(i/this._mashtab*1000)/1000+"")
             }
             this.ctx.textAlign = "left";
@@ -161,8 +218,8 @@ export class DDCanvas extends DCont {
             cc = dcmParam.parseColor(color)
             this.ctx.fillStyle =  'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')'; 
             this.ctx.fillText(text,
-                point.x+this._pointX+this.otX,
-                point.y+fontSize+this._pointY+this.otY
+                this.getX(point.x),
+                this.getY(point.y)
             );
             this.ctx.stroke()
             this.ctx.closePath()
@@ -179,8 +236,8 @@ export class DDCanvas extends DCont {
             cc = dcmParam.parseColor(color)
             this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
             this.ctx.arc(
-                point.x+this._pointX+this.otX, 
-                point.y+this._pointY+this.otY, 
+                this.getX(point.x), 
+                this.getY(point.y), 
                 radius, 0, 2 * Math.PI, false);
             this.ctx.stroke()
             this.ctx.closePath()
@@ -195,8 +252,8 @@ export class DDCanvas extends DCont {
             this.ctx.lineWidth = depth + "";           
             cc = dcmParam.parseColor(color)
             this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';           
-            this.ctx.moveTo(point.x + this._pointX+this.otX, point.y + this._pointY+this.otY);
-            this.ctx.lineTo(point1.x + this._pointX+this.otX, point1.y + this._pointY+this.otY);
+            this.ctx.moveTo(this.getX(point.x), this.getY(point.y));
+            this.ctx.lineTo(this.getX(point1.x), this.getY(point1.y));
             this.ctx.stroke();
         }
 
@@ -211,7 +268,7 @@ export class DDCanvas extends DCont {
             cc = dcmParam.parseColor(color)
             this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
             this.ctx.globalAlpha = alp;
-            this.ctx.rect(point.x + this._pointX+this.otX, point.y + this._pointY+this.otY, point1.x  - point.x , point1.y - point.y );
+            this.ctx.rect(this.getX(point.x), this.getY(point.y), point1.x  - point.x , point1.y - point.y );
             this.ctx.stroke();
         }
 
@@ -227,7 +284,7 @@ export class DDCanvas extends DCont {
             cc = dcmParam.parseColor(color)
             this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
             this.ctx.globalAlpha = alp;
-            this.ctx.rect(rect.x + this._pointX+this.otX, rect.y + this._pointY+this.otY, rect.h, rect.w);
+            this.ctx.rect(this.getX(rect.x), this.getY(rect.y), rect.h, rect.w);
             this.ctx.stroke();
         }
 
@@ -259,15 +316,23 @@ export class DDCanvas extends DCont {
 
 
         var rr=null;
+        let sc
         //появление panel2 при наведении курсора
         this.mousemove = function (e) {
+            
+
             self.panel2.visible=true;
             rr=self.panel1.div.getBoundingClientRect();
-            self.panel2.width=e.clientX-rr.x;
-            self.panel2.height=e.clientY-rr.y;
-        }    
+            self.panel2.width=(e.clientX-rr.x)/sss;
+            self.panel2.height=(e.clientY-rr.y)/sss;
+            
+        } 
 
+
+
+        var sss=1
         this.mouseover = function (e) {
+            sss=self.getScaleScane() 
             dcmParam.addFunMove(self.mousemove);
             self.mousemove(e)
 
@@ -277,11 +342,7 @@ export class DDCanvas extends DCont {
             self.panel2.visible=false
         };        
 
-        if (dcmParam.mobile == false) {           
-            this.panel1.div.addEventListener('mouseover', self.mouseover);
-            this.panel1.div.addEventListener('mouseout', self.mouseout);
-        }
-
+      
 
     }
 
@@ -303,10 +364,10 @@ export class DDCanvas extends DCont {
     set width(value) {
         if (this._width != value) {
             this._width = value;
-            this.widthContent = this._width+this.otX+this._otstup;
-            this.canvas.width = this.widthContent;
-            this.panel1.width = this._width-this._otstup*2;
-            this.panel.width = this.widthContent;
+            this.widthContent = this._width+this._otXY;
+            this.canvas.width = this.widthContent+this._canPlus*2;
+            this.panel1.width = this._width;
+            //this.panel.width = this.widthContent;
             this.clear()
             this.setSetka()
             //this.debag.width = this._width;
@@ -320,10 +381,10 @@ export class DDCanvas extends DCont {
     set height(value) {
         if (this._height != value) {
             this._height = value;
-            this.heightContent = this._height+this.otY-this._otstup;
-            this.canvas.height = this.heightContent;
-            this.panel1.height = this.height-this._otstup*2;
-            this.panel.height = this.heightContent;
+            this.heightContent = this._height+this._otXY;
+            this.canvas.height = this.heightContent+this._canPlus*2;
+            this.panel1.height = this.height;
+           // this.panel.height = this.heightContent;
             this.clear()
             this.setSetka()
             //this.debag.height = this._height;
@@ -332,6 +393,32 @@ export class DDCanvas extends DCont {
     get height() {
         return this._height;
     }
+
+    //движение сетки по x
+    set bDrag(value) {
+        if (this._bDrag != value) {
+            this._bDrag = value;
+            this.panel1.visible=this._bDrag;
+            
+            if(this._bDrag==true){
+                if (dcmParam.mobile == false) {           
+                    this.panel1.div.addEventListener('mouseover', this.mouseover);
+                    this.panel1.div.addEventListener('mouseout', this.mouseout);
+                }
+            }else{
+                if (dcmParam.mobile == false) {           
+                    this.panel1.div.removeEventListener('mouseover', this.mouseover);
+                    this.panel1.div.removeEventListener('mouseout', this.mouseout);
+                }
+            }
+            
+        }
+    }
+    get bDrag() {
+        return this._bDrag;
+    }
+
+
 
     //движение сетки по x
     set pointX(value) {
@@ -369,106 +456,61 @@ export class DDCanvas extends DCont {
         return this._mashtab;
     }
 
+    set bSetkaText(value) {
+        if (this._bSetkaText != value) {
+            this._bSetkaText = value;
+            
+
+            this.clear();
+            this.setSetka();
+        }
+    }
+    get bSetkaText() {
+        return this._bSetkaText;
+    }
+
+    set bSetkaCobe(value) {
+        if (this._bSetkaCobe != value) {
+            this._bSetkaCobe = value;           
+
+            this.clear();
+            this.setSetka();
+        }
+    }
+    get bSetkaCobe() {
+        return this._bSetkaCobe;
+    }
+
+    
+
+
+    set canPlus(value) {
+        if (this._canPlus != value) {
+            this._canPlus = value;
+            this.canvas.width = this.widthContent+this._canPlus*2;
+            this.canvas.height = this.heightContent+this._canPlus*2;
+            this.dCC.x=-this._canPlus
+            this.dCC.y=-this._canPlus
+            this.clear();
+            this.setSetka();
+        }
+    }
+    get canPlus() {
+        return this._canPlus;
+    }
+
+    set otXY(value) {
+        if (this._otXY != value) {
+            this._otXY = value;
+            this.panel1.x= this._otXY;
+            this.panel1.y= this._otXY; 
+                  
+            this.clear();
+            this.setSetka();
+        }
+    }
+    get otXY() {
+        return this._otXY;
+    }
 }
 
-
-
-/*export class Debag {
-    constructor(dCont, fun) {
-
-        this.type = 'Debag';
-        this.dCont = dCont;
-        this.fun = fun;
-        var self = this;
-
-
-        this.kol = 4
-        this.time = 1000
-
-        this._width = 200;
-        this._height = 200;
-        this.otstup = 10;
-
-        this.array = []
-        this.arrayT = []
-
-        this.dWindow = new DWindow(dCont, 300, 0, "TestPanel")
-
-        this.buttonTest = new DButton(this.dWindow.content, this.otstup, this.otstup, "TEST", function() {
-            self.drahXZ()
-        })
-
-
-        this.panelBase = new DPanel(this.dWindow.content, this.otstup, this.otstup * 2 + this.buttonTest.height)
-
-
-        this.drag = function() {
-            this.dWindow.width = this._width + this.otstup * 2;
-            this.dWindow.height = this._height + this.otstup * 3 + this.buttonTest.height + 32;
-            this.panelBase.width = this._width;
-            this.panelBase.height = this._height;
-        }
-
-        this.drag()
-
-        this.drahwwww = function() {
-            let res = []
-            for (var i = 0; i < self.array.length; i++) {
-                res.push({
-                    x: self.array[i].x,
-                    y: self.array[i].y,
-                })
-            }
-            self.fun("draw", res)
-        }
-
-
-        for (var i = 0; i < this.kol; i++) {
-            let buttonTest = new DButton(this.panelBase)
-            buttonTest.width = 10;
-            buttonTest.height = 10;
-            buttonTest.x = Math.random() * (this.panelBase.width - buttonTest.width);
-            buttonTest.y = Math.random() * (this.panelBase.height - buttonTest.height);
-            this.array.push(buttonTest)
-
-            let t = new TWEEN.Tween(buttonTest)
-            this.arrayT.push(t)
-
-            if (i == 0) t.onUpdate(this.drahwwww)
-        }
-
-
-
-
-        this.drahXZ = function() {
-            for (var i = 0; i < self.array.length; i++) {
-                self.arrayT[i].to({ x: Math.random() * (this.panelBase.width - 10), y: Math.random() * (this.panelBase.height - 10) }, this.time).start();
-            }
-        }
-       // this.drahXZ()
-
-    }
-
-    set width(value) {
-        if (this._width != value) {
-            this._width = value;
-            this.drag()
-        }
-    }
-    get width() {
-        return this._width;
-    }
-
-
-    set height(value) {
-        if (this._height != value) {
-            this._height = value;
-            this.drag()
-        }
-    }
-    get height() {
-        return this._height;
-    }
-
-
-}*/

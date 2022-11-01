@@ -4,7 +4,8 @@
 
 <script src="src/lib/tween.min.js"></script>
 <script src="build/divLib.js"></script>
-
+<script src="build/divLibPlus.js"></script>
+<script src="src/lib/jquery-1.11.3.js"></script>
 
 <style type="text/css">
 	#stats { position: absolute; top:0; left: 200px; }
@@ -17,6 +18,9 @@
 <script  type="module">
 	window.trace = window.console.log.bind(window.console);
 	import { DDebug } from "./src/dCont/plus/dDebug/DDebug.js";
+	import { DSArray } from "./src/dCont/plus/dSArray/DSArray.js";
+
+	import { DDCanvas } from "./src/dCont/plus/dSArray/DDCanvas.js";
 	//import { DButtons } from "./src/dCont/DButtons.js";
 
 
@@ -32,10 +36,70 @@
 		var dCont1= new DCont(dCont);
 
 		dDebug=new DDebug(dCont1,0,0,"xz11")
+/*
+		var sss='[{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679356.775000998 25500326.778003 5.3969999961555"},{"@label":"pipeEnd","@value":"6679354.468001001 25500330.668002997 4.422999996691942"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"42.22","@refEnd":"111"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679354.468001001 25500330.668002997 4.422999996691942"},{"@label":"pipeEnd","@value":"6679350.846001 25500335.519002993 4.381999999284744"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"1.13"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679350.846001 25500335.519002993 4.381999999284744"},{"@label":"pipeEnd","@value":"6679347.139001001 25500340.213002987 4.2259999960660934"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"4.21","@refStart":"qqq"}},{"object":{"@name":"pipe_xz95","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679347.139001001 25500340.213002987 4.2259999960660934"},{"@label":"pipeEnd","@value":"6679343.552000997 25500344.790003017 4.084000002592802"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"3.96"}},{"object":{"@name":"pipe_xz66","@state":"proposed","CircPipe":{"@diameter":"0.1","@desc":"description","@material":"material","@thickness":"0.1"},"Feature":[{"@code":"IM_pipe","@source":"inframodel","Property":[{"@label":"pressureClass","@value":"none"},{"@label":"elevType","@value":"invert level"},{"@label":"pipeStart","@value":"6679327.762001001 25500365.105003007 3.495999999344349"},{"@label":"pipeEnd","@value":"6679325.819000999 25500367.621003002 3.5060000009834766"}]},{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"100"},{"@label":"infraCodingDesc","@value":"description"},{"@label":"terrainCoding","@value":"10000"},{"@label":"surfaceCoding","@value":"10000"}]}],"@slope":"0.51"}}]'
+		var aa=JSON.parse(sss);*/
 
-		// var db=new DButtons(dCont,111,111,["sdf,","xdfsdgdfsg"],function(){
 
-		// })
+		var sss='[{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679242.252 25600425.8922 3.1663 6679240.8411 25600423.0462 0.2598 6679241.2793 25600424.077 -1.3613"}},{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679237.8562 25600422.8776 -0.5424 6679240.7107 25600421.8405 0.9234 6679241.8805 25600422.908 2.3839"}}]'
+
+		var aa=JSON.parse(sss);
+		trace(aa)
+		
+
+
+		var aoo=[  
+            //{key:["object","@name"], type:"string",name:"name"},       
+            {key:[
+                "object",
+                {type:"seek",key:"Feature",array:['@code','IM_coding','@source','inframodel']},
+                {type:"seek",key:"Property",array:['@label','terrainCoding']},
+                "@value"
+                ], type:"string",name:"terrainCoding"}, 
+            {key:[
+                "object",
+                {type:"seek",key:"Feature",array:['@code','IM_coding','@source','inframodel']},
+                {type:"seek",key:"Property",array:['@label','terrainCodingDesc']},
+                "@value"
+                ], type:"string",name:"terrainCodingDesc"}, 
+            {key:[
+                "object",
+                {type:"seek",key:"Feature",array:['@code','IM_coding','@source','inframodel']},
+                {type:"seek",key:"Property",array:['@label','infraCodingDesc']},
+                "@value"
+                ], type:"string",name:"infraCodingDesc"}, 
+            {key:[
+                "object",
+                {type:"seek",key:"Feature",array:['@code','IM_coding','@source','inframodel']},
+                {type:"seek",key:"Property",array:['@label','infraCodingDesc']},
+                "@value"
+                ], type:"string",name:"infraCodingDesc"},/**/       
+        ]
+
+
+        var dSArray=new DSArray(null, 0,0,function(){
+			
+		})
+		
+		
+
+		dSArray.setArray(aa,aoo);
+
+		//dDebug.getBase();
+		var cc=new DDCanvas()
+		cc.bSetkaCobe=true
+		cc.bSetkaText=false
+		cc.mashtab=1
+		dDebug.setObj(cc,1);
+
+
+
+		/*var db=new DButtons(null,111,111,["sdf,","xdfsdgdfsg"],function(){
+
+		})
+		dDebug.setObj(db,0,"name");*/
+
+
 		// db.setTArr(["xz","XZ","sdfks se f sf  e","sdfks se f sf  e 123456789"])
 
 		function tick() {				
