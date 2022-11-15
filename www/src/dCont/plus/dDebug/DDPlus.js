@@ -1,7 +1,9 @@
 
 
-import { DCreatIcon } from '../dCreatIcon/DCreatIcon.js';
-import { DRedactPM } from './DRedactPM.js';
+
+//import { DCreatIcon } from '../dCreatIcon/DCreatIcon.js';
+import { DShtora } from '../dShtora/DShtora.js';
+import { DSArray } from '../dSArray/DSArray.js';
 export class DDPlus{
     constructor(par,fun) {
         
@@ -55,16 +57,21 @@ export class DDPlus{
             }
 
             let aa=[
-                {name:"Тут глубина"},
-                {name:"object/num",object:{num:100}},
+                {name:"Тут глубина",bool:true},
+
+                {name:"object/num",bool:false,object:{num:100}},
+                {name:"object/num sdf sdf sfd sf sdf sdf sf sdf",bool:0,object:{num:130}},
+                {name:"zz",object:{num:30}},
+                //{name:"object/num",object:{num:130}},
                 {Feature:[{num:100},{code:'IM_pipe',source:'inframodel',Property:[{label:"elevType",value:"wwww"}]}]},
             ]
 
             let aoo=[
-                {key:["name"], type:"string",name:"name",width:140},
-                {key:["object","num"], type:"number",name:"refStart"},               
+                {key:["name"], type:"string",name:"name",width:40},
+                {key:["object","num"], type:"number",name:"refStart"},
+                {key:["bool"], type:"boolean",name:"bool"},              
                 {key:[
-                    "object",
+                    
                     {type:"seek",key:"Feature",array:['code','IM_pipe','source','inframodel']},
                     {type:"seek",key:"Property",array:['label','elevType']},
                     "value"
@@ -83,7 +90,38 @@ export class DDPlus{
 
             this.addPlus(new DCreatIcon(), null, false)
 
-           // this.addPlus(new DRedactPM(null, 0,0,"xzxz",["ru","en","xz"]), null, false)
+
+
+
+            var dShtora=new DShtora(null,0,0,function(s,p,p1){
+                trace("!!!!",s,p,p1)
+
+                if(s=="down"){
+                    
+                    self.fun("addObject", p);
+                }
+            });
+
+            dShtora.addDShtora(new DShtora());
+           /**/ //dShtora.addDShtora(new DShtora());    
+            var dShtora1=new DShtora(null,0,0,function(s,p,p1){
+                
+            });
+            dShtora1.addDShtora(new DShtora());
+            dShtora1.addDShtora(new DShtora());
+            dShtora1.bVrtikal=true
+
+            dShtora.addDShtora(dShtora1);
+            dShtora.addDShtora(new DShtora());
+            this.addPlus(dShtora, null, false)
+
+            var oo
+            new DButton(dShtora,330,0,"get",function(){
+                oo=dShtora.getObj()
+            })
+            new DButton(dShtora,330,33,"set",function(){
+                dShtora.setObj(oo)
+            })
 
 
             var s='[{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679242.252 25600425.8922 3.1663 6679240.8411 25600423.0462 0.2598 6679241.2793 25600424.077 -1.3613"}},{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[[],{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679237.8562 25600422.8776 -0.5424 6679240.7107 25600421.8405 0.9234 6679241.8805 25600422.908 2.3839"}}]'

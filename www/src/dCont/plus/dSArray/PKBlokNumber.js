@@ -35,7 +35,7 @@ export class PKBlokNumber extends PKBlok {
                     self.active1=true;
 
                 }
-                
+                trace("!!")
                 self.fun("drag")
 
             }); 
@@ -76,6 +76,7 @@ export class PKBlokNumber extends PKBlok {
 
         this.okrugObjArr=function(p){
             if(p==null)return
+            if(p==undefined)return    
             if(this.min>p)this.min=p;
             if(this.max<p)this.max=p;
             if(this.comp.okrug==1){
@@ -83,6 +84,7 @@ export class PKBlokNumber extends PKBlok {
                     this.comp.okrug=100
                 }
             }
+
             this.comp.setMM(this.min,this.max)
         }
 

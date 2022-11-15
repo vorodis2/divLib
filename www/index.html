@@ -117,7 +117,11 @@
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
 		
-		plus(new DButtons(null,0,0,["xz","xz1","xz2"],downMy));
+		var bbb=new DButtons(null,0,0,["xz","xz1","xz2"],downMy)
+		bbb.boolDragIndex=false
+
+
+		plus(bbb);
 		
 		plus(new DWindow(null,0,0,"DWindow",downMy));
 		plus(new DColor(null,0,0,"#0000ff",downMy));

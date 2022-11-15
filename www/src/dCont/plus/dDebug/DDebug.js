@@ -378,7 +378,7 @@ export class PObject {
 
 
         var pObject=new DParamObject(this.dC,2,2,function(s){           
-            //trace(dButtons.width, dButtons.height)
+            
         },1);
         pObject.width=(this.param.sizeBase2-this.param.otstup*2)/scale;
 
@@ -448,7 +448,7 @@ export class SSSS {
         }
 
        
-        trace("@@",this._boolStatus)
+     
 
 
         this.update=function(){
@@ -466,7 +466,7 @@ export class SSSS {
 
     set boolStatus(value) {
         if(this._boolStatus!=value){
-            trace("@@@@@@@@@@@@@@@@@@",value)
+            
             this._boolStatus = value;            
             if(this._boolStatus==true){
                 this.init()

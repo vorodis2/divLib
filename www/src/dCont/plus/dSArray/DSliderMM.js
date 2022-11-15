@@ -107,8 +107,19 @@ export class DSliderMM extends DCont {
         this.setMM = function (min,max) {
             this.min=min;
             this.max=max;
+            if(this.min==this.max){
+               // this.max+=0.001
+            }
             this.value=min;
             this.value1=max;
+
+           /* if(this.min==this.max){
+                this.panel.activMouse=false;
+                this.panel1.activMouse=false;
+            }else{
+                this.panel.activMouse=true;
+                this.panel1.activMouse=true;
+            }*/
         }
 
         //TODO
@@ -183,9 +194,13 @@ export class DSliderMM extends DCont {
             }
 
             if(b2==false){
-                self.naValue(sp.value + ss + self._height / 2);
+                let s=sp.value + ss + self._height / 2;
+                if(isNaN(s)==true)s=self._value                
+                self.naValue(s);
             }else{
-                self.naValue1(sp.value1 + ss + self._height / 2);
+                let s=sp.value1 + ss + self._height / 2;
+                if(isNaN(s)==true)s=self._value1
+                self.naValue1(s);
             }
             
             if (self.fun) self.fun();

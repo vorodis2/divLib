@@ -9,7 +9,8 @@ export class DButtons extends DCont {
         this.infoThis=`
             var dbs= new DButtons(this.dCont,0,0, ["xz","xz1"],function(){}) 
             dbs.tip=0;//в лево по w; 1 вниз; 2 под; 3 в лево по кнопка.w;
-            dbs.setTArr(["xz","xz1"]);выстопит tip=3;            
+            dbs.setTArr(["xz","xz1"]);выстопит tip=3;  
+            .boolDragIndex=true//При тыке меняет индекс          
         `
 
         if (dcmParam == undefined) dcmParam = new DCM();
@@ -30,7 +31,7 @@ export class DButtons extends DCont {
         if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
         
         this.funChange = undefined;
-
+        this.boolDragIndex=true
         this._wh=dcmParam.wh;
         
         this._otstup = dcmParam._otstup;
@@ -89,15 +90,18 @@ export class DButtons extends DCont {
 
 
         this.sob = function(){
-            if (self._tip==2) {
-                let p=(this.idArr+1)%self._kol
-                
-                self.index=p
-                if(self.fun)self.fun()
-                return
-            }
+            if(self.boolDragIndex==true){
+                if (self._tip==2) {
+                    let p=(this.idArr+1)%self._kol
+                    
+                    self.index=p
+                    if(self.fun)self.fun()
+                    return
+                }
 
-            self.index=this.idArr
+                self.index=this.idArr
+            }
+            
 
             if(self.fun)self.fun()
         }

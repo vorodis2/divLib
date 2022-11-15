@@ -411,10 +411,10 @@ export class MibLinsAnd {
             bBlur:true,
             bRound:true,
 
-            bmBColor:true,
+            bmBColor:false,
             bmColor:"#ff0000",
 
-            bmBNax:true,
+            bmBNax:false,
             naxV:"#ff0000",
 
         } 
@@ -663,7 +663,6 @@ export class MibLinsAnd {
 
 
 
-
 export class MibBase {
     constructor(par,  fun) {
         var self=this
@@ -681,7 +680,7 @@ export class MibBase {
 
 
         this.objStart={
-            wh:64,
+            wh:200,
             type:".svg",
             sahTen:1,
             color:"#000000",
