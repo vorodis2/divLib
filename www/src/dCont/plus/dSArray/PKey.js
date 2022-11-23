@@ -25,13 +25,12 @@ export class PKey{
         this.array=[];
         this.arrC=[];
         this._index=-1;
-
+        this._visible=true
         var  aaa=[]
 
-        this.setObjArr=function(obj, arr){
+        this.setObjArr=function(obj, arr){            
             for (var i = 0; i < this.array.length; i++) {
-                this.array[i].setObjArr(obj, arr)
-                
+                this.array[i].setObjArr(obj, arr)                
             }
         }
 
@@ -166,12 +165,13 @@ export class PKey{
             }
 
             //---------------------------------
-                bl.idArr=  this.arrC.length    
-                this.arrC.push(bl)
-                       
-                bl.setObj(o);
-                bl.idArr=this.array.length
-                this.array.push(bl)
+            bl.idArr=  this.arrC.length    
+            this.arrC.push(bl)
+            
+            bl.visible= this._visible      
+            bl.setObj(o);
+            bl.idArr=this.array.length
+            this.array.push(bl)
             
 
             return bl;
@@ -186,9 +186,40 @@ export class PKey{
             }
 
         }
+
+
+        this.setWidth=function(w){            
+            let ww=0;
+            let kk=0
+            let kk1=0
+            for (var i = 0; i < this.array.length; i++) {                
+                if(this.array[i].obj.width!=undefined){
+                    ww+=this.array[i].obj.width
+                    kk++;
+                }else{
+                    kk1++
+                }
+            }
+            let wer=(w-ww)//(this.array.length-kk);
+            
+            let wgh=wer/kk1;
+
+            let xx=0
+            for (var i = 0; i < this.array.length; i++) {
+                if(this.array[i].obj.width!=undefined){
+                    this.array[i].wComp=this.array[i].obj.width
+                }else{
+                    this.array[i].wComp=wgh
+                }
+                this.array[i].dCont.x=xx; 
+                xx+=this.array[i].wComp
+            }
+        }
+
+
         //------Nik
         this.redrawWComp=function(){
-            for (var i = 0; i < this.arrC.length; i++) {
+            /*for (var i = 0; i < this.arrC.length; i++) {
                     this.arrC[i].wComp=this._wComp
             }
            
@@ -200,7 +231,7 @@ export class PKey{
             this.width=0
             for (var i = 0; i < this.array.length; i++) {               
                 this.width+=this._wComp;
-            }
+            }*/
             
         }
         //----------
@@ -274,6 +305,17 @@ export class PKey{
         }
     }    
     get otstup() { return  this._otstup;}
+
+    set visible(value) {
+        if(this._visible!=value){
+            this._visible = value;  
+
+            for (var i = 0; i < this.arrC.length; i++) {
+                this.arrC[i].visible=this._visible
+            }
+        }
+    }    
+    get visible() { return  this._visible;}
 
 
     set wh(value) {

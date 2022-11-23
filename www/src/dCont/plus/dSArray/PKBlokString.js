@@ -15,7 +15,7 @@ export class PKBlokString extends PKBlok {
         
         this.initComp=function(){
             if(this.comp!=undefined)return
-            this.comp =new DInput(this.panel, this._otstup*2, this._otstup*2+dcmParam.fontSize,"",function(){
+            this.comp =new DInput(this.panel1, this._otstup*2, this._otstup*2+dcmParam.fontSize,"",function(){
                 
                 if(this.value==""){
                     self.active1=false;

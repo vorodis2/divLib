@@ -229,7 +229,7 @@ export class DThreeBool extends DCont{
                 if(arrBut[i].isIndexOver) arrBut[i]._color=col;
                 else arrBut[i]._color=col;
 
-                arrBut[i].actXZ="null"
+                arrBut[i].actXZ="null";
                 if(arrBut[i].id == this._activId){
                     arrBut[i]._color = this.color4;
                     arrBut[i].actXZ=this.color4

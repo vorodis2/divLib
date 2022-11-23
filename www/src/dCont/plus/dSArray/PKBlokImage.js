@@ -15,7 +15,7 @@ export class PKBlokImage extends PKBlok {
         
         this.initComp=function(){
             if(this.comp!=undefined)return
-            this.comp =new DInput(this.panel, this._otstup*2, this._otstup*2+dcmParam.fontSize,"",function(){
+            this.comp =new DInput(this.panel1, this._otstup*2, this._otstup*2+dcmParam.fontSize,"",function(){
                 
                 if(this.value==""){
                     self.active1=false;
@@ -31,7 +31,9 @@ export class PKBlokImage extends PKBlok {
 
         this.isPic=function(p){
             if(p==null)return p
+                
             if (p.includes('.png') == true || p.includes('.svg') == true|| p.includes('.jpeg') == true || p.includes('.jpg') == true || p.includes('.JPEG') == true|| p.includes('.JPG') == true|| p.includes('.SVG') == true|| p.includes('.PNG') == true) {
+               
                 return p;       
             }
             return null;  
@@ -39,18 +41,24 @@ export class PKBlokImage extends PKBlok {
 
         this.setObjArr=function(obj, arr){
             let p=null;
+            
             if(this.obj.key==null){          
                 if(typeof obj =="string" ) p=obj
                     arr.push(this.isPic(p))                   
             }else{
-                let pp=this.getOA(obj, this.obj.key, 0)                
+                let pp=this.getOA(obj, this.obj.key, 0) 
+                             
                 if(pp==undefined || pp==null){
                     arr.push(null)
                 }else{
+                  
                     if(typeof pp =="string" ) p=pp
-                       if (typeof p == "object") {
-                           arr.push(this.isPic(p))
-                       } 
+                    
+                    if (typeof p == "object") {
+                        arr.push(this.isPic(p))
+                    } else{
+                        arr.push(p)
+                    }
                     
                 }
             }

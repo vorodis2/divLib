@@ -4,6 +4,7 @@
 //import { DCreatIcon } from '../dCreatIcon/DCreatIcon.js';
 import { DShtora } from '../dShtora/DShtora.js';
 import { DSArray } from '../dSArray/DSArray.js';
+import { DVerhPanels } from '../dShtora/DVerhPanels.js';
 export class DDPlus{
     constructor(par,fun) {
         
@@ -26,12 +27,14 @@ export class DDPlus{
         this.dCont1.x=0;
         this.dCont1.y=32+this.param.otstup+dcmParam.fontSize//Litte;
         this.content= new DCont(this.dCont1);
+        
+        this.panel=new DPanel(this.content);
+        this.dDCanvas=new DDCanvas(this.panel);
+        this.dDCanvas.bSetkaCobe=true;
+        this.dDCanvas.bSetkaText=false;
+        this.dDCanvas.mashtab=10;
 
-        this.panel=new DPanel(this.content)
-        this.dDCanvas=new DDCanvas(this.panel)
-        this.dDCanvas.bSetkaCobe=true
-        this.dDCanvas.bSetkaText=false
-        this.dDCanvas.mashtab=10
+
 
         var ww=150
         var otstup=this.param.otstup
@@ -49,34 +52,30 @@ export class DDPlus{
                 
                 setIndex(this.index)
             });
-            this.dbs.otstup=0
-            this.dbs.index=-1
+            this.dbs.otstup=0;
+            this.dbs.index=-1;
 
             for (var i = 0; i < this.aDo.length; i+=2) {                
                 this.addPlus(this.aDo[i], this.aDo[i+1], false)
             }
 
             let aa=[
-                {name:"Тут глубина",bool:true},
-
-                {name:"object/num",bool:false,object:{num:100}},
-                {name:"object/num sdf sdf sfd sf sdf sdf sf sdf",bool:0,object:{num:130}},
-                {name:"zz",object:{num:30}},
-                //{name:"object/num",object:{num:130}},
+                {name:"Тут глубина",bool:true,pic:"resources/pic/1.png",object:{num:100}},                
                 {Feature:[{num:100},{code:'IM_pipe',source:'inframodel',Property:[{label:"elevType",value:"wwww"}]}]},
             ]
 
             let aoo=[
                 {key:["name"], type:"string",name:"name",width:40},
-                {key:["object","num"], type:"number",name:"refStart"},
-                {key:["bool"], type:"boolean",name:"bool"},              
-                {key:[
-                    
+                {key:["object","num"], type:"number",name:"xz"},
+                {key:["bool"], type:"boolean",name:"bool"},                 
+                {key:["pic"], type:"image",name:"image"},       
+                {key:[                    
                     {type:"seek",key:"Feature",array:['code','IM_pipe','source','inframodel']},
                     {type:"seek",key:"Property",array:['label','elevType']},
                     "value"
-                    ], type:"string",name:"elevType"}, /**/
+                    ], type:"string",name:"elevType"},
             ]
+            
             var dSArray=new DSArray(null, 0,0,function(){
             
             })
@@ -94,7 +93,7 @@ export class DDPlus{
 
 
             var dShtora=new DShtora(null,0,0,function(s,p,p1){
-                trace("!!!!",s,p,p1)
+                
 
                 if(s=="down"){
                     
@@ -115,14 +114,24 @@ export class DDPlus{
             dShtora.addDShtora(new DShtora());
             this.addPlus(dShtora, null, false)
 
-            var oo
-            new DButton(dShtora,330,0,"get",function(){
-                oo=dShtora.getObj()
-            })
-            new DButton(dShtora,330,33,"set",function(){
-                dShtora.setObj(oo)
-            })
+            ///////////////////////////////////////////////////////////
+            var dp=new DVerhPanels()
 
+            dp.addPanel(this,"test0_____sdfs sf sf","test1111111111111111")
+            dp.addPanel(this,"test1_______")
+            dp.addPanel(this,"test2_________")
+            dp.addPanel(this,"test3___________")
+            dp.addPanel(this,"test4_____________")
+            this.addPlus(dp, null, false)
+
+
+            
+            new DButton(dp,55,111,"get",function(){
+               dp.addPanel(this,Math.random()+"",Math.random()+"") 
+            })
+            new DButton(dp,55,141,"AClose",function(){
+               dp.activeBut.boolCloseActive=!dp.activeBut.boolCloseActive;
+            })    
 
             var s='[{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679242.252 25600425.8922 3.1663 6679240.8411 25600423.0462 0.2598 6679241.2793 25600424.077 -1.3613"}},{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[[],{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679237.8562 25600422.8776 -0.5424 6679240.7107 25600421.8405 0.9234 6679241.8805 25600422.908 2.3839"}}]'
 
@@ -138,7 +147,7 @@ export class DDPlus{
                 }, 10);
                 
             }
-            //setIndex(0);
+            
         }
 
         this.aDo=[]

@@ -246,6 +246,7 @@ export class SaveLS {
         this.py=0
 
         this.dragPos=function(b){
+
             if(w==undefined)return
             let ww=(w/s)-this.wind.button.width;
             this.px=this.wind.x/ww;
@@ -257,6 +258,8 @@ export class SaveLS {
             this.py=this.wind.y/hh;
             if(this.py<0)this.py=0
             if(this.py>1)this.py=1
+
+            trace("!!",this.px,this.py)
 
             if(this.par._dragBool==false){
                 this.px=1;
@@ -300,10 +303,15 @@ export class SaveLS {
             this.par.minimize=this.ls.object["sls_minimize"]
             if(w){
                 if(this.ls.object["sls_width"])this.par.width=this.ls.object["sls_width"]
-                if(this.ls.object["sls_height"])this.par.height=this.ls.object["sls_height"]  
+                if(this.ls.object["sls_height"])this.par.height=this.ls.object["sls_height"]
+                   
+                if(this.ls.object["sls_px"]==undefined)this.ls.object["sls_px"] = 1;                 
+                if(this.ls.object["sls_py"]==undefined)this.ls.object["sls_py"]  =1  
 
-                this.px=this.ls.object["sls_px"]
-                this.py=this.ls.object["sls_py"]
+                this.px=this.ls.object["sls_px"];
+                this.py=this.ls.object["sls_py"];
+
+                
                 if(this.par._dragBool==false){
                     this.px=1;
                     this.py=0;

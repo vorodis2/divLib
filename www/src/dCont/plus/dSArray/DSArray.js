@@ -14,7 +14,27 @@ export class DSArray extends DCont {
         this.type = 'DSArray';
         if (dcmParam == undefined) dcmParam = new DCM();
         dcmParam.add(this);
-        
+        this.infoThis=`
+            var ds = new DSArray(this.dCont,0,0);
+            .setArray(arr, ap)//arr массив поиска ap- структура данных
+
+            let arr=[
+                {name:"Тут глубина",bool:true,pic:"resources/pic/1.png",object:{num:100}},                
+                {Feature:[{num:100},{code:'IM_pipe',source:'inframodel',Property:[{label:"elevType",value:"wwww"}]}]},
+            ]
+
+            let ap=[
+                {key:["name"], type:"string",name:"name",width:40},
+                {key:["object","num"], type:"number",name:"xz"},
+                {key:["bool"], type:"boolean",name:"bool"},                 
+                {key:["pic"], type:"image",name:"image"},       
+                {key:[                    
+                    {type:"seek",key:"Feature",array:['code','IM_pipe','source','inframodel']},
+                    {type:"seek",key:"Property",array:['label','elevType']},
+                    "value"
+                    ], type:"string",name:"elevType"},
+            ]
+        `  
         this.x = _x || 0;
         this.y = _y || 0;
         if (dCont != undefined)
@@ -24,11 +44,15 @@ export class DSArray extends DCont {
         this.dCont = new DCont(this);
         this._otstup = dcmParam._otstup;
 
-        this.width = 200;
+        this._width = 400;
         this._height = 200;
         this._wh = 24;
         this._wComp = 150;
         this._kol = 32;
+
+        this._boolLeft = true;
+        this._boolUp = true;
+
         this.hGal = 100;
         this.arrayStart = null
         this.array = [];
@@ -70,6 +94,7 @@ export class DSArray extends DCont {
                     self.korekt()
                 }
             });
+            this.pKey.visible = this._boolUp
 
             this.gallery = new DSArrGallery(this.dCont, 0, 0, function(s, p) {
 
@@ -147,8 +172,7 @@ export class DSArray extends DCont {
                 this.pKey.setArr(this.arrParam);
             }
 
-            // if(this.pKey.arrParam==undefined)this.pKey.setArr(this.arrParam);
-
+            
             this.active = true;
             this.chek.value = false;
             this.arrayStart = arr;
@@ -169,6 +193,8 @@ export class DSArray extends DCont {
             this.drag();
 
             this.pKey.finalArr()
+            this.dragWh()
+            this.drag();
 
         }
 
@@ -190,14 +216,22 @@ export class DSArray extends DCont {
             10
         ]
 
-
+        var otL=0;
+        var otU=0;
         this.drag = function() {
-            this.width = 0;
+           // this.width = 0;
 
             this.aPos[1] = this.switchPage.wh + this._otstup * 3;
             this.aPos[0] = this._height - this.aPos[1];
 
+            otL=0;
+            otU=0;
+            if(this._boolLeft)otL=this._otstup * 2 + 24
 
+            if(this._boolUp)otU=this._otstup * 3 + 42   
+
+            this.pKey.setWidth(this.width-otL)
+/*
             if (this.switchPage.width + this._otstup * 2 > this.width) this.width = this.switchPage.width + this._otstup * 2
             if (this.width < 250) this.width = 250
 
@@ -205,19 +239,22 @@ export class DSArray extends DCont {
 
             if (this.pKey.x + this.pKey.width + this._otstup > this.width) {
                 this.width = this.pKey.x + this.pKey.width + this._otstup
-            }
+            }*/
+
+
 
             this.panelBase.width = this.width
             this.panelBase.height = this.height
 
+            this.pKey.x = otL;
             this.pKey.y = this._otstup ;
             this.pKey.height = this.aPos[0]
 
             this.gallery.x = 0;
-            this.gallery.y = this._otstup * 5 + dcmParam.fontSize + this._wh;
-            this.gallery.width = this.width - this._otstup * 2;
-            this.gallery.widthPic = this.gallery.width;
-            this.gallery.height = this.aPos[0] - this._otstup * 4 - this._wh - dcmParam.fontSize
+            this.gallery.y = otU;
+            this.gallery.width = this.width //- otL;
+            this.gallery.widthPic = this.gallery.width//+ otL;
+            this.gallery.height = this.height-otU- this._otstup * 2-24
 
 
             this.button.x = this._otstup+2;
@@ -227,7 +264,11 @@ export class DSArray extends DCont {
             this.chek.y = this._otstup*2+ this.button.height;
 
 
-
+            if(this._boolLeft && this._boolUp){
+                this.button.visible=this.chek.visible=true
+            }else{
+                this.button.visible=this.chek.visible=false
+            }
 
 
             this.switchPage.x = (this.width - this.switchPage.width) / 2
@@ -291,7 +332,7 @@ export class DSArray extends DCont {
         return this._kol;
     }
 
-
+/*
     set wComp(value) {
         if (this._wComp != value) {
             this._wComp = value;
@@ -304,9 +345,47 @@ export class DSArray extends DCont {
     }
     get wComp() {
         return this._wComp;
+    }*/
+
+   set width(value) {
+        if (this._width != value) {
+            this._width = value;
+            this.drag()
+            this.gallery.dragObj()
+        }
     }
+    get width() {
+        return this._width;
+    }  
+    
+    set boolLeft(value) {
+        if (this._boolLeft != value) {
+            this._boolLeft = value;
 
+            this.drag()
+            this.gallery._boolLeft = value;
+            this.gallery.dragObj()
+        }
+    }
+    get boolLeft() {
+        return this._boolLeft;
+    }  
+    
+    set boolUp(value) {
+        if (this._boolUp != value) {
+            this._boolUp = value;
+            this.pKey.visible=this._boolUp
+            this.drag()
+            this.gallery.dragObj()
+        }
+    }
+    get boolUp() {
+        return this._boolUp;
+    }   
 
+    
+
+        
     set height(value) {
         if (this._height != value) {
             this._height = value;
@@ -325,7 +404,7 @@ export class DSArray extends DCont {
             this.pKey.wh = this._wh;
             this.gallery.wh = this._wh;
             this.dragWh()
-
+            this.drag()
         }
     }
     get wh() {

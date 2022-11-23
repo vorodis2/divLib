@@ -37,9 +37,12 @@ export class PKBlokBoolean extends PKBlok {
         this.initComp=function(){
             if(this.comp!=undefined)return
            
-            this.comp= new DButtons(this.panel, 0, 0,3, this.sob)
+            this.comp= new DButtons(this.panel1, 0, 0,3, this.sob)
             this.comp.wh=24
             this.comp.tip=3
+
+            this.comp.array[1].text="0"
+            this.comp.array[2].text="1"
 
             this.reDraw()
 

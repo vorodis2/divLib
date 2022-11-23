@@ -20,7 +20,7 @@ export class PKBlokNumber extends PKBlok {
 
         this.initComp=function(){
             if(this.comp!=undefined)return
-            this.comp=new DSliderMM(this.panel, this._otstup*2, this._otstup*2+dcmParam.fontSize-10,function(){
+            this.comp=new DSliderMM(this.panel1, this._otstup*2, this._otstup*2+dcmParam.fontSize-10,function(){
                 
                 /*if(this.value==""){
                     self.active1=false;
@@ -29,21 +29,18 @@ export class PKBlokNumber extends PKBlok {
                 }
                 self.fun("drag")*/
                 if(this.value==this.min && this.value1==this.max){
-                    self.active1=false;
-                    
+                    self.active1=false;                    
                 }else{
                     self.active1=true;
-
                 }
-                trace("!!")
-                self.fun("drag")
-
+                
+                self.fun("drag");
             }); 
             this.comp.width= this.panel1.width- this._otstup*2;
             this.comp.height=this._wh+this.comp.label1.fontSize;
-            //this.comp.timeFun=1;
-
         } 
+
+
 
         this.finalArr=function(){}
 

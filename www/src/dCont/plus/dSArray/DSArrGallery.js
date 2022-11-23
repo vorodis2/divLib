@@ -15,7 +15,7 @@ export class DSArrGallery extends DGallery {
         this._otstup=this.par._otstup;
         this._wh=this.par._wh;
         var b=false
-
+        this._boolLeft = par._boolLeft;
 
         this.createZamen=function(){ 
             var r=new BoxXZ(this.content, 0, 0,null,this);  
@@ -122,15 +122,23 @@ export class DSArrGallery extends DGallery {
             if (this.postDraw) this.postDraw();
         };
 
+        this.dragObj = function () {
+
+            for (var i = 0; i < this.arrayKesh.length; i++) {
+                this.arrayKesh[i].dragObj()
+            }
+        }
+
 
     }
 
     set wComp(value) {
         if (this._wComp != value) {
             this._wComp = value;
-            for (var i = 0; i < this.arrayKesh.length; i++) {
+
+            /*for (var i = 0; i < this.arrayKesh.length; i++) {
                 this.arrayKesh[i].wComp=this._wComp
-            }
+            }*/
         }
     }
     get wComp() {
@@ -157,6 +165,7 @@ export class DSArrGallery extends DGallery {
             for (var i = 0; i < this.arrayKesh.length; i++) {
                 this.arrayKesh[i].wh=this._wh
             }
+
         }
     }
     get wh() {
@@ -242,34 +251,59 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
             this.arrImage[i].visible=false
         }
 
-        var ww=this._otstup*2+this._wh
+        var ww=0
 
+        if(this.par._boolLeft==true){
+            ww=this._otstup*2+24//this._wh
+            this.chek.visible=true;
+            this.lab.visible=true;
+
+        }else{
+            this.chek.visible=false;
+            this.lab.visible=false;
+
+        }
 
         for (var i = 0; i < this.pKey.array.length; i++) {
             bb=this.pKey.array[i]
             if(bb.type=="PKBlokImage"){
+                
                 if(!this.object.aPram[i]){
                     continue
                 }
                 qq=this.getImage();
                 qq.link=this.object.aPram[i];
-                qq.x=ww;
+                qq.x=ww+this._otstup;
+                qq.y=this._otstup;
+                qq.width=qq.height=this.height-this._otstup*2
+
+                wws=this.pKey.array[i].width-qq.width-this._otstup*4;
+                if(wws>30){
+                    cc=this.getLab()
+                    cc.text=this.gettt(this.object.aPram[i], wws-this._otstup*2,true) 
+                    cc.width=wws-this._otstup*2
+                    cc.x=ww+this._otstup*3+qq.width
+                    cc.y=(this._wh-cc._height)+this._otstup
+                }
+
             }else{
                 if(this.object.aPram[i]!=null){  
                     cc=this.getLab()
                     cc.text=this.gettt(this.object.aPram[i],this.pKey.array[i].width-this._otstup*2) 
                     cc.width=this.pKey.array[i].width-this._otstup*2
                     cc.x=ww+this._otstup
-                    cc.y=(this._wh-cc._height)/2
+                    cc.y=(this._wh-cc._height)+this._otstup
+                    //ll.textAlign="center"
                 }
             }
-
             ww+=this.pKey.array[i].width
         }
 
 
 
     }
+    var wws
+
 
     this.getLab=function(){
         for (var i = 0; i < this.arrLabel.length; i++) {
@@ -281,7 +315,7 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
         let ll=new DLabel(this,0,0,"")
         ll.fontSize=dcmParam.fontSizeLitte
         ll.activMouse=false;
-        ll.textAlign="center"
+        ll.textAlign="left"
 
         this.arrLabel.push(ll)
         return ll
@@ -304,14 +338,18 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
         return ss
     }
 
-    this.gettt=function(s,w){
+    this.gettt=function(s,w,b){
         s+=""
         let ss=''
-        let n = Math.floor(w/(this.lab.fontSize*0.8))       
+        let n = Math.floor(w/(this.lab.fontSize*0.65))       
         if(n>=s.length){
             ss=s
         }else{
-            ss=s.substr(0, n-2)+".."             
+            if(b){
+                ss=".."+s.substr(s.length-n+2)
+            }else{
+                ss=s.substr(0, n-2)+".." 
+            }                        
         }
         return ss
     }
@@ -343,8 +381,8 @@ Object.defineProperties(BoxXZ.prototype, {
     wComp: {
         set: function (value) {
             if (this._wComp != value) {
-                this._wComp = value; 
-                this.dragObj()
+                /*this._wComp = value; 
+                this.dragObj()*/
 
                       
         }

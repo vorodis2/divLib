@@ -20,7 +20,7 @@ export class PKBlok  {
         this.key="null"
 
         this.width=this._wComp;
-
+        this._visible=true
 
         this.panel=new DPanel(this.dCont)
         this.panel.width=this._wComp;
@@ -28,10 +28,10 @@ export class PKBlok  {
         this.panel1=new DPanel(this.panel,this._otstup,this._otstup)
         this.panel1.width=this._wComp-this._otstup*2;
         this.panel1.height=dcmParam.fontSize+this._otstup*2+this._wh;
-        this.dLabel=new DLabel(this.panel,0,this._otstup);
+        this.dLabel=new DLabel(this.panel1,0,this._otstup);
         this.dLabel.width=this.panel.width;        
         this.dLabel.textAlign="center";
-        this.chek=new DCheckBox(this.panel,this.panel.width-16-this._otstup,this._otstup," ",function(){
+        this.chek=new DCheckBox(this.panel1,this.panel.width-16,0," ",function(){
            
             if(this.value==false){
                 self.fun("index",-1)
@@ -168,7 +168,7 @@ export class PKBlok  {
             this.panel.width=this.width;
             this.panel1.width=this.width-this._otstup*2;
             this.dLabel.width=this.panel.width;
-            this.chek.x=this.panel.width-16-this._otstup;
+            this.chek.x=this.panel.width-16-this._otstup*2;
             if(this.postDrawWComp!=undefined)this.postDrawWComp()
             
         }
@@ -190,17 +190,13 @@ export class PKBlok  {
 
         this.postDrawWh=undefined
         this.drawWh=function(){
-            this.panel1.height=dcmParam.fontSize+this._otstup*2+this._wh;
-            if(this.postDrawWh!=undefined)this.postDrawWh()
+           // this.panel1.height=dcmParam.fontSize+this._otstup*2+this._wh;
+           // if(this.postDrawWh!=undefined)this.postDrawWh()
         }
 
 
         this.setBoolColor=function(b){
-            /*if(b){
-                this.panel.color=dcmParam.compToHexArray(dcmParam.hexDec(dcmParam.color1), -10);
-            }else{
-                this.panel.color=dcmParam.color1
-            }*/
+            
         }
         
 
@@ -279,4 +275,17 @@ export class PKBlok  {
     get wh() {
         return this._wh;
     }
+
+    set visible(value) {
+        if (this._visible != value) {
+            this._visible = value;
+            this.panel1.visible=this._visible
+
+        }
+    }
+    get visible() {
+        return this._visible;
+    }
+
+
 }
