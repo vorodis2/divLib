@@ -67,18 +67,19 @@ export class DDebug extends DCont{
         this.dbs.color=this.wind.button.color
 
         this.arrCom=[]
-        this.arrCom[0] = this.xzDivLib = new XZDivLib(this,function(s,p){
-            if(s=="addObject")self.addObject(p)
+        this.arrCom[0] = this.xzDivLib = new XZDivLib(this,function(s,p,p1,p2){
+            if(s=="addObject")self.addObject(p,p1,p2)
         });
-        this.arrCom[1] = this.ddPlus = new DDPlus(this,function(s,p){
-            if(s=="addObject")self.addObject(p)
+        this.arrCom[1] = this.ddPlus = new DDPlus(this,function(s,p,p1,p2){
+            if(s=="addObject")self.addObject(p,p1,p2)
         });
-        this.arrCom[2] = this.ddBase= new DDBase(this,function(s,p){
-            if(s=="addObject")self.addObject(p)
+        this.arrCom[2] = this.ddBase= new DDBase(this,function(s,p,p1,p2){
+
+            if(s=="addObject")self.addObject(p,p1,p2)
         });
 
-        this.arrCom[3] = this.dDCont= new DDCont(this,function(s,p){
-            if(s=="addObject")self.addObject(p)
+        this.arrCom[3] = this.dDCont= new DDCont(this,function(s,p,p1,p2){
+            if(s=="addObject")self.addObject(p,p1,p2)
         });
 
         this.array[this.array.length]=this.arrCom[0]
@@ -150,10 +151,9 @@ export class DDebug extends DCont{
         tick();
         this.reDrag(); 
 
-        this.addObject=function(obj){
-            this.pobject.addObject(obj);
+        this.addObject=function(obj,tipRide,funDrag){
+            this.pobject.addObject(obj,tipRide,funDrag);
         }
-
 
     }
     set index(value) {
@@ -259,7 +259,7 @@ export class SaveLS {
             if(this.py<0)this.py=0
             if(this.py>1)this.py=1
 
-            trace("!!",this.px,this.py)
+     
 
             if(this.par._dragBool==false){
                 this.px=1;
@@ -386,18 +386,27 @@ export class PObject {
 
 
         var pObject=new DParamObject(this.dC,2,2,function(s){           
-            
+            if(self.funDrag!=undefined)self.funDrag()
         },1);
         pObject.width=(this.param.sizeBase2-this.param.otstup*2)/scale;
 
         pObject.startUp()
-
-        this.addObject=function(obj){
+        this.funDrag=undefined
+        this.addObject=function(obj,tipRide,funDrag){
+       
+            if(tipRide==undefined){
+                tipRide=true
+            }
+            this.funDrag=funDrag
             this.object=obj;
-            pObject.addObject(obj)           
-            this.dClip.heightContent=pObject.height*scale;
-
-            
+            if(obj){
+                pObject.visible=true
+                pObject.tipRide=tipRide
+                pObject.addObject(obj)           
+                this.dClip.heightContent=pObject.height*scale;
+            }else{
+                pObject.visible=false
+            } 
         }
         this.addObject(this.dClip)
         

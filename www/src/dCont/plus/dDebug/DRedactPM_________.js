@@ -1,0 +1,337 @@
+
+
+export class DRedactPM extends DCont{
+    constructor(dCont, _x, _y, _key, arr, ob) {
+        super();
+        var self=this
+        this.type="DRedactPM"
+        this._active=true
+        this.visible=this._active
+        if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);         
+        this.x=_x||0; 
+        this.y=_y||0;
+        this.arr=arr
+        this.key = _key;
+        
+        var oo=ob//JSON.parse(ss)
+        this.oo=oo;
+        
+        this._group =-1
+        
+        this.panel=new DPanel(this)
+
+        var dci=new DCreatIcon(this, 0, 0, this.key)
+        this.dci=dci
+        this.rPar=dci.rPar;
+        this.width=this.rPar.width1+this.rPar.otstup*3+this.rPar.width
+        this.height=this.rPar.swh+this.rPar.otstup*5+this.rPar.height
+
+        dci.x=this.rPar.width1+this.rPar.otstup*2
+        dci.y=this.rPar.swh+this.rPar.otstup*4
+
+
+        dci.funGetFile=function(file){
+           
+            let id=self.object.id
+            let ggg=self._group
+            mhbd.saveFile(file, ggg, id, (date) => {
+                
+                mhbd.getKeyId(ggg, id, function(e) {
+                    mhbd.clearFile(ggg, e.iconId);
+                    e.iconId = date.id;
+                    e.icon = date.src;
+                    mhbd.setParam(ggg, id, "iconId", date.id);
+                    mhbd.setParam(ggg, id, "icon", date.src);
+                    self.setIndex()
+
+
+                })    
+            })
+        }
+
+
+       
+        
+        this.panel.width=this.width;
+        this.panel.height=this.height;
+
+        this.panel1=new DPanel(this.panel,this.rPar.otstup,this.rPar.otstup)
+        this.panel1.width=this.width-this.rPar.otstup*2;
+        this.panel1.height=this.rPar.swh+this.rPar.otstup*2;
+
+
+        //this.input=new DInput(this.panel1, 0)
+        this.bPlus=new DButton(this.panel1, this.rPar.width1-this.rPar.swh, this.rPar.otstup,"+",function(){
+            mhbd.creat(self._group, function(e) {                
+                self.setgroup()
+                self.index=e.id                
+            })
+        })
+        this.bPlus.width=this.bPlus.height=this.rPar.swh;
+
+        this.input=new DInput(this.panel1, this.rPar.width1-this.rPar.swh*3-this.rPar.otstup, this.rPar.otstup,"+",function(){
+            self.index=(this.value)*1
+            self.dci.saveLoc();
+        })
+        this.input.width=this.rPar.swh*2;
+        this.input.height=this.rPar.swh;
+
+
+        this.gallery = new GalleryInfo(this,this.rPar.otstup,this.rPar.otstup*4+this.rPar.swh, function(s, p) {
+            self.index=self.gallery.array[this.index].object.id
+
+            self.dci.ols["plusXZ_index"]=self._index;
+            self.dci.saveLoc();
+        },this)
+        this.gallery.otstup=this.rPar.otstup
+        this.gallery.width = this.rPar.width1 //+ this.rPar.otstup;
+        this.gallery.height = this.height-this.rPar.swh- this.rPar.otstup*5;
+        this.gallery.kolII = 1
+        this.gallery.widthPic = this.gallery.width - this.gallery.otstup * 2;
+        this.gallery.heightPic = this.rPar.swh;
+        this.gallery.keyPar=arr[0]
+
+
+        this.arrName=[]
+        for (var s in oo) {
+            if(oo[s].length!=undefined){
+                this.arrName.push(s)
+            }            
+        }
+
+        this.dComboBox=new DComboBox(this.panel1, this.rPar.otstup, this.rPar.otstup,this.arrName,function(){
+            self.group=self.arrName[this.index]
+            self.dci.ols["plusXZ_index"]=self._index;
+            self.dci.saveLoc();
+        })
+        this.dComboBox.width=this.input.x-this.rPar.otstup*2;
+        this.dComboBox.height=this.rPar.swh; 
+
+
+        this.sob=function(){            
+            self.object[this.title]=this.value;            
+            self.sevePlus(self._group,self.object.id,this.title,this.value)
+        }
+
+
+        this.arIn=[];
+        var ww=(this.panel1.width-this.rPar.width1-this.rPar.otstup)/arr.length;
+
+        for (var i = 0; i < arr.length; i++) {
+            this.arIn[i]=new DInput(this.panel1,this.rPar.otstup,this.rPar.otstup,"0",this.sob);
+            this.arIn[i].width=ww-this.rPar.otstup;
+            this.arIn[i].height=this.rPar.swh
+            this.arIn[i].x=this.rPar.width1+this.rPar.otstup+i*ww
+            this.arIn[i].title=arr[i]
+            this.arIn[i].fontSize=this.rPar.fontSizeLitel;
+            this.arIn[i].timeFun=100
+            this.arIn[i].funFocus=function(){
+                if(this.boolFocus==true){
+                    self.gallery.keyPar=this.title
+                }
+            }
+        }
+
+
+
+
+        this.setgroup=function(){
+            this.dci.ols["plusXZ_group"]=this._group;
+            
+            for (var i = 0; i < this.arrName.length; i++) {
+                if(this.arrName[i]==this._group){
+                    this.dComboBox.index=i
+                    break
+                }
+            }
+            this.gallery.start(this.oo[this._group]);
+            this.index=0;
+        }
+
+        this.setIndex=function(){
+            //if(this.oo[this._group][this._index]==undefined)this._index=0
+            let p=0;
+            for (var i = 0; i < this.oo[this._group].length; i++) {
+                if(this.oo[this._group][i].id==this._index){
+                    p=i;
+                    break
+                }
+            } 
+            this.gallery.index=p;
+            this.gallery.array[p].dragIm("?"+Math.random())
+            this.input.value=this._index
+            this.setObj(this.oo[this._group][p])
+        }
+
+        this.object
+        this.setObj=function(o){
+            this.object=o;
+            for (var i = 0; i < this.arr.length; i++) {
+                if(this.object[this.arr[i]]!=undefined){
+                    this.arIn[i].text=this.object[this.arr[i]]
+                }else{
+                    let s=this._group+"_"+this.object.id+"_"+this.arr[i];
+                    this.object[this.arr[i]]=s
+                    this.arIn[i].text=this.object[this.arr[i]]
+                    this.sevePlus(this._group,this.object.id,this.arr[i],this.object[this.arr[i]])
+                }
+            }
+            let s=mhbd.getLink(this.object.icon);            
+            this.dci.setLink(s,true,true);
+        }
+
+        this.sevePlus=function(g,id,k,v){
+
+            if(window.mhbd)mhbd.setParam(g, id, k, v);
+            
+
+            if(this._group==g){
+                
+                for (var i = 0; i < this.gallery.array.length; i++) {
+                    
+                    if(this.gallery.array[i].object.id==id){                        
+                        this.gallery.array[i].dragText()
+                    }
+                }                
+            }            
+        }
+
+
+
+
+
+        if(this.dci.ols["plusXZ_group"]==undefined)this.dci.ols["plusXZ_group"]=this.arrName[0]
+
+
+        this.group =  this.dci.ols["plusXZ_group"]
+
+        if( this.dci.ols["plusXZ_index"]!=undefined)this.index=this.dci.ols["plusXZ_index"]
+          
+    }
+
+    set group(value) {
+        if (this._group != value) {
+            this._group = value;
+            this.setgroup(this._group)
+        }
+    }
+    get group() {
+        return this._group;
+    }
+
+    set index(value) {
+        if (this._index != value) {
+            this._index = value;
+
+            
+            this.setIndex(this._index)
+        }
+    }
+    get index() {
+        return this._index;
+    }
+  
+  
+ 
+}
+
+
+
+
+
+
+
+export class GalleryInfo extends DGallery {
+    constructor(dCont, x, y, fun, par) {
+        super(dCont, x, y, fun);
+        this.par = par
+        this._keyPar="cxz"
+        this.type = "GalleryMani";
+        this.color=dcmParam.compToHexArray(dcmParam.hexDec(this.color1), -50);
+        dcmParam.addFunNotActivDiv(this.div);
+        this.createZamen = function() {
+            var r = new BoxInfo(this.content, 0, 0, this.downBtn, this);
+            r.whPic = this.whPic;
+            r._widthPic = this._widthPic; // elements width
+            r._heightPic = this._heightPic; // elements height    
+            return r
+        }
+
+
+    }
+    set keyPar(value) {
+        if (this._keyPar != value) {
+            this._keyPar = value;
+            for (var i = 0; i < this.array.length; i++) {
+                this.array[i].dragText()
+            }
+        }
+    }
+    get keyPar() {
+        return this._keyPar;
+    }
+
+}
+
+
+export class BoxInfo extends DBox {
+    constructor(dCont, x, y, fun, par) {
+        super(dCont, x, y, fun);
+        this.par = par
+        var self = this;
+
+
+        this.label1 = new DLabel(this)
+        
+        this.label1.fontSize=par.par.rPar.fontSizeLitel
+        this.label.fontSize=par.par.rPar.fontSizeLitel
+        this.image.activMouse = false;
+        var ss
+        this.draw = function() {
+
+            this.image.width = this.height-4;
+            this.image.height = this.height-4;
+            this.image.x = this.height
+            this.label1.x = 2
+            this.label1.width = 333
+            this.label1.y = this.height-2 - this.label.fontSize
+
+            this.label.x = 2 + this.height * 2
+            this.label.y = this.height-2 - this.label.fontSize
+            this.label.activMouse = this.label1.activMouse = false
+
+            if (this.postDraw) this.postDraw();
+        };
+
+
+
+        this.dragText= function() {
+            if(this.object){
+                this.label.text = this.object[this.par.keyPar];
+            }
+        }
+
+
+        this.dragIm= function(p) {
+            if(p==undefined)p=""
+            let link=this.object.icon
+            if(window.mhbd)link=mhbd.getLink(this.object.icon);
+            this.image.link = link+p;
+            this.image.visible = true;
+        }
+
+        this.startLoad = function(_obj) {
+            this.object = _obj;
+            this.dragIm()
+            
+           
+            this.dragText()
+            this.label.width = this.width - this.label.x;
+            this.label.visible = true;
+            this.label1.text = this.object.id
+            this.draw();
+            self.funLoad();
+
+        }
+    }
+}

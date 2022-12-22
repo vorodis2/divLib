@@ -110,7 +110,10 @@ export class DDBase{
            // this.array.push(new DDPBlok(obj, name));
             //if(bool==undefined)this.drag()            
         }
-
+        var dTextArea=new DTextArea(this.dCont,0,0,"null");
+        dTextArea.fontSize=dcmParam._fontSizeLitte+2;
+        dTextArea.height=dTextArea.fontSize*6
+        dTextArea.textAlign='left'
         var chek=new DCheckBox(this.dCont,otstup,otstup+32," ",function(){
             self.par.ls.object["ddBase_chek"]=this.value
             self.par.ls.save()
@@ -122,10 +125,7 @@ export class DDBase{
         var lInfo=new DLabel(this.dCont,otstup+24,otstup+32,"null");
         lInfo.fontSize=dcmParam._fontSizeLitte;
 
-        var dTextArea=new DTextArea(this.dCont,0,0,"null");
-        dTextArea.fontSize=dcmParam._fontSizeLitte+2;
-        dTextArea.height=dTextArea.fontSize*6
-        dTextArea.textAlign='left'
+
 
 
         var odin=undefined
@@ -140,8 +140,8 @@ export class DDBase{
             for (var i = 0; i < self.array.length; i++) {
                 if(i==idArr){
                     self.content.add(self.array[i].dCont)
-
-                    self.fun("addObject", self.array[i].object);
+                 
+                    self.fun("addObject", self.array[i].object, self.array[i].tipRide, self.array[i].funDrag);
                     odin=self.array[i].object;
                     self.par.sizeWindow()
                     let ss="Нет информации в классе infoThis";
@@ -244,7 +244,7 @@ export class DDBase{
 
 
             if(odin){
-                odin.sizeWindow(www,hhh1,ssc)
+                if(odin.sizeWindow) odin.sizeWindow(www,hhh1,ssc)
             }
         } 
     }
@@ -279,7 +279,8 @@ export class DParBlok{
         this.dCont=new DCont();
         this.par=par;
         this.param=par.param;
-
+        this.tipRide=false
+        this.funDrag=undefined
         this.object
         this.setObj=function(o){
             this.object=o

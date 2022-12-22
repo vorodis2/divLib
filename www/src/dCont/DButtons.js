@@ -106,14 +106,16 @@ export class DButtons extends DCont {
             if(self.fun)self.fun()
         }
       
+        this.boolColor=true
+
 
         this.dragIndex = function(){
-            
-            for (var i = 0; i < this.arrayCash.length; i++) {
+            if(this.boolColor==true)
+            for (var i = 0; i < this.arrayCash.length; i++) {                
                 if (this.arrayCash[i].idArr!==this._index) {
                     this.arrayCash[i].color=this._color;
                 }else{
-                    this.arrayCash[i].color=this._colorActive//dcmParam.compToHexArray(dcmParam.hexDec(this._color), -20);
+                    this.arrayCash[i].color=this._colorActive
                 }
             }
 

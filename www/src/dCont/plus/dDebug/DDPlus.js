@@ -5,6 +5,7 @@
 import { DShtora } from '../dShtora/DShtora.js';
 import { DSArray } from '../dSArray/DSArray.js';
 import { DVerhPanels } from '../dShtora/DVerhPanels.js';
+import { DRedactPM } from './DRedactPM.js';
 export class DDPlus{
     constructor(par,fun) {
         
@@ -136,7 +137,8 @@ export class DDPlus{
             var s='[{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679242.252 25600425.8922 3.1663 6679240.8411 25600423.0462 0.2598 6679241.2793 25600424.077 -1.3613"}},{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[[],{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679237.8562 25600422.8776 -0.5424 6679240.7107 25600421.8405 0.9234 6679241.8805 25600422.908 2.3839"}}]'
 
 
-
+        
+            //this.setMHBD()    
 
 
             this.drag();    
@@ -149,6 +151,19 @@ export class DDPlus{
             }
             
         }
+
+        this.setMHBD= function(a,key){
+            var aa=["ru","en","su"]
+            if(a)aa=a;
+            var key1="xz_"
+            if(key)key1=key;
+            let oo=[{xs:[],array:[]}]
+            if(window.mhbd)oo=window.mhbd.objectBase
+            var dr=new DRedactPM(null, 2, 2, key1 ,aa,oo)
+            this.addPlus(dr, null, false)
+            return dr
+        }
+
 
         this.aDo=[]
         this.setObj = function(o,n){
@@ -175,13 +190,25 @@ export class DDPlus{
         }
 
 
-        var lInfo=new DLabel(this.dCont,otstup,otstup+32,"null");
-        lInfo.fontSize=dcmParam._fontSizeLitte;
-
         var dTextArea=new DTextArea(this.dCont,0,0,"null");
         dTextArea.fontSize=dcmParam._fontSizeLitte+2;
         dTextArea.height=dTextArea.fontSize*6
         dTextArea.textAlign='left'
+
+
+        var chek=new DCheckBox(this.dCont,otstup,otstup+32," ",function(){
+            self.par.ls.object["ddPlus_chek"]=this.value
+            self.par.ls.save()
+            self.sizeWindow()
+        });
+        chek.width=chek.height=12
+        if(self.par.ls.object["ddPlus_chek"]!=undefined)chek.value=self.par.ls.object["ddPlus_chek"]
+
+
+        var lInfo=new DLabel(this.dCont,otstup+24,otstup+32,"null");
+        lInfo.fontSize=dcmParam._fontSizeLitte;
+
+
 
         var dind=-1
         function setIndex (idArr){
@@ -284,6 +311,9 @@ export class DDPlus{
 
             if(ssc<0.25)ssc=0.25
             if(ssc>1)ssc=1
+
+            if(chek.value==true )  ssc=1     
+
 
             this.panel.width=www/ssc//-otstup*2;
             this.panel.height=hhh1/ssc-otstup*3;

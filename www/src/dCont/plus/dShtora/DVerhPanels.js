@@ -9,13 +9,8 @@ export class DVerhPanels extends DCont{
         this.type="DVerhPanels";
         this.uuid=dcmParam.generateRendom(2) 
         this.infoThis=`
-            var dShtora = new DShtora(this.dCont,0,0,function(){});  
-            .addDShtora(dShtora) ,.removeDShtora(dShtora)//добавить экземпляр
-            .addFun(function(w,h,dShtora))//при изменения этого окна отдают 
-            .getObj .setObj Сохронение размеров и выключашек
-            _bVrtikal =true будет по вертикали
-            _bStatic не изменяеться размеры
-            _otstup размер кнопок <1 нет
+            var dp = new DVerhPanels(this.dCont,0,0,function(){});  
+            dp.addPanel(this,"test0_____sdfs sf sf","test1111111111111111")
 
         `
 
