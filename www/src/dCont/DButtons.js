@@ -485,7 +485,8 @@ export class DButBox extends DButton {
     }
     set active(value) {
         if (this._active != value) {
-            this._active = value;            
+            this._active = value;
+            this.visible=value;            
         }
     }
     get active() {

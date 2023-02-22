@@ -5452,6 +5452,7 @@ export class DBitmapData {
             bmd.resizeImageFile(b64, fun, _w, _h,_name, _boolB64)//link, fun(e),.. _boolB64==undefined//вернет фаил
             bmd.load("/p.png",true)//путь, true-очистит
             bmd.setAllColor("#ff0000")//все пиксели кроме альфы
+            bmd.getData()<<base64 png
         `
 
         this.fun = fun;

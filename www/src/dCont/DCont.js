@@ -14,6 +14,8 @@ export class DCont {
 		this.div.style.top = '0px';
 		this.div.style.left = '0px';
 
+		this.div.dCont=this;
+
 		this.children=[];
 		this._parent=undefined;
 		this._scale=1;
