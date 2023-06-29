@@ -233,11 +233,11 @@ export class MIBlok {
         this.array=[];
 
         this.array[0]=this.mibBase=new MibBase(this, function(){
-            trace(self.par.ols)
+
         });
 
         this.array[1]=this.mibLinsAnd=new MibLinsAnd(this, function(){
-            trace(self.par.ols)
+
         });
 
     }

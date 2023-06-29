@@ -309,6 +309,7 @@ export class DREvent {
             this.par.par.dCont.div.addEventListener("DOMMouseScroll", this.mousewheel);                  
         } 
 
+
         this.plusPic =function(base64){
             let img=new Image();
             let sahLoad=self.par.par.sahLoad

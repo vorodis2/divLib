@@ -355,7 +355,7 @@ export class DVerhPanels extends DCont{
 
         this.removePanel=function (but){   
             let p=this.getId(but) 
-            trace(p)
+
             if(p==-1){
                 return null
             }        
@@ -418,7 +418,8 @@ export class DVerhPanels extends DCont{
                 document.removeEventListener('touchend', self.mouseup);
             }
             dcmParam.removeFunMove(self.mousemove);
-            self.drag()            
+            self.drag()
+            if(self.fun)  self.fun("up")          
         };
 
 
@@ -493,11 +494,7 @@ export class DVerhPanels extends DCont{
                     if(self.activeBut._x+ww>this.array[i]._x+ww1/2){
                         if(self.activeBut._x+ww/2<this.array[i]._x+ww1){ 
 
-                           /* trace(">>>>",self.activeBut._x)                           
-                            let xx3=this.array[i]._x;
-                            //let xx =sp.xxx1+self.activeBut._width-ww1
-                            this.array[i].setX(sp.xxx1);
-                            sp.xxx1=sp.xxx1+this.array[i]._width*/
+
                             this.drID(apid,i)
                             return
                         }

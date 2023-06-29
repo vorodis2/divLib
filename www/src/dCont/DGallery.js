@@ -464,10 +464,7 @@ export class BoxXZ extends DBox {
 	this.mouseDown=function(e){		
 		self.dragActiv=true;
 		sp=undefined;
-		if(self.dragNotEvent==true)document.body.style.pointerEvents="none";
-		
-		
-	
+		if(self.dragNotEvent==true)document.body.style.pointerEvents="none";	
 	}
 
 	this.mouseup=function(e){		

@@ -284,7 +284,7 @@ export class DDCanvas extends DCont {
             cc = dcmParam.parseColor(color)
             this.ctx.strokeStyle = 'rgba(' + cc.r + ', ' + cc.g + ', ' + cc.b + ', ' + alp + ')';
             this.ctx.globalAlpha = alp;
-            this.ctx.rect(this.getX(rect.x), this.getY(rect.y), rect.h, rect.w);
+            this.ctx.rect(this.getX(rect.x), this.getY(rect.y), rect.w, rect.h);
             this.ctx.stroke();
         }
 

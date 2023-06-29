@@ -40,6 +40,8 @@ export class DShtora extends DCont{
         this._color=dcmParam._color1;
         this._colorB=dcmParam.compToHexArray(dcmParam.hexDec(this._color), -30);;
 
+        this.alphaAct=0.2;
+
         var lb=false;
         this.panel=undefined
         this.dC=new DCont(this)
@@ -61,6 +63,7 @@ export class DShtora extends DCont{
 
             dShtora.otstup=this.otstup;
             dShtora.color=this.color;
+            dShtora.alphaAct=this.alphaAct
             
             this.drag();
         }
@@ -371,7 +374,7 @@ export class DShtora extends DCont{
                             this.ab[kol]=new DButton(this.dCButton,0,0,"")
                             this.ab[kol].idArr=kol
                             this.ab[kol].fun_mousedown=this.sob
-                            this.ab[kol].alpha=0.4
+                            this.ab[kol].alpha=this.alphaAct
                             this.ab[kol].fun_mouseover = function(){  
                                 if(self._bVrtikal==false) {
                                     this.panel1.div.style.cursor = 'ew-resize'; 

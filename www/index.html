@@ -3,6 +3,7 @@
 <title>divLib</title>	
 <script src="build/divLib.js?v=1"></script>
 
+<script src="src/lib/three.min.js"></script>
 
 <script src="src/lib/tween.min.js"></script>
 <script>
@@ -12,7 +13,8 @@
 	var ww=150
 	var dcmParam;
 	function downMy(s) {
-		//trace(this)
+		trace(s,this.activMouse,this)
+
 		//setDin(this)			
 	}
 
@@ -121,9 +123,14 @@
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
 		
+
+
+
 		var bbb=new DButtons(null,0,0,["xz","xz1","xz2"],downMy)
 		bbb.boolDragIndex=false
-
+		bbb.setTArr(["xz","xz1"])
+		bbb.setTArr(["xzsdff","xz1sdf","xz1","xsdfz1","xzsdf1","xzsdf1"])
+		bbb.kol=1
 
 		plus(bbb);
 		

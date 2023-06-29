@@ -101,7 +101,7 @@ export class DDBase{
             for (var i = 0; i < this.array.length; i++) {
                 aa[i]=this.array[i].name
             }
-            trace(aa)
+            
             this.dbs.setTArr(aa);
         }
 

@@ -137,7 +137,6 @@ export class DRedactPM extends DCont{
         this.sob=function(){            
             self.object[this.title]=this.value;            
             self.sevePlus(self._group,self.object.id,this.title,this.value)
-            //trace(this._group,self.object[this.title])
             if(self.fun)self.fun("dragObject",self._group,self.object)
         }
 

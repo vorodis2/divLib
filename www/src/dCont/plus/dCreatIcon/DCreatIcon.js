@@ -105,28 +105,12 @@ export class DCreatIcon extends DCont{
         this.sahLoad=-1;
         this.setLink=function(link, bClear, bType){
             this.sahLoad++;
+
             return this.scane.setLink(link, bClear, bType);
         }
 
 
-/*        setTimeout(function() {            
-            self.setLink("resources/pic/xz3.svg", true, true)
-        }, 307);
 
-        setTimeout(function() {
-            
-            self.setLink("resources/pic/xz4.svg", true, true)
-
-        }, 1001);
-
-       setTimeout(function() {
-            self.setLink("resources/pic/0.png", true, true)
-        }, 1021);
-
-       setTimeout(function() {
-            self.setLink("resources/pic/1.png", true, true)
-        }, 1222);
-*/
         ////////////////////////////////////////////
         this.saveLoc=function(){
             if(this.ls){
@@ -139,7 +123,9 @@ export class DCreatIcon extends DCont{
             this.link=this.scane.drScane.getPic()
             this.menu.mScaneA.setLink(this.link)
             this.menu.mVerhStart.input.text=this.link;
-            
+
+            if(this.menu.mThree3d)this.menu.mThree3d.setLink(this.link)
+           
             this.menu.mVerhStart.button.text=this.ols.base.type
         }
 

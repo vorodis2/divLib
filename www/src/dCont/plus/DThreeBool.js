@@ -416,7 +416,7 @@ export class DThreeBool extends DCont{
             this.key1=_key1
             if(_key1==undefined)this.key1="name";
 
-            trace(this.key,this.key1 )
+
 
             if(_o[0]!==undefined){
                 

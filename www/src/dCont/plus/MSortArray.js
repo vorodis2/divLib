@@ -116,7 +116,7 @@ export class MSArray  {
         var self=this   
         this.type="MSArray";
         this.fun=fun;
-        trace("sdfgsdgsdfgsdgdsgsdgfdsgf")
+
 
 
         this.dCont=new DCont();
@@ -152,7 +152,7 @@ export class MSArray  {
         this.wComp=150;
 
         this.init=function(){
-            trace(">>>>",this.dCont)
+
             new DPanel(this.dCont)
 
             this.panel=new DPanel(this.dCont,this.otstup,this.otstup);
@@ -168,7 +168,7 @@ export class MSArray  {
             })
             this.button=new DButton(this.panel,this.otstup+55,this.otstup,"Перевернуть",function(){
                 for (var i = 0; i < self.array.length; i++) {
-                    trace(i,self.array[i].bool)
+
                     self.array[i].bool=!self.array[i].bool;
                 }
                 for (var i = 0; i < self.gallery.array.length; i++) {
@@ -304,7 +304,7 @@ export class MSArray  {
 
             this.dragSP();            
             this.drag();
-            trace("####",this.kol,this.active, )
+
             
         }
 
@@ -339,7 +339,7 @@ export class MSArray  {
             this.switchPage.y=this.height-(this.otstup+32)-this.switchPage.wh-this.otstup
             this.switchPage.x=(this.width-this.switchPage.width)/2
         }    
-        trace(">>init>>",this.dCont)
+
         this.init()
     }
 }
@@ -440,7 +440,7 @@ export class PKey{
             obj.bool= bb1
 
 
-            trace(obj.aStat)
+
         }
 
 
@@ -801,7 +801,7 @@ export class PKBlokBoolean extends PKBlok {
         } 
 
         this.setObjArr=function(obj, arr){
-            trace(obj,this.obj)
+
             let p=null;
             if(this.obj.key==null){//одномерный массив
                 
@@ -886,7 +886,7 @@ export class PKBlokNumber extends PKBlok {
                 }else{
                     self.active1=true;
                 }
-                trace("@@@")
+
                 self.fun("drag")
             }); 
             this.comp.width= this.panel1.width- this.otstup*2;
@@ -895,7 +895,7 @@ export class PKBlokNumber extends PKBlok {
         } 
 
         this.setObjArr=function(obj, arr){
-            trace(obj,this.obj)
+
             if(this.obj.key==null){//одномерный массив
                 let p=null;
                 if(typeof obj =="number" ) p=obj
@@ -903,7 +903,7 @@ export class PKBlokNumber extends PKBlok {
                     if(this.min>p)this.min=p;
                     if(this.max<p)this.max=p;
                     this.comp.setMM(this.min,this.max)
-                    trace("this.min ",this.min,this.max,this.comp)
+
                 }
                 arr.push(p)
             }else{
@@ -918,7 +918,7 @@ export class PKBlokNumber extends PKBlok {
                         if(this.min>p)this.min=p;
                         if(this.max<p)this.max=p;
                         this.comp.setMM(this.min,this.max)
-                        trace("this.min ",this.min,this.max,this.comp)
+
                     }
                     arr.push(p)
                 }
@@ -1130,7 +1130,7 @@ export function BoxXZ(_cont, _x, _y, _fun, par) {
     this.isObj = function (_obj) {
         return true
     }
-    trace("###########@@@@@@@2####")
+
 
 }
 BoxXZ.prototype = Object.create(DBox.prototype);
@@ -1324,7 +1324,7 @@ export class DSliderMM extends DCont {
                 self.naValue(e.offsetX);
                 if (self.fun) self.fun();
             }
-            trace(this.tip)
+
             b2=false
             if(this.tip==2){
                 b2=true

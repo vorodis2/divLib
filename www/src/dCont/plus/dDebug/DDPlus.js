@@ -1,7 +1,7 @@
 
 
 
-//import { DCreatIcon } from '../dCreatIcon/DCreatIcon.js';
+import { DCreatIcon } from '../dCreatIcon/DCreatIcon.js';
 import { DShtora } from '../dShtora/DShtora.js';
 import { DSArray } from '../dSArray/DSArray.js';
 import { DVerhPanels } from '../dShtora/DVerhPanels.js';
@@ -61,7 +61,7 @@ export class DDPlus{
             }
 
             let aa=[
-                {name:"Тут глубина",bool:true,pic:"resources/pic/1.png",object:{num:100}},                
+                                
                 {Feature:[{num:100},{code:'IM_pipe',source:'inframodel',Property:[{label:"elevType",value:"wwww"}]}]},
             ]
 

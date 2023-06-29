@@ -7,7 +7,7 @@ export class DClip extends DCont {
     constructor(dCont, _x, _y, _fun) {
         super();
         this.type = 'DClip';
-        this.infoThis=`
+       this.infoThis=`
             var dClip= new DClip(this.dCont,0,0,function(){})
             dClip.heightContent=100;
             dClip.sbv=0//скрол с лева 1 с права 2 воще нет
@@ -107,19 +107,40 @@ export class DClip extends DCont {
         this.boolDragMouse=true
         var sp=undefined;   
         this.dragActiv=false
-        this.mouseDown=function(e){     
+        this.mouseDown=function(e){  
+
+          
             if(self.boolDragMouse==false)return
+            if(self.dragActiv==true)return    
             self.dragActiv=true;
-            sp=undefined;            
+            sp=undefined; 
+
+            if(dcmParam.mobile==false){  
+                window.addEventListener("mouseup", self.mouseup);                    
+            }else{                   
+                window.addEventListener("touchend", self.mouseup);                    
+            }
+
+            dcmParam.addFunMove(self.mousemove) 
+
         }
 
         this.mouseup=function(e){       
             self.dragActiv=false;
-            sp=undefined;                
+            sp=undefined; 
+
+            if(dcmParam.mobile==false){  
+                window.removeEventListener("mouseup", self.mouseup);                    
+            }else{                   
+                window.removeEventListener("touchend", self.mouseup);                    
+            }
+
+            dcmParam.removeFunMove(self.mousemove) 
         }
 
         var yyy=0
-        this.mousemove=function(e){         
+        this.mousemove=function(e){ 
+         
             if(self.dragActiv==false)return;
             if(self.scrollBarV.visible == false)return; 
             if(self.scrollBarV.sp !== undefined)return;
@@ -140,6 +161,8 @@ export class DClip extends DCont {
                 }
                 sp.ys=e.targetTouches[0].clientY
             }
+            
+
             yyy=(sp.y-sp.ys); 
             let nb=self.time
             self.time = 0;
@@ -151,14 +174,14 @@ export class DClip extends DCont {
 
         if(dcmParam.mobile==false){         
             this.div.addEventListener("mousedown", this.mouseDown);
-            window.addEventListener("mouseup", this.mouseup);
+            //window.addEventListener("mouseup", this.mouseup);
             
         }else{
             this.div.addEventListener("touchstart", this.mouseDown);
-            window.addEventListener("touchend", this.mouseup);
+            //window.addEventListener("touchend", this.mouseup);
             
         }
-        dcmParam.addFunMove(self.mousemove)
+        
 
 
 
@@ -257,4 +280,3 @@ export class DClip extends DCont {
         return this._sbv;
     }
 }
-

@@ -28,7 +28,7 @@ export class DSortArray {
         this.init=function(){
             if(this.dCont!==undefined)return;
             this.dCont=new DCont();
-            trace("sdfsfdsfsd")
+
             this.panel = new DPanel(this.dCont, 0, 0);
 
             new DPanel(this.dCont, 0, 0);
@@ -102,7 +102,7 @@ export class DSortArray {
         if(this._active!=value){
             this._active = value;
             this.init();
-            trace(this._active)
+
             if(!this.dC) return
 
             if(this._active==true){

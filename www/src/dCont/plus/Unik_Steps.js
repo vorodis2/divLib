@@ -17,7 +17,6 @@ export class Unik_Steps {
         this._bool2 = false
         this.dragWHD=function(_w,_h,_d){
 
-        	trace (_w,_h,_d)
         }            
 
         

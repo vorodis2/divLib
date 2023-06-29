@@ -1281,7 +1281,7 @@ export class DColor extends DCont {
             dcmParam.getPolit(),
             function () {}
         );
-
+        this.image.activMouse=true
         this.label = undefined;
         this.image.visible = false;
         this.panel.width = this._width;
@@ -2932,7 +2932,7 @@ export class DCheckBox extends DCont {
     }
 
     set value(v) {
-        if (this._value != v && this._activMouse != false) {
+        if (this._value != v) {
             this._value = v;
             this.reDrag();
         }
@@ -2952,19 +2952,25 @@ export class DCheckBox extends DCont {
         return this._text;
     }
 
+
+
     set activMouse(value) {
         if (this._activMouse != value) {
             this._activMouse = value;
+                
             if (value == true) {
                 this.alpha = 1;
                 this.label.div.style.cursor = 'null';
                 this.panel3.div.style.cursor = 'null';
+                
+                this.div.style.pointerEvents = 'auto';
                 if (this.image0) this.image0.div.style.cursor = 'null';
                 if (this.image1) this.image1.div.style.cursor = 'null';
             } else {
-                this.alpha = 0.7;
+                this.alpha = 0.5;
                 this.label.div.style.cursor = 'auto';
                 this.panel3.div.style.cursor = 'auto';
+                this.div.style.pointerEvents = 'none';
                 if (this.image0) this.image0.div.style.cursor = 'auto';
                 if (this.image1) this.image1.div.style.cursor = 'auto';
             }
@@ -3386,6 +3392,7 @@ export class DImage extends DCont {
         this.div2.style.left = '0px';
         this.div.appendChild(this.div2);
 
+
         this.image = new Image();
         var bPlus = false;
         
@@ -3483,7 +3490,7 @@ export class DImage extends DCont {
             dC.div.appendChild(this.canvas);
             
         };
-
+        this.activMouse = false;
         if (_link) this.link = _link;
     }
 
@@ -3695,6 +3702,7 @@ export class DLabel extends DCont {
             var metrics = context.measureText(text);
             return metrics.width;
         }
+        this.activMouse = false;
     }
 
     set activMouse(value) {
@@ -4726,14 +4734,28 @@ export class DInput extends DCont {
         this.boolDrag=false
         this.setNum = function (okrug) {
             this.okrug = okrug;
-            this.boolNum=true;
+           /* this.boolNum=true;
             this.boolDrag=true;
-            if (dcmParam.mobile == false) {
+            this.actDown=true;*/
+
+            if(okrug==0){
+                this.boolNum=false;
+                this.boolDrag=false;
+                this.actDown=false;
+                
+            }else{
+                this.boolNum=true;
+                this.boolDrag=true;
+                this.actDown=true;
+            }
+            /*if (dcmParam.mobile == false) {
                 this.object.addEventListener('mousedown', self.mousedown);
             } else {
                 this.object.addEventListener('touchstart', self.mousedown);
-            }
+            }*/
         };
+
+
 
         
         this.object.style.height = this._height - 4 + 'px';
@@ -4800,7 +4822,31 @@ export class DInput extends DCont {
 
         this.x = _x || 0;
         this.y = _y || 0;
+        this._actDown=false
     }
+
+    set actDown(value) {
+        if (this._actDown != value) {
+            this._actDown = value;          
+            if(this._actDown==true){
+                if (dcmParam.mobile == false) {
+                    this.object.addEventListener('mousedown', this.mousedown);
+                } else {
+                    this.object.addEventListener('touchstart', this.mousedown);
+                }
+            }else{
+                if (dcmParam.mobile == false) {
+                    this.object.removeEventListener('mousedown', this.mousedown);
+                } else {
+                    this.object.removeEventListener('touchstart', this.mousedown);
+                }            
+            }         
+        }
+    }
+    get actDown() {
+        return this._actDown;
+    }
+
 
     set title(value) {
         if (this._title != value) {
@@ -6045,7 +6091,7 @@ export class DScrollBarH extends DCont {
         this.y = _y || 0;
         this._text = 'null';
         this.fun = _fun;
-
+        this.timeTween= dcmParam.timeTween
         this.fun_mouseover = undefined;
         this.fun_mouseout = undefined;
         this.fun_mousedown = undefined;
@@ -6166,7 +6212,7 @@ export class DScrollBarH extends DCont {
 
             var vv=(sss / (self._width - self.but.width)) * 100;
             if(self.boolTween && self.tBut1){                
-                self.tBut1.to({value:vv},dcmParam.timeTween).start(); 
+                self.tBut1.to({value:vv},self.timeTween).start(); 
                 return
             }
 
@@ -6180,7 +6226,7 @@ export class DScrollBarH extends DCont {
         this.panelA.div.addEventListener('mouseover', function (e) {
             if(self.startAlpha==1)return
             if(self.boolTween && self.tBut){                
-                self.tBut.to({alpha:self.startAlpha+self.sahAlpha},dcmParam.timeTween).start(); 
+                self.tBut.to({alpha:self.startAlpha+self.sahAlpha},self.timeTween).start(); 
                 return
             }
             self.but.alpha=self.startAlpha+self.sahAlpha
@@ -6188,7 +6234,7 @@ export class DScrollBarH extends DCont {
         this.panelA.div.addEventListener('mouseout', function (e) {
             if(self.startAlpha==1)return
             if(self.boolTween && self.tBut){                
-                self.tBut.to({alpha:self.startAlpha},dcmParam.timeTween).start(); 
+                self.tBut.to({alpha:self.startAlpha},self.timeTween).start(); 
                 return
             }
             self.but.alpha=self.startAlpha
@@ -6394,6 +6440,7 @@ export class DScrollBarV extends DCont {
         this.y = _y || 0;
         this._text = 'null';
         this.fun = _fun;
+        this.timeTween= dcmParam.timeTween
 
         this.fun_mouseover = undefined;
         this.fun_mouseout = undefined;
@@ -6516,7 +6563,7 @@ export class DScrollBarV extends DCont {
             }
             var vv=(sss / (self._height - self.but.height)) * 100;
             if(self.boolTween && self.tBut1){                
-                self.tBut1.to({value:vv},dcmParam.timeTween).start(); 
+                self.tBut1.to({value:vv},self.timeTween).start(); 
                 return
             }
 
@@ -6530,7 +6577,7 @@ export class DScrollBarV extends DCont {
         this.panelA.div.addEventListener('mouseover', function (e) {
             if(self.startAlpha==1)return
             if(self.boolTween && self.tBut){                
-                self.tBut.to({alpha:self.startAlpha+self.sahAlpha},dcmParam.timeTween).start(); 
+                self.tBut.to({alpha:self.startAlpha+self.sahAlpha},self.timeTween).start(); 
                 return
             }
             self.but.alpha=self.startAlpha+self.sahAlpha
@@ -6538,7 +6585,7 @@ export class DScrollBarV extends DCont {
         this.panelA.div.addEventListener('mouseout', function (e) {
             if(self.startAlpha==1)return
             if(self.boolTween && self.tBut){                
-                self.tBut.to({alpha:self.startAlpha},dcmParam.timeTween).start(); 
+                self.tBut.to({alpha:self.startAlpha},self.timeTween).start(); 
                 return
             }
             self.but.alpha=self.startAlpha

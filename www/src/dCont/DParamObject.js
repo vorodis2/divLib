@@ -305,7 +305,7 @@ export function DParamObject (_cont, _x, _y, _fun,_bWindow) {
 		}
 		// Сортировка
 		for (var type in this.oShablon) {
-			this.oShablon[type].sort();
+			if(this.oShablon[type] && this.oShablon[type].sort)this.oShablon[type].sort();
 		}
 	};
 

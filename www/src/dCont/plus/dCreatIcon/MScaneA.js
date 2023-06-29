@@ -28,14 +28,16 @@ export class MScaneA {
             self.par.par.aBody=null;
             self.par.par.metodType=self.par.par.arrInfo[0].type
 
-            if(bb){
+            
+           /* if(bb){
                 self.button.height=self.button.width=www1
 
             }
             else{
                 self.button.height=self.button.width=www
-            }
-            self.label.visible=bb
+            }*/
+            /*
+            self.label.visible=bb*/
             bb=!bb
 
         })

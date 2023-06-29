@@ -1,5 +1,7 @@
 import { MScaneA} from './MScaneA.js';
 
+import { MThree3d} from './MThree3d.js';
+
 export class Menu {
     constructor(par,  fun) {
         var self=this
@@ -15,7 +17,7 @@ export class Menu {
 
         if(this.ols.privazka==undefined)this.ols.privazka=true
 
-       
+
         this.menuInfo=new MenuInfo(this,function(s,p,p1){});
         this.mIBlok=new MIBlok(this,function(s,p,p1){
             fun(s,p,p1)
@@ -33,6 +35,18 @@ export class Menu {
         this.mScaneA=new MScaneA(this,function(s,p,p1){
             fun(s,p,p1)
         });
+       
+        if(window.THREE!=undefined){
+            this.mThree3d=new MThree3d(this,function(s,p,p1){
+               
+                if(s=="pic"){
+                    self.par.scane.drEvent.plusPic(p)
+                }
+                //fun(s,p,p1)
+            });
+        }
+        
+
 
         this.getObjInf=function(){
             return this.mIBlok.getObjInf()
