@@ -53,6 +53,9 @@ export class DSArray extends DCont {
         this._boolLeft = true;
         this._boolUp = true;
 
+        this._boolGal = true;
+
+
         this.hGal = 100;
         this.arrayStart = null
         this.array = [];
@@ -158,6 +161,12 @@ export class DSArray extends DCont {
                 this.arrLitel.push(this.array[i])
             }
 
+            if(this.fun)this.fun("dragSP",this.array)
+
+            if(this._boolGal==false){
+                this.switchPage.dCont.visible=this._boolGal
+                return
+            }
             this.gallery.width = this.pKey.x + this.pKey.width - this._otstup * 2;
             this.gallery.widthPic = this.gallery.width;
             this.gallery.start(this.arrLitel)
@@ -200,7 +209,7 @@ export class DSArray extends DCont {
 
         this.ach = []
         this.getGron = function() {
-            sah++
+            sah++;
             if (this.ach[sah] == undefined) this.ach[sah] = new MSAHron(this)
             this.array[sah] = this.ach[sah];
             this.array[sah].idArr = sah
@@ -231,15 +240,6 @@ export class DSArray extends DCont {
             if(this._boolUp)otU=this._otstup * 3 + 42   
 
             this.pKey.setWidth(this.width-otL)
-/*
-            if (this.switchPage.width + this._otstup * 2 > this.width) this.width = this.switchPage.width + this._otstup * 2
-            if (this.width < 250) this.width = 250
-
-            this.pKey.x = this._otstup * 2 + this._wh;
-
-            if (this.pKey.x + this.pKey.width + this._otstup > this.width) {
-                this.width = this.pKey.x + this.pKey.width + this._otstup
-            }*/
 
 
 
@@ -248,7 +248,12 @@ export class DSArray extends DCont {
 
             this.pKey.x = otL;
             this.pKey.y = this._otstup ;
-            this.pKey.height = this.aPos[0]
+            if(this._boolGal==false){
+                this.pKey.height =0
+            }else{
+                this.pKey.height = this.aPos[0]
+            }
+            
 
             this.gallery.x = 0;
             this.gallery.y = otU;
@@ -332,20 +337,7 @@ export class DSArray extends DCont {
         return this._kol;
     }
 
-/*
-    set wComp(value) {
-        if (this._wComp != value) {
-            this._wComp = value;
-            this.pKey.wComp = this._wComp;
-            this.gallery.wComp = this._wComp;
-            this.drag()
 
-
-        }
-    }
-    get wComp() {
-        return this._wComp;
-    }*/
 
    set width(value) {
         if (this._width != value) {
@@ -381,9 +373,29 @@ export class DSArray extends DCont {
     }
     get boolUp() {
         return this._boolUp;
-    }   
+    }  
 
-    
+    set boolGal(value) {
+        if (this._boolGal != value) {
+            this._boolGal = value;
+            this.gallery.visible=this._boolGal
+            this.switchPage.dCont.visible=this._boolGal
+            this.panelBase.visible=this._boolGal;
+           
+            
+            this.korekt()
+            this.drag()
+            this.hGal = this.pKey.height;
+
+          
+        }
+    }
+    get boolGal() {
+        return this._boolGal;
+    } 
+
+
+
 
         
     set height(value) {

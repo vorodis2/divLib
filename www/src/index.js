@@ -4,6 +4,7 @@ import { DSettings} from './dCont/DSettings.js';
 import { DParamObject} from './dCont/DParamObject.js';
 import { DGallery,DBox} from './dCont/DGallery.js';
 import { DButtons,DButBox} from './dCont/DButtons.js';
+import { DVupodalka} from './dCont/DVupodalka.js';
 import { DHelp} from './dCont/DHelp.js';
 
 import { DThree} from './dCont/DThree.js';
@@ -46,6 +47,8 @@ global.DParamObject=DParamObject
 global.DGallery=DGallery
 global.DBox=DBox
 global.DButtons=DButtons
+global.DVupodalka=DVupodalka
+
 global.DButBox=DButBox
 
 global.DBitmapData=DBitmapData
@@ -60,4 +63,4 @@ global.DHoleDrag = DHoleDrag;
 global.DClip = DClip;
 
 
-export { DCont, DCM,DDragPic,DClip, DButton,DButtons,DButBox, /*DBArray,*/DGlow,DComboBox,/* DComboBoxOld,*/ DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS/*,DButSim*/,DHelp,DThree,DHole,DHoleDrag};
+export { DCont, DCM,DDragPic,DClip, DButton,DButtons,DVupodalka, DButBox, /*DBArray,*/DGlow,DComboBox,/* DComboBoxOld,*/ DButtonDrag,DAroundButton, DPanel,DImage,DLabel,DSlider,DSliderBig,DInput,DTextArea,DCheckBox,DColor,DWindow,DSettings,DParamObject,DGallery,DBitmapData,DScrollBarH,DScrollBarV,DBox,DWindowS/*,DButSim*/,DHelp,DThree,DHole,DHoleDrag};

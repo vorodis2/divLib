@@ -6,6 +6,9 @@ import { DShtora } from '../dShtora/DShtora.js';
 import { DSArray } from '../dSArray/DSArray.js';
 import { DVerhPanels } from '../dShtora/DVerhPanels.js';
 import { DRedactPM } from './DRedactPM.js';
+
+//import { DPreloader } from '../dSArray/DPreloader.js';
+
 export class DDPlus{
     constructor(par,fun) {
         
@@ -136,8 +139,9 @@ export class DDPlus{
 
             var s='[{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679242.252 25600425.8922 3.1663 6679240.8411 25600423.0462 0.2598 6679241.2793 25600424.077 -1.3613"}},{"object":{"@name":"name","@brkType":"standard","Feature":{"@code":"IM_coding","@source":"inframodel","Property":[[],{"@label":"infraCoding","@value":"0"},{"@label":"infraCodingDesc","@value":"no description"},{"@label":"terrainCoding","@value":"0"},{"@label":"terrainCodingDesc","@value":"no description"},{"@label":"surfaceCoding","@value":"0"},{"@label":"surfaceCodingDesc","@value":"no description"}]},"PntList3D":"6679237.8562 25600422.8776 -0.5424 6679240.7107 25600421.8405 0.9234 6679241.8805 25600422.908 2.3839"}}]'
 
+            let dPreloader=new DPreloader(null,0,0)
 
-        
+            this.addPlus(dPreloader, null, false)
             //this.setMHBD()    
 
 

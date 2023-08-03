@@ -15,7 +15,7 @@ export class DDebug extends DCont{
     constructor(dCont, _x, _y, _key, param) {
         super();
         var self=this
-        this.type="DCompDev"
+        this.type="DCompDev";
         this._active=true
         this.visible=this._active
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);         
@@ -61,16 +61,22 @@ export class DDebug extends DCont{
         this.dbs=new DButtons(self.wind,32,0,["0. divLib","1. plus","2. dBase","3. getDCont"],function(){
             self.index=this.index
             self.saveLS.dragPos();
-            self.wind.startDrag();
+            //self.wind.startDrag();
         });
         this.dbs.otstup=0
-        this.dbs.color=this.wind.button.color
+        this.dbs.color=this.wind.button.color;
+
+        this.dbs.fun_dowenUp=function(){
+            
+        }
+
 
         this.arrCom=[]
         this.arrCom[0] = this.xzDivLib = new XZDivLib(this,function(s,p,p1,p2){
             if(s=="addObject")self.addObject(p,p1,p2)
         });
         this.arrCom[1] = this.ddPlus = new DDPlus(this,function(s,p,p1,p2){
+
             if(s=="addObject")self.addObject(p,p1,p2)
         });
         this.arrCom[2] = this.ddBase= new DDBase(this,function(s,p,p1,p2){
@@ -395,7 +401,7 @@ export class PObject {
         this.addObject=function(obj,tipRide,funDrag){
        
             if(tipRide==undefined){
-                tipRide=true
+                tipRide=false
             }
             this.funDrag=funDrag
             this.object=obj;

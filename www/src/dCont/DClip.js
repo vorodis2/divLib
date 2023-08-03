@@ -101,8 +101,8 @@ export class DClip extends DCont {
             if(self.fun)self.fun()          
         };
 
-        this.div.addEventListener('mousewheel', this.mousewheel)
-        this.div.addEventListener("DOMMouseScroll", this.mousewheel);
+        this.div.addEventListener('mousewheel', this.mousewheel,  { passive: true})
+        this.div.addEventListener("DOMMouseScroll", this.mousewheel,  { passive: true});
 
         this.boolDragMouse=true
         var sp=undefined;   

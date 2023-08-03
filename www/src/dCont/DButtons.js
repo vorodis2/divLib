@@ -20,7 +20,7 @@ export class DButtons extends DCont {
         this.y = y || 0;
         this.fun = fun;
 
-        
+       
 
         this._kol=kol|| 2;
         if(kol && kol[0]!=undefined){
@@ -46,6 +46,9 @@ export class DButtons extends DCont {
         this._activMouse = true;
         this._glowSah = 0;
         this._glowColor = '#000000';
+
+        this._activeIndex = true;   
+        this.arrAct = [];           
         this._tip=0; 
         this.arrayCash=[]
         this.array=[]
@@ -68,9 +71,9 @@ export class DButtons extends DCont {
             if (this.createZamen != undefined) {
                 button=this.createZamen()
             }else{
-                button=new DButBox(this,0,0," ")//,this.sob)
+                button=new DButBox(this,0,0," ",this.sob)
             }
-            button.fun_mousedown=this.sob;
+            //button.fun_mousedown = this.sob;
             //размещене и параметры кнопка
             button.idArr=this.arrayCash.length
             button.width=this._wh;
@@ -89,7 +92,45 @@ export class DButtons extends DCont {
         }
 
 
+        this.setArrAct = function(a){
+            for (var i = 0; i < a.length; i++) {
+                if(self.array[i]){
+                    if(a[i]){
+                        self.array[i].color=self._colorActive
+                    }else{
+                        self.array[i].color=self._color
+                    }
+                }
+                
+            }
+        }
+
+
+
         this.sob = function(){
+
+            if(self._activeIndex==false){
+                self.arrAct.length=0;      
+                if(this.color==self._color){
+                    this.color=self._colorActive
+                }else{
+                    this.color=self._color
+                }
+
+                for (var i = 0; i < self.array.length; i++) {
+                    if(self.array[i].color==self._colorActive){
+                        self.arrAct.push(true)
+                    }else{
+                        self.arrAct.push(false)
+                    }
+                }
+
+
+                if(self.fun)self.fun()
+                return;
+            }
+
+
             if(self.boolDragIndex==true){
                 if (self._tip==2) {
                     let p=(this.idArr+1)%self._kol
@@ -98,11 +139,8 @@ export class DButtons extends DCont {
                     if(self.fun)self.fun()
                     return
                 }
-
                 self.index=this.idArr
-            }
-            
-
+            } 
             if(self.fun)self.fun()
         }
       
@@ -110,6 +148,14 @@ export class DButtons extends DCont {
 
 
         this.dragIndex = function(){
+
+            if(this._activeIndex==false){
+
+
+
+                return;
+            }
+
             if(this.boolColor==true)
             for (var i = 0; i < this.arrayCash.length; i++) {                
                 if (this.arrayCash[i].idArr!==this._index) {
@@ -187,7 +233,7 @@ export class DButtons extends DCont {
                 this._width=this._wh;
                 this._height=this._wh;
             }
-            
+            let bWh=true
             if (this._tip==3) {
                 let xx=0
                 let ss=0
@@ -196,7 +242,7 @@ export class DButtons extends DCont {
                     this.arrayCash[i].y=0;
 
                     ss=this.arrayCash[i].text
-                    this.arrayCash[i].width=this._fontSize*ss.length*0.60+this._fontSize
+                    this.arrayCash[i].width = this._fontSize*ss.length*0.60+this._fontSize
 
                     xx+= this.arrayCash[i].width+this._otstup
                     this.array[i].visible=true
@@ -205,7 +251,31 @@ export class DButtons extends DCont {
                 }
                 this._width=xx-this._otstup
                 this._height=this._wh;
-            }else{
+                bWh=false
+            }
+
+            if (this._tip==4) {
+                let xx=0
+                let ss=0
+                let wM=1
+                for (var i = 0; i < this._kol; i++) {  
+                    ss=this.arrayCash[i].text
+                    if(wM<this._fontSize*ss.length*0.60+this._fontSize)wM=this._fontSize*ss.length*0.60+this._fontSize                    
+                }
+                for (var i = 0; i < this._kol; i++) {
+                    this.arrayCash[i].x=xx;
+                    this.arrayCash[i].y=0;
+                    this.arrayCash[i].width=wM
+                    xx+= this.arrayCash[i].width+this._otstup
+                    this.array[i].visible=true;
+                }
+
+                this._width=xx-this._otstup
+                this._height=this._wh;
+                bWh=false
+            }
+
+            if(bWh){
                 for (var i = 0; i < this._kol; i++) {
                     this.arrayCash[i].width=this._wh;
                 }
@@ -226,7 +296,6 @@ export class DButtons extends DCont {
             }
             this._tip=-1;
             this.tip=3;
-
         }
 
 
@@ -236,6 +305,9 @@ export class DButtons extends DCont {
             this.setTArr(kol)
         }
     }
+
+
+
 
     set x(value) {
         this.position.x = value;
@@ -249,6 +321,20 @@ export class DButtons extends DCont {
     get y() {
         return this.position.y;
     }
+
+
+    set activeIndex(v) {
+        if (this._activeIndex != v) {
+            this._activeIndex =v;
+            this.dragTip()
+            this.dragIndex()
+        }
+    }
+
+    get activeIndex() {
+        return this._activeIndex;
+    }
+
 
     set tip(v) {
         if (this._tip != Math.round(v)) {
@@ -324,6 +410,7 @@ export class DButtons extends DCont {
     set index(v) {
         if (this._index != v) {
             this._index = v;
+            
             this.dragIndex()           
         }
     }
@@ -360,6 +447,10 @@ export class DButtons extends DCont {
     set color(value) {
         if (this._color != value) {
             this._color = value;
+            this._colorActive =dcmParam.compToHexArray(dcmParam.hexDec(this._color), -40);
+            for (var i = 0; i < this.arrayCash.length; i++) {
+                this.arrayCash[i].color=this._color;
+            }
             this.dragIndex()
         }
     }
@@ -371,6 +462,7 @@ export class DButtons extends DCont {
     set colorActive(value) {
         if (this._colorActive != value) {
             this._colorActive = value;
+
             this.dragIndex()
         }
     }
@@ -480,7 +572,15 @@ export class DButBox extends DButton {
     constructor(dCont, _x, _y, _text, _fun, _link) {
         super(dCont, _x, _y, _text, _fun, _link);
         this.type = 'DButton';
+        var self=this
         this._active=true;
+        this.funDin=_fun;
+        this.fun=undefined;
+        
+        this.fun_mousedown=function(e){            
+            if(self.funDin)self.funDin()
+        }
+
 
     }
     set active(value) {

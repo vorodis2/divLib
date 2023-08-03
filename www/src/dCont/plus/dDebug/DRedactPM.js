@@ -33,16 +33,27 @@ export class DRedactPM extends DCont{
             let file=this.files[0]
             let id=self.object.id
             let ggg=self._group;
-            mhbd.saveFile(file, ggg, id, (date) => {
-                
+
+            let oo=mhbd.getKeyId(ggg, id)
+            let ss = mhbd.getLink(oo.icon)
+
+            mhbd.saveFile(file, ggg, id, (date) => {                
                 mhbd.getKeyId(ggg, id, function(e) {
+                    if(date.url0){
+                        e.icon = date;
+                        self.setIndex()
+                        if(self.fun)self.fun("dragIcon", e, ss)
+                        return
+                    }
+
+           
                     mhbd.clearFile(ggg, e.iconId);
                     e.iconId = date.id;
                     e.icon = date.src;
                     mhbd.setParam(ggg, id, "iconId", date.id);
                     mhbd.setParam(ggg, id, "icon", date.src);
                     self.setIndex();
-                    if(self.fun)self.fun("dragIcon", e)
+                    if(self.fun)self.fun("dragIcon", e, ss)
 
                 })    
             })
@@ -56,9 +67,19 @@ export class DRedactPM extends DCont{
            
             let id=self.object.id
             let ggg=self._group
+
+            let oo=mhbd.getKeyId(ggg, id)
+            let ss = mhbd.getLink(oo.icon)
+
             mhbd.saveFile(file, ggg, id, (date) => {
                 
                 mhbd.getKeyId(ggg, id, function(e) {
+                    if(date.url0){
+                        e.icon = date;
+                        self.setIndex()
+                        if(self.fun)self.fun("dragIcon", e, ss)
+                        return
+                    }
                     mhbd.clearFile(ggg, e.iconId);
                     e.iconId = date.id;
                     e.icon = date.src;
@@ -66,7 +87,7 @@ export class DRedactPM extends DCont{
                     mhbd.setParam(ggg, id, "icon", date.src);
                     self.setIndex()
 
-                    if(self.fun)self.fun("dragIcon", e)
+                    if(self.fun)self.fun("dragIcon", e, ss)
                 })    
             })
         }
@@ -208,7 +229,8 @@ export class DRedactPM extends DCont{
                     this.sevePlus(this._group,this.object.id,this.arr[i],this.object[this.arr[i]])
                 }
             }
-            let s=mhbd.getLink(this.object.icon);            
+           
+            let s=mhbd.getLink(this.object.icon);                      
             this.dci.setLink(s,true,true);
         }
 

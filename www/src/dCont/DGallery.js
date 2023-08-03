@@ -662,8 +662,8 @@ Object.defineProperties(DGallery.prototype, {
 			this.interactive = this._boolWheel;
 
 			if (this._boolWheel == true) {				
-				this.div.addEventListener('mousewheel', this.mousewheel)
-				this.div.addEventListener("DOMMouseScroll", this.mousewheel);
+				this.div.addEventListener('mousewheel', this.mousewheel,  { passive: true})
+				this.div.addEventListener("DOMMouseScroll", this.mousewheel,  { passive: true});
 			} else {				
 				this.div.removeEventListener('mousewheel', this.mousewheel)
 				this.div.removeEventListener('DOMMouseScroll', this.mousewheel)

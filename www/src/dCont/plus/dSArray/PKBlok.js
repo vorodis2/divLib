@@ -22,12 +22,14 @@ export class PKBlok  {
         this.width=this._wComp;
         this._visible=true
 
+        trace("########",this.par.height)
         this.panel=new DPanel(this.dCont)
         this.panel.width=this._wComp;
         this.panel.height=this.par.height//par.hGal;
         this.panel1=new DPanel(this.panel,this._otstup,this._otstup)
         this.panel1.width=this._wComp-this._otstup*2;
-        this.panel1.height=dcmParam.fontSize+this._otstup*2+this._wh;
+
+        this.panel1.height=dcmParam.fontSize+this._otstup*3 + this._wh;
         this.dLabel=new DLabel(this.panel1,0,this._otstup);
         this.dLabel.width=this.panel.width;        
         this.dLabel.textAlign="center";

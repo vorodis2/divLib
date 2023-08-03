@@ -3,6 +3,9 @@
 <title>divLib</title>	
 <script src="build/divLib.js?v=1"></script>
 
+
+<script src='src/lib/jquery-1.11.3.js'></script>
+
 <script src="src/lib/three.min.js"></script>
 
 <script src="src/lib/tween.min.js"></script>
@@ -13,7 +16,7 @@
 	var ww=150
 	var dcmParam;
 	function downMy(s) {
-		trace(s,this.activMouse,this)
+		trace(s,this.index,this)
 
 		//setDin(this)			
 	}
@@ -76,15 +79,62 @@
 			sizeWindow()
 		});
 
+
+	/*	var bbb=new DVupodalka(null,0,200,3,downMy)
+		//bbb.boolDragIndex=false
+		
+		//bbb.setTArr(["00","11","22","33","44","55"])
+		plus(bbb);
+		
+		bbb.y=200;
+		bbb.tip=3
+		bbb.array[1].link="resources/pic/3.png";
+		bbb.array[0].link="resources/pic/1.png";
+
+		bbb.array[0].color='#ff0000'
+		bbb.dragIndex()
+
+		pObject.addObject(bbb);
+
+		return*/
+
+
+		var bb=new DButton(null,0,0,"Button",downMy)
+		//var bb=new DButton(null,0,0,"Button",downMy,"resources/pic/0.png")
 		
 
-		
-		var bb=new DButton(null,0,0,"Button",downMy,"resources/pic/Vector (2).svg")
+		//var bb=new DButton(null,0,0," ",downMy,sss)
 		plus(bb);
-		bb.textAlign='Left'
-		
+		bb.height=111
+		bb.width=111
+		//bb.textAlign='Left'
+		bb.svgColor="#ff0012";
+		bb.link="resources/pic/Vector (2).svg"
 		pObject.addObject(bb);
-		trace("fghfghfhfghf")
+		return
+
+		var ii=new DImage(null,0,0,null)
+		ii.svgColor="#ff0012";
+
+
+		plus(ii);
+		ii.link="resources/pic/0.png";
+		//ii.link="resources/pic/Vector (2).svg"
+		pObject.addObject(ii);
+		return
+
+		var bbb=new DButtons(null,0,0,["xz","xz1","xz2"],downMy)
+		//bbb.boolDragIndex=false
+		bbb.setTArr(["xz","xz1"])
+		bbb.setTArr(["xz11","xz222","xz333","xs444","xz5552222","xz666"])
+		plus(bbb);
+		pObject.addObject(bbb);
+		return
+
+
+
+
+
 
 		plus(new DButton(null,0,0,"ButtonLoad",function(base64){
 			trace(base64,this);
@@ -98,12 +148,7 @@
 
 
 		/////////////////////////////
-		var ii=new DImage(null,0,0,null)
-		ii.glowColor="#000000"
-		ii.glowSah=3
-
-		plus(ii);
-		ii.link="resources/pic/0.png"
+		
 		//return
 		plus(new DLabel(null,0,0,"text My"));
 
@@ -127,14 +172,18 @@
 
 
 		var bbb=new DButtons(null,0,0,["xz","xz1","xz2"],downMy)
-		bbb.boolDragIndex=false
+		//bbb.boolDragIndex=false
 		bbb.setTArr(["xz","xz1"])
-		bbb.setTArr(["xzsdff","xz1sdf","xz1","xsdfz1","xzsdf1","xzsdf1"])
-		bbb.kol=1
-
+		bbb.setTArr(["xz11","xz222","xz333","xs444","xz5552222","xz666"])
+	
+		
 		plus(bbb);
 		
-		plus(new DWindow(null,0,0,"DWindow",downMy));
+
+
+		let wwwww=	new DWindow(null,0,0,"DWindow",downMy)
+		plus(wwwww);
+		
 		plus(new DColor(null,0,0,"#0000ff",downMy));
 
 		plus(new DScrollBarV(content,677,133,downMy))
@@ -312,4 +361,10 @@
 			}
 		}
 	}
-</script></head><body onload="init()"></body></html>
+
+	document.addEventListener("DOMContentLoaded", function() {
+		init();//строитель		
+	});
+
+
+</script></head><body ></body></html>

@@ -8,6 +8,7 @@ import { PKBlokImage } from './PKBlokImage.js';
      класс хранящий масивы PKBS,PKBN,PKBB,PKBI
 */
 
+
 export class PKey{
     constructor(par, fun) {          
         var self=this   
@@ -258,7 +259,10 @@ export class PKey{
 
     set height(value) {
         if(this._heiaght!=value){
-            this._height = value;    
+            let minH=dcmParam.fontSize+this._otstup*5 + this._wh
+            if(value<minH)value=minH
+            this._height = value; 
+            trace("####",this._height,minH)   
             for (var i = 0; i < this.arrC.length; i++) {
                 this.arrC[i].panel.height=this._height
             }          
