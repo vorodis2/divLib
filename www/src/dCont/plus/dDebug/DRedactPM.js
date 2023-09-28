@@ -1,7 +1,7 @@
 
 
 export class DRedactPM extends DCont{
-    constructor(dCont, _x, _y, _key, arr, ob) {
+    constructor(dCont, _x, _y, _key, arrObj, ob) {
         super();
         var self=this
         this.type="DRedactPM"
@@ -10,7 +10,15 @@ export class DRedactPM extends DCont{
         if(dCont!=undefined)if(dCont.add!=undefined)dCont.add(this);         
         this.x=_x||0; 
         this.y=_y||0;
-        this.arr=arr
+
+        this.arrPlus=[]
+        if(arrObj[0]!=undefined) {
+            this.arr=arrObj
+        } else{
+            this.arr=arrObj.arr
+            if(arrObj.arrPlus)this.arrPlus=arrObj.arrPlus
+        }      
+        
         this.key = _key;
         this.fun=undefined
         var oo=ob//JSON.parse(ss)
@@ -59,8 +67,14 @@ export class DRedactPM extends DCont{
             })
         })
         this.but.startFile("image/*");
-        this.but.width=dci.width
+        this.but.width=240//dci.width
         this.but.height=this.rPar.swh
+        this.but.svgColor="#ff0000";
+
+        this.ta=new DTextArea(this,this.but.x+this.but.width+2,this.but.y,"--") 
+        this.ta.fontSize=8;
+        this.ta.height=this.rPar.swh 
+        this.ta.width=dci.width-this.but.width-2
 
 
         dci.funGetFile=function(file){
@@ -74,6 +88,7 @@ export class DRedactPM extends DCont{
             mhbd.saveFile(file, ggg, id, (date) => {
                 
                 mhbd.getKeyId(ggg, id, function(e) {
+                  
                     if(date.url0){
                         e.icon = date;
                         self.setIndex()
@@ -132,7 +147,7 @@ export class DRedactPM extends DCont{
         this.gallery.kolII = 1
         this.gallery.widthPic = this.gallery.width - this.gallery.otstup * 2;
         this.gallery.heightPic = this.rPar.swh;
-        this.gallery.keyPar=arr[0]
+        this.gallery.keyPar=this.arr[0];
 
 
 
@@ -155,32 +170,109 @@ export class DRedactPM extends DCont{
         this.dComboBox.height=this.rPar.swh; 
 
 
-        this.sob=function(){            
-            self.object[this.title]=this.value;            
-            self.sevePlus(self._group,self.object.id,this.title,this.value)
-            if(self.fun)self.fun("dragObject",self._group,self.object)
+        this.sob=function(){  
+            if(this.type=='DInput'){
+                self.object[this.title]=this.value;            
+                self.sevePlus(self._group,self.object.id,this.title,this.value)
+                if(self.fun)self.fun("dragObject",self._group,self.object)
+            }    
+            if(this.type=='DComboBox'){
+                self.object[this.title] = this.index;            
+                self.sevePlus(self._group,self.object.id,this.title,this.index)
+                if(self.fun)self.fun("dragObject",self._group,self.object)
+            }       
+            
         }
 
 
-        this.arIn=[];
-        var ww=(this.panel1.width-this.rPar.width1-this.rPar.otstup)/arr.length;
 
-        for (var i = 0; i < arr.length; i++) {
-            this.arIn[i]=new DInput(this.panel1,this.rPar.otstup,this.rPar.otstup,"0",this.sob);
-            this.arIn[i].width=ww-this.rPar.otstup;
-            this.arIn[i].height=this.rPar.swh
-            this.arIn[i].x=this.rPar.width1+this.rPar.otstup+i*ww
-            this.arIn[i].title=arr[i]
-            this.arIn[i].fontSize=this.rPar.fontSizeLitel;
-            this.arIn[i].timeFun=100
-            this.arIn[i].funFocus=function(){
-                if(this.boolFocus==true){
-                    self.gallery.keyPar=this.title
-                    if(self.fun)self.fun("keyPar", this.title)
+        //{w:22, type:"DComboBox", arr:["0-xa","1-xa","2-xa","3-xa"], param:"orderBy"}]}
+        let dist=0;
+        let kol=0;
+        let oZo;
+        for (var i = 0; i < this.arr.length; i++) {
+            if(typeof this.arr[i]=='string'){
+                oZo={type:"DInput", param:this.arr[i], boZolLang:true}
+                kol++
+                this.arr[i]=oZo;
+            }else{
+                if(this.arr[i].w){
+                    dist+=this.arr[i].w
+                }else{
+                    kol++
                 }
             }
         }
 
+
+        this.arIn=[];
+        var ww=(this.panel1.width-this.rPar.width1-this.rPar.otstup-dist)/kol;
+
+        for (var i = 0; i < this.arr.length; i++) {
+            if(this.arr[i].w==undefined)this.arr[i].w=ww
+        }
+        
+
+        let xx=0    
+        for (var i = 0; i < this.arr.length; i++) {
+            oZo=this.arr[i]
+            if(oZo.type=='DInput'){  
+                this.arIn[i]=new DInput(this.panel1,this.rPar.otstup,this.rPar.otstup,"0",this.sob);
+                this.arIn[i].width=oZo.w-this.rPar.otstup;
+                this.arIn[i].height=this.rPar.swh
+                this.arIn[i].x=this.rPar.width1+this.rPar.otstup+i*ww
+                this.arIn[i].title=oZo.param;
+                this.arIn[i].fontSize=this.rPar.fontSizeLitel;
+                this.arIn[i].timeFun=100
+                this.arIn[i].objInfo=oZo
+                
+                this.arIn[i].funFocus=function(){
+                    if(this.boolFocus==true){
+                        self.gallery.keyPar=this.title
+                        
+                        if(self.fun)self.fun("keyPar", this.title)
+                    }
+                }
+
+                xx+=oZo.w
+            }
+
+            if(oZo.type=='DComboBox'){  
+                this.arIn[i]=new DComboBox(this.panel1,this.rPar.otstup,this.rPar.otstup,oZo.arr,this.sob);
+                this.arIn[i].width=oZo.w-this.rPar.otstup;
+                this.arIn[i].height=this.rPar.swh
+                this.arIn[i].x=this.rPar.width1+this.rPar.otstup+i*ww
+                this.arIn[i].title=oZo.param;
+                this.arIn[i].fontSize=this.rPar.fontSizeLitel;
+                this.arIn[i].timeFun=100
+                this.arIn[i].objInfo=oZo
+                let iii=i;
+             
+                this.arIn[i].div.addEventListener('mousedown', function(e){
+                    self.gallery.keyPar=self.arIn[iii].title
+               
+                    if(self.arIn[iii].objInfo.boZolLang){
+                        if(self.fun)self.fun("keyPar", self.arIn[iii].title)
+                    }
+                    
+                })
+                   
+
+                xx+=oZo.w
+            }
+        }
+
+
+
+
+
+
+        ////////this.arrPlus///////////////////////////////
+        
+        this.setUrl=function(url){
+            this.but.link = url;
+            this.ta.text=url
+        }
 
 
 
@@ -220,18 +312,35 @@ export class DRedactPM extends DCont{
         this.setObj=function(o){
             this.object=o;
             for (var i = 0; i < this.arr.length; i++) {
-                if(this.object[this.arr[i]]!=undefined){
-                    this.arIn[i].text=this.object[this.arr[i]]
+                if(this.object[this.arr[i].param]!=undefined){
+                    if(this.arIn[i]){
+                        if(this.arIn[i].type=="DInput") {
+                            this.arIn[i].text=this.object[this.arr[i].param]
+                        }
+                        if(this.arIn[i].type=="DComboBox") {
+                            this.arIn[i].index=this.object[this.arr[i].param]
+                        }
+                    }
                 }else{
-                    let s=this._group+"_"+this.object.id+"_"+this.arr[i];
-                    this.object[this.arr[i]]=s
-                    this.arIn[i].text=this.object[this.arr[i]]
-                    this.sevePlus(this._group,this.object.id,this.arr[i],this.object[this.arr[i]])
+                    if(this.arIn[i]){
+                        if(this.arIn[i].type=="DInput"){
+                            let s=this._group+"_"+this.object.id+"_"+this.arr[i].param;
+                            this.object[this.arr[i].param]=s
+                            this.arIn[i].text=this.object[this.arr[i].param]
+                            this.sevePlus(this._group,this.object.id,this.arr[i].param,this.object[this.arr[i].param])
+                        } 
+                        if(this.arIn[i].type=="DComboBox") {
+                            this.arIn[i].index=0
+                        }  
+                    }
+                    
+                    
                 }
             }
            
             let s=mhbd.getLink(this.object.icon);                      
             this.dci.setLink(s,true,true);
+            this.setUrl(s)
         }
 
         this.sevePlus=function(g,id,k,v){

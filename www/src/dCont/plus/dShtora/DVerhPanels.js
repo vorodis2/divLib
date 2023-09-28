@@ -762,7 +762,7 @@ export class DVerhPanels extends DCont{
 
 
 export class DBut {
-    constructor(dCont, _x, _y, _text, _fun, _link,par) {
+    constructor(dCont, _x, _y, _text, _fun, _link, par) {
         
         this.type = 'DBut';
         this.uuid=dcmParam.generateRendom(2) 

@@ -175,7 +175,7 @@ export class MVerh {
 
         this.ols=this.par.ols
 
-
+        this._activeText=false;
 
         this.init=function(){
             var b=this.plus()//Privazka
@@ -204,6 +204,24 @@ export class MVerh {
 
             var b=this.plus()//scale
             b.link="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBzdHlsZT0id2lkdGg6IDIwMHB4OyBoZWlnaHQ6IDIwMHB4OyI+PHBhdGgvPjxmaWx0ZXIgaWQ9ImYyIiB4PSItNiIgd2lkdGg9IjEyIiB5PSItNiIgaGVpZ2h0PSIxMiI+PGZlR2F1c3NpYW5CbHVyIGluPSJTb3VyY2VHcmFwaGljIiBzdGREZXZpYXRpb249IjYiLz48L2ZpbHRlcj48Zz48ZyBmaWx0ZXI9InVybCgjZjIpIj48bGluZSB4MT0iLTUwIiB5MT0iLTUwIiB4Mj0iLTUwIiB5Mj0iLTUwIi8+PHJlY3QgeD0iNDEuMzIzNjA2ODExMTc4MjQiIHk9IjkzIiB3aWR0aD0iNjQuNjc2MzkzMTg4ODIxNzYiIGhlaWdodD0iNjQuNjc2MzkzMTg4ODIxNzUiIHJ4PSIwIiByeT0iMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzAzMDMwIiBzdHJva2Utd2lkdGg9IjE2LjE2OTA5ODI5NzIwNTQ3Ii8+PHJlY3QgeD0iNDEuMzIzNjA2ODExMTc4MjQiIHk9IjI4LjMyMzYwNjgxMTE3Nzg5NiIgd2lkdGg9IjEyOS4zNTI3ODYzNzc2NDM5IiBoZWlnaHQ9IjEyOS4zNTI3ODYzNzc2NDM4NCIgcng9IjAiIHJ5PSIwIiBmaWxsPSJub25lIiBzdHJva2U9IiMzMDMwMzAiIHN0cm9rZS13aWR0aD0iOC4wODQ1NDkxNDg2MDI3MzUiLz48L2c+PGcgZmlsdGVyPSJ1cmwoI2YyKSI+PGxpbmUgeDE9Ii01MCIgeTE9Ii01MCIgeDI9Ii01MCIgeTI9Ii01MCIvPjxyZWN0IHg9IjQxLjMyMzYwNjgxMTE3ODI0IiB5PSI5MyIgd2lkdGg9IjY0LjY3NjM5MzE4ODgyMTc2IiBoZWlnaHQ9IjY0LjY3NjM5MzE4ODgyMTc1IiByeD0iMCIgcnk9IjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzMwMzAzMCIgc3Ryb2tlLXdpZHRoPSIxNi4xNjkwOTgyOTcyMDU0NyIvPjxyZWN0IHg9IjQxLjMyMzYwNjgxMTE3ODI0IiB5PSIyOC4zMjM2MDY4MTExNzc4OTYiIHdpZHRoPSIxMjkuMzUyNzg2Mzc3NjQzOSIgaGVpZ2h0PSIxMjkuMzUyNzg2Mzc3NjQzODQiIHJ4PSIwIiByeT0iMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMzAzMDMwIiBzdHJva2Utd2lkdGg9IjguMDg0NTQ5MTQ4NjAyNzM1Ii8+PC9nPjwvZz48cmVjdCB4PSI0MS4zMjM2MDY4MTExNzgyNCIgeT0iOTMiIHdpZHRoPSI2NC42NzYzOTMxODg4MjE3NiIgaGVpZ2h0PSI2NC42NzYzOTMxODg4MjE3NSIgcng9IjAiIHJ5PSIwIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMTYuMTY5MDk4Mjk3MjA1NDciLz48cmVjdCB4PSI0MS4zMjM2MDY4MTExNzgyNCIgeT0iMjguMzIzNjA2ODExMTc3ODk2IiB3aWR0aD0iMTI5LjM1Mjc4NjM3NzY0MzkiIGhlaWdodD0iMTI5LjM1Mjc4NjM3NzY0Mzg0IiByeD0iMCIgcnk9IjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSI4LjA4NDU0OTE0ODYwMjczNSIvPjwvc3ZnPg==";
+            
+            
+           /*var bt=this.plus()//text
+
+            bt.link=this.par.par.objInfo['Text'].icon;
+
+            this.ta=new DInput(this.panel,this.rPar.otstup,this.rPar.otstup,'',function(){
+                self.dragText(this.value)
+            })
+            this.ta.timeFun=1
+            this.ta.width=bt.x-this.rPar.otstup;
+            this.ta.height=this.rPar.swh//+this.rPar.otstup*2;
+           // this.ta.fontSize=this.ta.height/2-this.rPar.otstup*2;
+            this.ta.textAlign='left'
+            this.ta.visible=false
+
+            this.label=new DLabel(null,0,0,"")
+            this.label.fontSize=20*/
             
         }
         
@@ -236,6 +254,10 @@ export class MVerh {
                 self.par.par.scane.drEvent.drMenu.start(this.idArr-3)
 
             }
+            if(this.idArr==6){
+                self.activeText=!self.activeText;
+            }
+            
 
         }
 
@@ -243,10 +265,6 @@ export class MVerh {
         this.start=function(){
 
         }
-
-
-
-
 
 
 
@@ -264,8 +282,75 @@ export class MVerh {
             return b
         }
 
+
+        self.dinBody=null
+        this.drahT=function(){
+            if(this._activeText==true){  
+                this.par.par.metodType="Text";
+                let p={x:20, y:20};
+                self.dinBody = this.par.par.scane.drEvent.start(p)
+
+                trace(self.dinBody)
+
+            }else{
+
+
+            }
+        }
+
+
+        this.dragText=function(text){
+            self.dinBody.object.text=text;
+            
+            
+            this.label.text=text;
+            let w=this.label.getTextWidth(text);
+            let h=20;
+
+            let wh=20
+            let s=1;
+            if(w<h)s=1;
+            else s=w/wh;
+
+            let m=20;
+            
+            
+            let x=100-(w)/2
+            let y=h*s
+            trace(w,s,self.dinBody) 
+
+            self.dinBody.array[0].x= x;
+            //self.dinBody.array[0].y= y;  
+
+            this.par.par.scane.drEvent.drButton.korText();                    
+            self.par.mIBlok.mibLinsAnd.drag();
+
+            //trace(this.ta.object.scrollHeight+"     "+this.par.par.scane.drEvent.drButton.textarea.object.scrollHeight);
+          //  trace(this.par.par.scane.drEvent.drButton.textarea.object.scrollWidth);
+            //trace(this.par.par.scane.drEvent.drButton.textarea.scrollHeight)
+
+            /**/
+
+
+        }
+
+
+
         this.init()
     }
+
+    set activeText(value) { 
+        if(this._activeText!=value){  
+            this._activeText=value;
+            this.ta.visible=value;
+            this.drahT()
+
+        }
+    }   
+    get activeText() { return  this._activeText}
+
+
+
 }
 
 

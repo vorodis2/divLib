@@ -10,7 +10,8 @@ export class DButtons extends DCont {
             var dbs= new DButtons(this.dCont,0,0, ["xz","xz1"],function(){}) 
             dbs.tip=0;//в лево по w; 1 вниз; 2 под; 3 в лево по кнопка.w;
             dbs.setTArr(["xz","xz1"]);выстопит tip=3;  
-            .boolDragIndex=true//При тыке меняет индекс          
+            .boolDragIndex=true//При тыке меняет индекс  
+            this._activeIndex = true; //при фальш селектер не работет  arrAct  ответ в нутри       
         `
 
         if (dcmParam == undefined) dcmParam = new DCM();

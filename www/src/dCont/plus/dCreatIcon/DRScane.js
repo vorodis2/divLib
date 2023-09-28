@@ -468,7 +468,8 @@ if(obj.type=="Line"){
         //var s = new XMLSerializer().serializeToString(document.getElementById("svg"))
         var xxw=new XMLSerializer()
 
-        this.getBase64 =function(wh){           
+        this.getBase64 =function(wh){ 
+                     
             let r=xxw.serializeToString(this.svg) 
                       
             var encodedData = "data:image/svg+xml;base64," +window.btoa(r);

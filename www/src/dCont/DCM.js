@@ -43,7 +43,8 @@ export function DCM() {
             window.dcmParam=new DCM();//Надо бы глобально обьявить   dcmParam.mobile = true//узнать моб не моб  dcmParam.addFunMove(fun)(removeFunMove) закидуем маусы мува, отрубаються на мобильном    
             dcmParam.generateRendom(2)//возврощает уникальный uuid
             dcmParam.compToHexArray(dcmParam.hexDec(dcmParam._color), -30);//возврощает темный цвет 
-            dcmParam.getFocus()//:!=null компонент в фокусе, куй удолчяшки
+            dcmParam.getFocus()//:!=null компонент в фокусе, куй удолчяшки           
+            this.getColor(color=._color1, value=20, bool=false)//Вернет цвет ниже/выще
         `
     this.wh = 32;
     this.wb = 200;
@@ -120,6 +121,29 @@ export function DCM() {
             this.compToHex(a[2])
         );
     };
+
+    var cc,vv,bb,aa,nn, uu
+    ///Вернет цвет ниже/выще по 255 color=._color1 value=20 bool=false
+    this.getColor = function (color, value, bool) {
+        cc=color||this._color1; 
+        vv=value||20
+        bb=false 
+        if(bool===true)bb=true;
+
+        aa=this.hexDec(color);
+        nn=(aa[0]+aa[1]+aa[2])/2
+
+        uu=1;
+        if(bb==false){
+            if(nn>128){
+                uu=-1
+
+            }
+            vv=Math.abs(vv)
+        }        
+        return this.compToHexArray(this.hexDec(cc),uu*vv)   
+    }
+
 
     this.isMobile = {
         Android: function () {
@@ -3650,7 +3674,6 @@ export class DImage extends DCont {
 
                 a=self._link.split(".");
                 if(a[a.length-1].toUpperCase()=="SVG"){
-               
                     if(window.$!=undefined){
                         window.$.ajax({
                             url: self._link,
@@ -3658,14 +3681,17 @@ export class DImage extends DCont {
                             async: true,
                             success: function(msg){
 
-
+                                
                                 //if(sahLoad!==self.par.sahLoad)return
                                 var test = msg+"$$$$$$$$$$$$$$$$$$$$4";
                                 let tt=''
+                              
+
                                 for (var i = 0; i < msg.length; i++) {
                             
 
-                                    if(msg[i+8] && msg[i]=='"' && msg[i+1]=='#'){
+                                   /* if(msg[i+8] && msg[i]=='"' && msg[i+1]=='#'){
+                                        
                                         
                                         if(msg[i+8]=='"'){
                                             tt+='"'
@@ -3681,9 +3707,31 @@ export class DImage extends DCont {
                                        
                                         }
                                     }
+                                    tt+=msg[i]*/
+                                    if(msg[i+6] && msg[i]=='#'){
+                                        //trace("=====",i,msg[i+1],msg[i+2],msg[i+3],msg[i+4],msg[i+5],msg[i+6],msg[i+7])
+                                        if(msg[i+7]=='"' || msg[i+7]=="'" || msg[i+7]==";"){
+
+                                           // trace("====!!=")
+                                            tt+=msg[i]
+                                        
+                                            
+                                            tt+=self._svgColor[1]
+                                            tt+=self._svgColor[2]
+                                            tt+=self._svgColor[3]
+                                            tt+=self._svgColor[4]
+                                            tt+=self._svgColor[5]
+                                            tt+=self._svgColor[6]
+                                            
+                                            i+=7
+                                           
+                                                
+                                        }
+                                    }
                                     tt+=msg[i]
                                 }
-
+                                //trace("==0==",msg)
+                               // trace("==1==",tt)
                                 let blob = new Blob([tt], {type: 'image/svg+xml'});
                                 let url = URL.createObjectURL(blob);                          
                                 self.loadDD(url)                                

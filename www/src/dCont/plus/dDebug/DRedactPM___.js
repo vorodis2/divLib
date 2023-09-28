@@ -12,7 +12,7 @@ export class DRedactPM extends DCont{
         this.y=_y||0;
         this.arr=arr
         this.key = _key;
-        
+        this.fun=undefined
         var oo=ob//JSON.parse(ss)
         this.oo=oo;
         
@@ -24,19 +24,62 @@ export class DRedactPM extends DCont{
         this.dci=dci
         this.rPar=dci.rPar;
         this.width=this.rPar.width1+this.rPar.otstup*3+this.rPar.width
-        this.height=this.rPar.swh+this.rPar.otstup*5+this.rPar.height
+        this.height=this.rPar.swh+this.rPar.otstup*6+this.rPar.height+this.rPar.swh
 
         dci.x=this.rPar.width1+this.rPar.otstup*2
         dci.y=this.rPar.swh+this.rPar.otstup*4
+
+        this.but=new DButton(this,dci.x,dci.y+dci.height+2,"Load png,jpg,svg",function(e){
+            let file=this.files[0]
+            let id=self.object.id
+            let ggg=self._group;
+
+            let oo=mhbd.getKeyId(ggg, id)
+            let ss = mhbd.getLink(oo.icon)
+
+            mhbd.saveFile(file, ggg, id, (date) => {                
+                mhbd.getKeyId(ggg, id, function(e) {
+                    if(date.url0){
+                        e.icon = date;
+                        self.setIndex()
+                        if(self.fun)self.fun("dragIcon", e, ss)
+                        return
+                    }
+
+           
+                    mhbd.clearFile(ggg, e.iconId);
+                    e.iconId = date.id;
+                    e.icon = date.src;
+                    mhbd.setParam(ggg, id, "iconId", date.id);
+                    mhbd.setParam(ggg, id, "icon", date.src);
+                    self.setIndex();
+                    if(self.fun)self.fun("dragIcon", e, ss)
+
+                })    
+            })
+        })
+        this.but.startFile("image/*");
+        this.but.width=dci.width
+        this.but.height=this.rPar.swh
 
 
         dci.funGetFile=function(file){
            
             let id=self.object.id
             let ggg=self._group
+
+            let oo=mhbd.getKeyId(ggg, id)
+            let ss = mhbd.getLink(oo.icon)
+
             mhbd.saveFile(file, ggg, id, (date) => {
                 
                 mhbd.getKeyId(ggg, id, function(e) {
+                    if(date.url0){
+                        e.icon = date;
+                        self.setIndex()
+                        if(self.fun)self.fun("dragIcon", e, ss)
+                        return
+                    }
                     mhbd.clearFile(ggg, e.iconId);
                     e.iconId = date.id;
                     e.icon = date.src;
@@ -44,7 +87,7 @@ export class DRedactPM extends DCont{
                     mhbd.setParam(ggg, id, "icon", date.src);
                     self.setIndex()
 
-
+                    if(self.fun)self.fun("dragIcon", e, ss)
                 })    
             })
         }
@@ -79,8 +122,8 @@ export class DRedactPM extends DCont{
 
         this.gallery = new GalleryInfo(this,this.rPar.otstup,this.rPar.otstup*4+this.rPar.swh, function(s, p) {
             self.index=self.gallery.array[this.index].object.id
-
             self.dci.ols["plusXZ_index"]=self._index;
+            if(self.fun)self.fun("idObject", self.index, self.gallery.keyPar )
             self.dci.saveLoc();
         },this)
         this.gallery.otstup=this.rPar.otstup
@@ -90,6 +133,9 @@ export class DRedactPM extends DCont{
         this.gallery.widthPic = this.gallery.width - this.gallery.otstup * 2;
         this.gallery.heightPic = this.rPar.swh;
         this.gallery.keyPar=arr[0]
+
+
+
 
 
         this.arrName=[]
@@ -102,6 +148,7 @@ export class DRedactPM extends DCont{
         this.dComboBox=new DComboBox(this.panel1, this.rPar.otstup, this.rPar.otstup,this.arrName,function(){
             self.group=self.arrName[this.index]
             self.dci.ols["plusXZ_index"]=self._index;
+            if(self.fun)self.fun("indexGroup", self.arrName[this.index])
             self.dci.saveLoc();
         })
         this.dComboBox.width=this.input.x-this.rPar.otstup*2;
@@ -111,6 +158,7 @@ export class DRedactPM extends DCont{
         this.sob=function(){            
             self.object[this.title]=this.value;            
             self.sevePlus(self._group,self.object.id,this.title,this.value)
+            if(self.fun)self.fun("dragObject",self._group,self.object)
         }
 
 
@@ -128,6 +176,7 @@ export class DRedactPM extends DCont{
             this.arIn[i].funFocus=function(){
                 if(this.boolFocus==true){
                     self.gallery.keyPar=this.title
+                    if(self.fun)self.fun("keyPar", this.title)
                 }
             }
         }
@@ -144,12 +193,13 @@ export class DRedactPM extends DCont{
                     break
                 }
             }
-            this.gallery.start(this.oo[this._group]);
+            if(this.oo[this._group])this.gallery.start(this.oo[this._group]);
             this.index=0;
         }
 
         this.setIndex=function(){
             //if(this.oo[this._group][this._index]==undefined)this._index=0
+            if(!this.oo[this._group])return
             let p=0;
             for (var i = 0; i < this.oo[this._group].length; i++) {
                 if(this.oo[this._group][i].id==this._index){
@@ -157,6 +207,9 @@ export class DRedactPM extends DCont{
                     break
                 }
             } 
+
+            if(this.gallery.array[p]==undefined)return
+
             this.gallery.index=p;
             this.gallery.array[p].dragIm("?"+Math.random())
             this.input.value=this._index
@@ -176,7 +229,8 @@ export class DRedactPM extends DCont{
                     this.sevePlus(this._group,this.object.id,this.arr[i],this.object[this.arr[i]])
                 }
             }
-            let s=mhbd.getLink(this.object.icon);            
+           
+            let s=mhbd.getLink(this.object.icon);                      
             this.dci.setLink(s,true,true);
         }
 
@@ -187,8 +241,7 @@ export class DRedactPM extends DCont{
 
             if(this._group==g){
                 
-                for (var i = 0; i < this.gallery.array.length; i++) {
-                    
+                for (var i = 0; i < this.gallery.array.length; i++) {                    
                     if(this.gallery.array[i].object.id==id){                        
                         this.gallery.array[i].dragText()
                     }
@@ -281,11 +334,14 @@ export class BoxInfo extends DBox {
         var self = this;
 
 
-        this.label1 = new DLabel(this)
-        
+        this.label1 = new DLabel(this)        
         this.label1.fontSize=par.par.rPar.fontSizeLitel
         this.label.fontSize=par.par.rPar.fontSizeLitel
         this.image.activMouse = false;
+
+
+
+
         var ss
         this.draw = function() {
 

@@ -110,8 +110,53 @@
 		//bb.textAlign='Left'
 		bb.svgColor="#ff0012";
 		bb.link="resources/pic/Vector (2).svg"
+		//bb.link="https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1227/0000509768/materials.svg"
+		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1228/0000509776/image.svg'
+		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0149/0000509758/root.svg'
+		bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0155/0000509705/accessories.svg'
 		pObject.addObject(bb);
+		
+
+		var bb1=new DButton(null,0,0,"Button",downMy)
+		plus(bb1);
+		bb1.height=111
+		bb1.width=111
+		//bb1.textAlign='Left'
+		bb1.svgColor="#ff0012";
+		//bb1.link="resources/pic/Vector (2).svg"
+		//bb1.link="https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1227/0000509768/materials.svg"
+		bb1.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1228/0000509776/image.svg'
+		//bb1.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0149/0000509758/root.svg'
+		
+		var bb2=new DButton(null,0,0,"Button",downMy)
+		plus(bb2);
+		bb2.height=111
+		bb2.width=111
+		//bb2.textAlign='Left'
+		bb2.svgColor="#ff0012";
+		bb2.link="resources/pic/Vector (2).svg"
+		//bb2.link="https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1227/0000509768/materials.svg"
+		//bb2.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1228/0000509776/image.svg'
+		//bb2.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0149/0000509758/root.svg'
+
+	/*	bb.color=dcmParam.getColor("#ffff00")
+		trace("ccc=",bb.color)
+		bb1.color=dcmParam.getColor("#ffff00", 55,true)
+		trace("ccc=",bb1.color)
+
+		bb2.color=dcmParam.getColor("#ffff00", -55)
+		trace("ccc=",bb2.color)*/
 		return
+
+
+
+
+
+
+
+
+
+
 
 		var ii=new DImage(null,0,0,null)
 		ii.svgColor="#ff0012";
@@ -120,16 +165,14 @@
 		plus(ii);
 		ii.link="resources/pic/0.png";
 		//ii.link="resources/pic/Vector (2).svg"
-		pObject.addObject(ii);
-		return
+		
 
 		var bbb=new DButtons(null,0,0,["xz","xz1","xz2"],downMy)
 		//bbb.boolDragIndex=false
 		bbb.setTArr(["xz","xz1"])
 		bbb.setTArr(["xz11","xz222","xz333","xs444","xz5552222","xz666"])
 		plus(bbb);
-		pObject.addObject(bbb);
-		return
+		
 
 
 
@@ -203,6 +246,8 @@
 		g.start(a);
 		g.kolII=2
 		plus(g);
+		pObject.addObject(g);
+
 
 		var dragPic1=new DDragPic();
 

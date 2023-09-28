@@ -67,7 +67,7 @@ export class DREvent {
         }
 
 
-
+    
 
         this.start=function(p,e){
             if(this.dinBody!=null)return 
@@ -76,8 +76,10 @@ export class DREvent {
 
             if(self.dinBody.object.type==="Text"){
                 self.dinBody.object.text='';
+                let r=self.dinBody
                 this.stop()
-                return
+
+                return r
             }
 
             if(self.dinBody.object.type!=="LineDrag"){
@@ -102,6 +104,8 @@ export class DREvent {
                 document.addEventListener('touchend', self.mouseup);
             }
             dcmParam.addFunMove(self.mousemove);
+            
+            return self.dinBody
         }
 
         this.pStart={x:0, y:0}

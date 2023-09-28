@@ -75,7 +75,9 @@ export class BoxXZ extends DBox {
 	this._boolWheel = true;
 
 	this.killTukIndex = 0;//rколичество тыков по индексу
-
+	
+	this.bh=false;
+	this.bv=false;
 
 	this.sahDelta = 20;
 
@@ -107,6 +109,14 @@ export class BoxXZ extends DBox {
 	this.panel=new DPanel(this.contPanel,0,0);
 	this.panel.width=this._width;
 	this.panel.height=this._height;
+
+	this.panel1=new DPanel(this.contPanel,0,0);
+	this.panel1.width=this._width;
+	this.panel1.height=this._height;
+
+	this.panel1.color="#999999"	
+	this.panel1.alpha=0
+
 
 	this.content = new DCont();
 	this.content1.add(this.content)	
@@ -264,13 +274,17 @@ export class BoxXZ extends DBox {
 				jj++;
 			}
 		}
+		this.bh=false;
+		this.bv=false;
+
+		if (ww > this._width) this.bh = true;
+		
+		this.scrollBarH.visible = this.bh
 
 
-		if (ww > this._width) this.scrollBarH.visible = true;
-		else this.scrollBarH.visible = false;
-
-		if (hh > this._height) this.scrollBarV.visible = true;
-		else this.scrollBarV.visible = false;
+		if (hh > this._height) this.bv = true;
+		
+		this.scrollBarV.visible = this.bv
 
 
 		this.scrollBarH.widthContent = ww;
@@ -321,6 +335,9 @@ export class BoxXZ extends DBox {
 		if(this.panel!=undefined){			
 			this.panel.width=this._width;
 			this.panel.height=this._height;
+
+			this.panel1.width=this._width;
+			this.panel1.height=this._height;
 		}
 
 		// this.graphicsMask.clear();
@@ -407,11 +424,22 @@ export class BoxXZ extends DBox {
         }
 
 
-        p=delta;
+        p=-delta;
+
+  	
+		if (self.bv) {
+			let yz=self.content.y+self.sahDelta*p;
+			if(yz>0){
+				yz=0
+			}
+			if(yz<-(hhh + self.otstup)){
+				yz=-(hhh + self.otstup)
+			}
+			self.content.y=yz
 
 
-		if (self.scrollBarV.visible) {
-			if (p < 0) {
+			/*if (p < 0) {
+				
 				if (self.content.y >= 0) {
 					self.content.y = 0;
 					//self.scrollBarV.value = 0;
@@ -419,6 +447,8 @@ export class BoxXZ extends DBox {
 					//self.scrollBarV.value -= self.sahDelta;
 					self.content.y += self.sahDelta;
 				}
+
+
 			} else {
 				if (self.content.y <= -(hhh + self.otstup)) {
 					self.content.y = -(hhh + self.otstup);
@@ -428,27 +458,36 @@ export class BoxXZ extends DBox {
 					self.content.y -= self.sahDelta;
 				}
 
-			}
+			}*/
 
 			//
-		} else if (self.scrollBarH.visible) {
-			if (p < 0) {
+		} else if (self.bh) {
+			let xz=self.content.x+self.sahDelta*p;
+			if(xz>0){
+				xz=0
+			}
+			if(xz<-(www + self.otstup)){
+				xz=-(www + self.otstup)
+			}
+			self.content.x=xz
+
+			/*if (p < 0) {
 				if (self.content.x >= 0) {
 					self.content.x = 0;
-					//self.scrollBarH.value = 0;
+					
 				} else {
-					//self.scrollBarH.value -= self.sahDelta;
+					
 					self.content.x += self.sahDelta;
 				}
 			} else {
 				if (self.content.x <= -(www + self.otstup)) {
 					self.content.x = -(www + self.otstup);
-					//self.scrollBarH.value = www;
+					
 				} else {
-					//self.scrollBarH.value += self.sahDelta;
+					
 					self.content.x -= self.sahDelta;
 				}
-			}
+			}*/
 		}
 		//self.koreckScrol();
 		self.scrolPos(true)
@@ -474,9 +513,10 @@ export class BoxXZ extends DBox {
 	}
 
 	var yyy=0
+	var xxx=0
 	this.mousemove=function(e){			
 		if(self.dragActiv==false)return;
-		if(self.scrollBarV.visible == false)return;
+		if(self.bh == false &&  self.bv == false )return;
 		if (self.kolII <= self.array.length) {
 			hhh = (self.heightPic + self.otstup) * (Math.ceil(self.array.length / self.kolII)) - self._height;
 			www = (self.widthPic + self.otstup) * self.kolII - self._width;
@@ -489,29 +529,51 @@ export class BoxXZ extends DBox {
   			if(sp==undefined){
   				sp={  					
   					y:e.clientY,  					
-  					y1:self.content.y
+  					y1:self.content.y,
+  					x:e.clientX,  					
+  					x1:self.content.x,
   				};
   			}  
-  			sp.ys=e.clientY			
+  			sp.ys=e.clientY	
+  			sp.xs=e.clientX			
   		}else{
   			if(sp==undefined){
   				sp={  					
   					y:e.targetTouches[0].clientY,  					
-  					y1:self.content.y
+  					y1:self.content.y,
+  					x:e.targetTouches[0].clientX,  					
+  					x1:self.content.x,
   				};
   			}
   			sp.ys=e.targetTouches[0].clientY
+  			sp.xs=ee.targetTouches[0].clientX
  		}
 
-  		yyy=sp.y1-(sp.y-sp.ys);
 
-  		if(yyy>=0)yyy=0
-  		if(yyy <= -(hhh + self.otstup)){
-  			yyy=-(hhh + self.otstup)
-  		}	
-  		self.content.y=yyy
+ 		if(self.bv == true){
+	  		yyy=sp.y1-(sp.y-sp.ys);
+	  		if(yyy>=0)yyy=0
+	  		if(yyy <= -(hhh + self.otstup)){
+	  			yyy=-(hhh + self.otstup)
+	  		}	
+	  		self.content.y=yyy;
+			self.scrolPos(true)
+  		}
 
-  		self.scrolPos(true)
+ 		
+  		if(self.bh == true){
+	  		xxx=sp.x1-(sp.x-sp.xs);
+	  		if(xxx>=0)xxx=0
+	  		if(xxx <= -(www + self.otstup)){
+	  			xxx=-(www + self.otstup)
+	  		}
+
+	  		self.content.x=xxx;
+			self.scrolPos(true)
+  		}
+
+
+  		
 	}	
 
 	this._bmd=false;
@@ -590,6 +652,7 @@ Object.defineProperties(DGallery.prototype, {
 			this.scrollBarH.borderRadius = value;
 			this.scrollBarV.borderRadius = value;
 			this.panel.borderRadius = value;
+			this.panel1.borderRadius = value;
 			for (var i = 0; i < this.array.length; i++) {
 				this.array[i].borderRadius = value;
 			}
@@ -646,7 +709,12 @@ Object.defineProperties(DGallery.prototype, {
 				this.panel=new DPanel(this.contPanel,0,0);
 				this.panel.width=this._width;
 				this.panel.height=this._height;
+
+				
 			}
+			this.panel.width=this._width;
+			this.panel.height=this._height;
+
 			this.panel.visible=value;
 		},
 		get: function () {
@@ -703,6 +771,8 @@ Object.defineProperties(DGallery.prototype, {
 			for (var i = 0; i < this.arrayKesh.length; i++) {
 				this.arrayKesh[i].color = this.color;
 			}
+			this.scrollBarH.color = this._color;
+			this.scrollBarV.color = this._color;
 		},
 		get: function () {
 			return this._color;
@@ -715,6 +785,8 @@ Object.defineProperties(DGallery.prototype, {
 			for (var i = 0; i < this.arrayKesh.length; i++) {
 				this.arrayKesh[i].color1 = this.color1;
 			}
+			this.scrollBarH.color1 = this._color1;
+			this.scrollBarV.color1 = this._color1;
 		},
 		get: function () {
 			return this._color1;
@@ -1210,7 +1282,8 @@ Object.defineProperties(DBox.prototype, {
 		set: function (value) {
 			if (this._color == value) return;
 			this._color = value;
-			this.draw();
+			if(this._activ==false)this.panel.color1=this._color1;
+			else this.panel.color1=this._color;
 
 		},
 		get: function () {
@@ -1221,7 +1294,8 @@ Object.defineProperties(DBox.prototype, {
 		set: function (value) {
 			if (this._color1 == value) return;
 			this._color1 = value;
-			
+			if(this._activ==false)this.panel.color1=this._color1;
+			else this.panel.color1=this._color;
 		},
 		get: function () {
 			return this._color1;

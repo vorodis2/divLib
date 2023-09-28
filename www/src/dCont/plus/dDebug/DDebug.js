@@ -66,9 +66,7 @@ export class DDebug extends DCont{
         this.dbs.otstup=0
         this.dbs.color=this.wind.button.color;
 
-        this.dbs.fun_dowenUp=function(){
-            
-        }
+        
 
 
         this.arrCom=[]

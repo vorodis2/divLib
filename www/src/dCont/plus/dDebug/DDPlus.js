@@ -63,7 +63,7 @@ export class DDPlus{
                 this.addPlus(this.aDo[i], this.aDo[i+1], false)
             }
 
-            let aa=[
+            /*let aa=[
                                 
                 {Feature:[{num:100},{code:'IM_pipe',source:'inframodel',Property:[{label:"elevType",value:"wwww"}]}]},
             ]
@@ -78,7 +78,22 @@ export class DDPlus{
                     {type:"seek",key:"Property",array:['label','elevType']},
                     "value"
                     ], type:"string",name:"elevType"},
+            ]*/
+
+            let aa=[
+                                
+                {num:13,str:"xz1",bo:true,pic:"resources/pic/1.png",col:"#ff0000"},
+                {num:17,str:"xz2",bo:false,pic:"resources/pic/2.png",col:"#00ff00"},
+                {num:11,str:"xz0",bo:false,pic:"resources/pic/0.png",col:"#00ff00"},
             ]
+
+            let aoo=[
+                {key:["num"], type:"number",name:"num"},//,width:40},
+                {key:["str"], type:"string",name:"str"},
+                {key:["bo"],  type:"boolean",name:"bo"},
+                {key:["pic"], type:"image",name:"pic"},//,width:40},
+            ]
+
             
             var dSArray=new DSArray(null, 0,0,function(){
             
@@ -126,7 +141,7 @@ export class DDPlus{
             dp.addPanel(this,"test2_________")
             dp.addPanel(this,"test3___________")
             dp.addPanel(this,"test4_____________")
-            this.addPlus(dp, null, false)
+            this.addPlus(dp, null, false);
 
 
             
