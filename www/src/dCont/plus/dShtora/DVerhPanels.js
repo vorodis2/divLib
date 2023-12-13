@@ -790,6 +790,9 @@ export class DBut {
         this._alphaPlus=par._alphaPlus; 
         this._boolClose=par._boolClose; 
 
+        this._link=_link; 
+
+
         this.button=new DButton(this.dCont,0,0," ")
         this.button.fun_mousedown=function() {
             
@@ -925,9 +928,17 @@ export class DBut {
         var yy = 6;
         this.reDrag = function() {
            
+            if(this._link==null || this._link=="null" ){
+                if(this.image)this.image.visible=false
+            }else{
+                ot=this._height-this.wOtstup;
+
+            }
+
+
             this.but.y = (this._height - this.but.wh)/2;
             this.but.visible=this._boolClose
-            this.label.x = this.wOtstup;
+            this.label.x = ot+this.wOtstup;
             this.label.y = (this._height - this._fontSize)/2-2;          
             this.button.height=this._height+this._borderRadius;
             
@@ -985,19 +996,61 @@ export class DBut {
         this.wTMin=100;
         this.wText=100;
         this.reDragText = function() {
+
+            if(this._link==null || this._link=="null" ){
+                if(this.image)this.image.visible=false
+            }else{
+                ot=this._height-this.wOtstup;
+
+            }
+
             this.label.fontSize=this._fontSize;
             this.wText=this.label.getTextWidth(this._title)+this._fontSize;
             if(this._boolClose==true){
-                this.wTMin = this.wText+this.wOtstup*2+this.but.wh;
+                this.wTMin = this.wText+this.wOtstup*2+this.but.wh+ot;
             }else{
-                this.wTMin = this.wText+this.wOtstup;
+                this.wTMin = this.wText+this.wOtstup+ot;
             }
-            
+            this.label.x= this.wOtstup+ot
         }
 
+        this
+        var ot=0;
+        /////////////////////////////
+        this.dragLink = function() {
+            ot=0;
 
-             
+            if(this._link==null || this._link=="null" ){               
+            }else{   
+                if(this.image==undefined){
+                    this.image = new DImage(this.dCLab,2,2);
+                    this.image.width=this.image.height=this._height-2*2
+                }
+                this.image.visible=true
+                this.image.link=this._link
+            }
+
+
+
+
+
+
+            this.reDragText()
+        }           
+
+        ///////////////////////////////       
     }
+
+
+    set link(value) {
+        if (this._link != value) {
+            this._link = value;
+            this.dragLink()
+        }
+    }
+    get link() {
+        return this._link;
+    }   
 
     set dddWidth(value) {
         if (this._dddWidth != value) {

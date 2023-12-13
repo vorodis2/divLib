@@ -80,18 +80,25 @@ export class DDPlus{
                     ], type:"string",name:"elevType"},
             ]*/
 
-            let aa=[
+           /* let aa=[
                                 
                 {num:13,str:"xz1",bo:true,pic:"resources/pic/1.png",col:"#ff0000"},
                 {num:17,str:"xz2",bo:false,pic:"resources/pic/2.png",col:"#00ff00"},
                 {num:11,str:"xz0",bo:false,pic:"resources/pic/0.png",col:"#00ff00"},
+            ]*/
+
+            let aa=[
+                                
+                {num:13,str:"xz1",bo:true,col:"#ff0000"},
+                {num:17,str:"xz2",bo:false,col:"#00ff00"},
+                {num:11,str:"xz0",bo:false,col:"#00ff00"},
             ]
 
             let aoo=[
                 {key:["num"], type:"number",name:"num"},//,width:40},
                 {key:["str"], type:"string",name:"str"},
                 {key:["bo"],  type:"boolean",name:"bo"},
-                {key:["pic"], type:"image",name:"pic"},//,width:40},
+                //{key:["pic"], type:"image",name:"pic"},//,width:40},
             ]
 
             
@@ -143,7 +150,12 @@ export class DDPlus{
             dp.addPanel(this,"test4_____________")
             this.addPlus(dp, null, false);
 
-
+            
+            for (var i = 0; i < dp.array.length; i++) {
+                dp.array[i].link=base64
+            }
+            dp.array[1].link=null
+            dp.array[2].link="null"
             
             new DButton(dp,55,111,"get",function(){
                dp.addPanel(this,Math.random()+"",Math.random()+"") 

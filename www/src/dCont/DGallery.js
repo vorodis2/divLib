@@ -141,7 +141,7 @@ export class BoxXZ extends DBox {
 	this.complitLoad;// Окончание загрузки
 	this.postDraw;// По окончанию отрисовки
 
-
+	this.funScrol=undefined
 	this.funOver;
 	this.funOut;
 	this.fOver = function (e) { if (self.funOver)self.funOver(e); };
@@ -187,6 +187,7 @@ export class BoxXZ extends DBox {
 			self.content.x = (self.scrollBarH.value / 100) * (this._width - self.scrollBarH.widthContent);
 		}
 		self.dragIE()
+		if(self.funScrol)self.funScrol()
 	};
 
 

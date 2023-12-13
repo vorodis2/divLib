@@ -105,14 +105,10 @@ export function DSettings (_cont) {
     
                 var boolX=false;
                 if(this.arrComp2[i].boolX){
-                    boolX=this.arrComp2[i].boolX
-                                    
+                    boolX=this.arrComp2[i].boolX                                    
                 }
 
                 if (bbwidth) {
-
-
-
                     // шаг компонентов по Y
                     if(boolX==true){
                         this.shagX = this.otstup;

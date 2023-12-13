@@ -2914,6 +2914,7 @@ export class DCheckBox extends DCont {
         this.fun = _fun;
         this._link0 = 'null';
         this._link1 = 'null';
+        this._link = 'null';
 
         this.fun_mouseover = undefined;
         this.fun_mouseout = undefined;
@@ -2932,6 +2933,7 @@ export class DCheckBox extends DCont {
         this._value = false;
         this.image0 = undefined;
         this.image1 = undefined;
+        this.image = undefined;
 
         if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
         var sp = 5;
@@ -2988,13 +2990,59 @@ export class DCheckBox extends DCont {
                     // this.image0.alpha=aaa
                 }
             }
+
+            this.reDrag1()
         };
+
+        this.reDrag1 = function () {
+            if(this.image==undefined)return;
+            this.sizeImg(this.image)
+
+        }
 
         this.div.onclick = function () {
             self.value = !self._value;
             self.reDrag();
             if (self.fun) self.fun();
         };
+
+
+            this.mouseover = function () {
+            if (self._activMouse == false) return;
+            if (bb == true) {
+                self.panel.color1 = dcmParam.compToHexArray(
+                    dcmParam.hexDec(self._color),
+                    -20
+                );
+                self.panel1.color1 = dcmParam.compToHexArray(
+                    dcmParam.hexDec(self._color),
+                    -20
+                );
+            }
+            if(self.tween){
+                self.image.alpha=dcmParam.alphaActivMouse
+                self.tween.to({alpha:1},500).start();
+            }
+            if(self.tweenL){
+                self.label.alpha=dcmParam.alphaActivMouse
+                self.tweenL.to({alpha:1},500).start();
+            }
+            if (self.fun_mouseover) self.fun_mouseover();
+        };
+        
+        this.mouseover = function () {                     
+            if (self.fun_mouseover) self.fun_mouseover();
+        };
+
+        this.mouseout = function () {            
+            if (self.fun_mouseout) self.fun_mouseout();
+        };
+
+        if (dcmParam.mobile == false) {
+            this.div.addEventListener('mouseout', this.mouseout);
+            this.div.addEventListener('mouseover', this.mouseover);    
+        } 
+
 
         this.funLoadImag = undefined;
 
@@ -3030,6 +3078,14 @@ export class DCheckBox extends DCont {
             this.image0.div.style.cursor = 'pointer';
             this.image1.div.style.cursor = 'pointer';
         };
+
+        this.initL = function () {
+            if(this.image==undefined){
+                this.image = new DImage(this, 2, 2, null, function () {
+                    self.reDrag1();
+                });
+            }
+        }
 
         if (_link0 != undefined) this.link0 = _link0;
         if (_link1 != undefined) this.link1 = _link1;
@@ -3100,6 +3156,22 @@ export class DCheckBox extends DCont {
     get boolLine() {
         return this._boolLine;
     }
+
+    set link(value) {
+        if (this._link != value) {
+            this._link = value;
+            this.initL()
+            
+            
+            if (this._link != 'null') this.image.link = this._link;
+            this.reDrag();
+        }
+    }
+    get link() {
+        return this._link;
+    }
+
+
 
     set link0(value) {
         if (this._link0 != value) {
