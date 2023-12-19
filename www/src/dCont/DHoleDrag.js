@@ -126,7 +126,7 @@ export class DHoleDrag extends DCont {
         };
 
         this.correctRect = function() {
-            //trace('correctRect started', this.rect);
+
         
             var x=0;
             if(Math.round(this.rect.width / this._ratio)!=this.rect.height){
@@ -153,7 +153,7 @@ export class DHoleDrag extends DCont {
             // 
             this.rect.width = Math.round(this.rect.width);
             this.rect.height = Math.round(this.rect.height);*/
-            //trace('correctRect ended',this.idArr,this.tip, this.rect);
+
         };
 
         ///////////////////////////////////////////////////////////////////////////////////
@@ -306,8 +306,6 @@ export class DHoleDrag extends DCont {
                 if(point.y<0)point.y=0
             }
 
-            trace(point1.bx, point1.by, point2.bx, point2.by,point1,point2)
-            
             if(point1.bx==true){                
                 point1.x=point.x
                 if(point1.byn>0){
@@ -401,16 +399,14 @@ export class DHoleDrag extends DCont {
             this.fun("dragXY");
 
             this.drag()*/ 
-            trace("point,point2")
-            trace(point,point1,point2,point3)
-            trace(self.point)
+
 
 
             pointXX.x=self.point.x+point3.x;
             pointXX.y=self.point.y+point3.y;
 
 
-            trace(self.point.x, pointXX.x)
+
             if(point.x<pointXX.x){
                 this.rect.x=point.x;
                 this.rect.width=pointXX.x-point.x;
@@ -419,7 +415,7 @@ export class DHoleDrag extends DCont {
                 this.rect.y=point.y;
                 this.rect.height=pointXX.y-point.y;
             }*/
-            trace(this.rect)
+
              //this.drag()
         }
 

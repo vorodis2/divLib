@@ -16,6 +16,7 @@
 15  DCM  
 385 DWindow
 621 DColor
+621 DColorList
 836 DComboBox
 1115 DButton
 1115 DGlow
@@ -56,6 +57,7 @@ export function DCM() {
     this._colorActive = '#f28044';
     this._fontSize = 16;
     this._fontSizeLitte= 10;
+    this.fontSizeErrorY=0
     this._fontFamily = 'Arial'//, Helvetica, sans-serif';
     this._otstup = 2;
     this._otstupD = 2;
@@ -249,160 +251,42 @@ export function DCM() {
 
     this.colorPolit = 'null';
     this.bmp = new DBitmapData(2, 2);
-    this.getPolit = function () {
-        if (this.colorPolit != 'null') return this.colorPolit;
-        this.canvas = document.createElement('canvas');
-        this.c2d = this.canvas.getContext('2d', { willReadFrequently: true });
+   
 
-        this.hue = [
-            [
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-            ],
-            [
-                '#FFFAFA',
-                '#FFFFFA',
-                '#FFFFFA',
-                '#FAFFFF',
-                '#FAFFFF',
-                '#FFFAFF',
-                '#FFFAFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-                '#FFFFFF',
-            ],
-            [
-                '#FFC2C2',
-                '#FFFFC2',
-                '#F9FFC2',
-                '#C2FFFF',
-                '#C2FFFF',
-                '#FFC2FF',
-                '#FFC2FF',
-                '#FFF1F1',
-                '#FFFFFF',
-                '#D1D1D1',
-                '#D1D1D1',
-            ],
-            [
-                '#FF8A8A',
-                '#FFFF8A',
-                '#C1FF8A',
-                '#8AFFFF',
-                '#8AFFFF',
-                '#F18AFF',
-                '#FF8AFF',
-                '#FFB9B9',
-                '#FFFFFF',
-                '#999999',
-                '#999999',
-            ],
-            [
-                '#FF5151',
-                '#FFFF51',
-                '#88FF51',
-                '#51FFF8',
-                '#51C8FF',
-                '#B851FF',
-                '#FF51FF',
-                '#FF8080',
-                '#FFFFFF',
-                '#606060',
-                '#606060',
-            ],
-            [
-                '#FF1919',
-                '#FFFF19',
-                '#50FF19',
-                '#19FFC0',
-                '#1990FF',
-                '#8019FF',
-                '#FF19D0',
-                '#FF4848',
-                '#FFFFFF',
-                '#282828',
-                '#282828',
-            ],
-            [
-                '#E10000',
-                '#E1CA00',
-                '#30E100',
-                '#00E193',
-                '#0069E1',
-                '#5A00E1',
-                '#E100A1',
-                '#E12929',
-                '#D2D2D2',
-                '#0D0D0D',
-                '#0D0D0D',
-            ],
-            [
-                '#A80000',
-                '#A89700',
-                '#24A800',
-                '#00A86E',
-                '#004EA8',
-                '#4300A8',
-                '#A80078',
-                '#A81E1E',
-                '#9D9D9D',
-                '#090909',
-                '#090909',
-            ],
-            [
-                '#700000',
-                '#706500',
-                '#187000',
-                '#007049',
-                '#003470',
-                '#2D0070',
-                '#700050',
-                '#701414',
-                '#686868',
-                '#060606',
-                '#060606',
-            ],
-            [
-                '#380000',
-                '#383200',
-                '#0C3800',
-                '#003824',
-                '#001A38',
-                '#160038',
-                '#380028',
-                '#380A0A',
-                '#343434',
-                '#030303',
-                '#030303',
-            ],
-            [
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-                '#000000',
-            ],
-        ];
+    this.hue = [  
+        ['#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF'],
+        ['#FFFAFA','#FFFFFA','#FFFFFA','#FAFFFF','#FAFFFF','#FFFAFF','#FFFAFF','#FFFFFF','#FFFFFF','#FFFFFF','#FFFFFF', ],
+        ['#FFC2C2','#FFFFC2','#F9FFC2','#C2FFFF','#C2FFFF','#FFC2FF','#FFC2FF','#FFF1F1','#FFFFFF','#D1D1D1','#D1D1D1', ],
+        ['#FF8A8A','#FFFF8A','#C1FF8A','#8AFFFF','#8AFFFF','#F18AFF','#FF8AFF','#FFB9B9','#FFFFFF','#999999','#999999',            ],
+        ['#FF5151','#FFFF51','#88FF51','#51FFF8','#51C8FF','#B851FF','#FF51FF','#FF8080','#FFFFFF','#606060','#606060',            ],
+        ['#FF1919','#FFFF19','#50FF19','#19FFC0','#1990FF','#8019FF','#FF19D0','#FF4848','#FFFFFF','#282828','#282828',            ],
+        ['#E10000','#E1CA00','#30E100','#00E193','#0069E1','#5A00E1','#E100A1','#E12929','#D2D2D2','#0D0D0D','#0D0D0D',            ],
+        ['#A80000','#A89700','#24A800','#00A86E','#004EA8','#4300A8','#A80078','#A81E1E','#9D9D9D','#090909','#090909',            ],
+        ['#700000','#706500','#187000','#007049','#003470','#2D0070','#700050','#701414','#686868','#060606','#060606',            ],
+        ['#380000','#383200','#0C3800','#003824','#001A38','#160038','#380028','#380A0A','#343434','#030303','#030303',            ],
+        ['#000000','#000000','#000000','#000000','#000000','#000000','#000000','#000000','#000000','#000000','#000000',            ],
+    ];
 
-        this.wX = 11;
-        this.canvas.width = (this.hue[0].length - 1) * this.wX;
-        this.canvas.height = (this.hue.length - 1) * this.wX;
+
+
+    let canVa, ar
+    this.getPolitBase64 =  function (_canVa, _ar, _sah, br){
+        if(_canVa!=undefined ) canVa=_canVa;
+        else canVa= document.createElement('canvas');
+        if(_ar!=undefined)ar=_ar;
+        else ar=this.hue;
+
+
+       // canVa = document.createElement('canvas');
+        this.c2d = canVa.getContext('2d', { willReadFrequently: true });
+
+
+
+        this.wX = 10;
+        if(_sah)this.wX = _sah;
+
+        canVa.width = (ar[0].length - 1) * this.wX;
+        canVa.height = (ar.length - 1) * this.wX;
 
         this._wColor;
         this._wColor1;
@@ -415,13 +299,13 @@ export function DCM() {
         this.colorA;
         this.colorB;
 
-        for (i = 0; i < this.hue.length - 1; i++) {
-            for (j = 0; j < this.hue[i].length - 1; j++) {
-                this._wColor = this.parseColor(this.hue[i][j]);
-                this._wColor1 = this.parseColor(this.hue[i][j + 1]);
+        for (i = 0; i < ar.length - 1; i++) {
+            for (j = 0; j < ar[i].length - 1; j++) {
+                this._wColor = this.parseColor(ar[i][j]);
+                this._wColor1 = this.parseColor(ar[i][j + 1]);
 
-                this._hColor = this.parseColor(this.hue[i + 1][j]);
-                this._hColor1 = this.parseColor(this.hue[i + 1][j + 1]);
+                this._hColor = this.parseColor(ar[i + 1][j]);
+                this._hColor1 = this.parseColor(ar[i + 1][j + 1]);
 
                 for (k = 0; k < this.wX; k++) {
                     this._rr =
@@ -491,12 +375,20 @@ export function DCM() {
                 }
             }
         }
-        this.bmp.width = Math.floor(this.canvas.width);
-        this.bmp.height = Math.floor(this.canvas.height);
-        this.bmp.setCanvas(this.canvas, this.c2d);
-        this.colorPolit = this.canvas.toDataURL();
-        return this.colorPolit;
-    };
+        //this.bmp.width = Math.floor(canVa.width);
+        //this.bmp.height = Math.floor(canVa.height);
+        //this.bmp.setCanvas(canVa, this.c2d);
+        
+
+        //this.colorPolit = canVa.toDataURL();
+        if(br==undefined) return canVa.toDataURL();
+
+    }
+
+
+
+
+
 
     this.generateRendom =  function (n){
         if(n==undefined)n=2;        
@@ -507,7 +399,7 @@ export function DCM() {
             d0=Math.random() * 0xffffffff | 0;
             s1=(d0 & 0xff).toString(16) + (d0 >> 8 & 0xff).toString(16)+ (d0 >> 16 & 0xff).toString(16)+ (d0 >> 24 & 0xff).toString(16)         
             if(s1.length<8){
-                for (var j = 0; j < 8-s1.length+1; j++) {
+            for (var j = 0; j < 8-s1.length+1; j++) {
                     s1+="Z";
                 }
             }
@@ -641,11 +533,21 @@ export function DCM() {
         return null;
     }
 
+
+
+
+
     ////////////////////////////////
 
 
+    this.getDivKey= function(div, key){
 
-
+        if(div[key]!=undefined) return div[key];
+        if(div.parentElement){
+            return this.getDivKey(div.parentElement,key )
+        }   
+        return null;
+    }
 
 
 
@@ -1331,20 +1233,22 @@ export class DColor extends DCont {
         this._fontSize=dcmParam.fontSize
         var boolOp = true;
 
+        
+
+
         this.panel = new DPanel(this);
         this.button = new DButton(
             this,
             0,
             0,
             ' ',
-            function () {
-                if (boolOp == false) return;
-                if (self.openBool == false) self.openBool = true;
+            function () {               
+                self.openBool = !self.openBool
             }
         );
         this.button.boolLine=true
 
-        this.button.fun_mouseup = function () {};
+
 
         this.input = new DInput(
             this,
@@ -1353,20 +1257,21 @@ export class DColor extends DCont {
             this._color,
             function () {
                 self.color = this.value;
+                if(self.dColorList)self.dColorList.color = this.value;
                 if (self.fun) self.fun();
             }
         );
 
-        this.image = new DImage(
+      /*  this.image = new DImage(
             this,
             this._otstup,
             this._height,
-            dcmParam.getPolit(),
+            dcmParam.getPolitBase64(),
             function () {}
-        );
-        this.image.activMouse=true
+        );*/
+       //this.image.activMouse=true
         this.label = undefined;
-        this.image.visible = false;
+        //this.image.visible = false;
         this.panel.width = this._width;
         this.panel.height = this._height;
         this.button.width = this.button.height = this._height ;
@@ -1381,13 +1286,34 @@ export class DColor extends DCont {
             return this.getBigPar(o.parent, p);
         };
 
+        this.dColorList
+        this.initList=function(){
+            if(this.dColorList!=undefined)return
+            this.dColorList=new DColorList(null, 0,0,this.value,function(){
+           
+                self.value=this.value
+                if(self.fun)self.fun()
+            })
+            this.dColorList._otstup=this._otstup;
+            this.dColorList._borderRadius=this._borderRadius;
+            this.dColorList._fontSize=this._fontSize;
+            this.dColorList._color=this._color;
+            this.dColorList.div.xzParanDivd=this;
+            this.input.div.xzParanDivd=this;
+            this.button.div.xzParanDivd=this;
+        }
+
+
+
         var oldParent, nP;
         var oo = { x: 0, y: 0 };
         var oo1 = { x: 0, y: 0 };
         var oldScale;
         this.dragMenu = function () {
-            this.image.visible = this._openBool;
-            if (this._openBool == true) {
+            
+            if(this._openBool==true){
+                this.initList()
+                
                 self.scaleDrag.s = 1;
                 self.testScale(self, self.scaleDrag);
                 oldScale = self.scale;
@@ -1396,62 +1322,39 @@ export class DColor extends DCont {
                 oo1.x = 0;
                 oo1.y = 0;
 
-                nP = this.getBigPar(this.image, oo1);
+                nP = this.getBigPar(this, oo1);
         
-                cOld = self._color;
-                this.panel.height = this._height + 100 + this._otstup;
-                nP.add(this.image);
-                this.image.x = oo1.x;
-                this.image.y = oo1.y;
+              //  cOld = self._color;
+                //this.panel.height = this._height + 100 + this._otstup;
+                this.dColorList.value=this.value
+                nP.add(this.dColorList);
+                let yy=oo1.y+this._height+this._otstup
+                if(document && document.documentElement && document.documentElement.clientHeight){
+                    if(yy+this.dColorList.height> document.documentElement.clientHeight ){
+                        yy=oo1.y-this._otstup-this.dColorList.height
+                    }
+                } 
+                this.dColorList.x = oo1.x;
+                this.dColorList.y = yy;
                 document.addEventListener('mousedown', this.upBody);
-            } else {
-                this.panel.height = this._height;
-                this.add(this.image);
-                this.image.x = oo.x;
-                this.image.y = oo.y;
-                this.scale = 1;
+                //this.dColorList.div.addEventListener('mousedown', this.upBody1);
+            }else{
+                if(this.dColorList && this.dColorList.parent){
+                    this.dColorList.parent.remove(this.dColorList)
+                }
             }
-        };
 
+            
+        };
+        let kt
         this.upBody = function (e) {
-            document.removeEventListener('mousedown', self.upBody);
-            self.openBool = false;
-            boolOp = false;
-
-            setTimeout(function () {
-                boolOp = true;
-            }, 100);
-        };
-
-        this.image.image.addEventListener('mouseout', function () {
-            self.color = cOld;
-        });
-
-        var _x, _xx, a, c, cOld;
-        this.image.image.addEventListener('mousemove', function (e) {
-            _x = Math.round(
-                (e.offsetX / self.image.width) * dcmParam.bmp.width
-            );
-            if (_x > dcmParam.bmp.width) _x = dcmParam.bmp.width;
-
-            _y = Math.round(
-                (e.offsetY / self.image.height) * dcmParam.bmp.height
-            );
-            if (_y > dcmParam.bmp.height) _y = dcmParam.bmp.height;
-            a = dcmParam.bmp.getPixel(_x, _y);
-            c = dcmParam.compToHexArray(a);
-            self.color = c;
-            if (self.fun_mousemove) {
-                self.fun_mousemove();
+            kt=dcmParam.getDivKey(e.target,"xzParanDivd" )
+            if(kt==null){
+                self.openBool=false
             }
-        });
+        };
+       
 
-        this.image.image.addEventListener('mousedown', function (e) {
-            cOld = c;
-            self.color = c;
-            self.openBool = false;
-            if (self.fun) self.fun();
-        });
 
         this.testScale = function (c, o) {
             if (c.scale) o.s *= c.scale;
@@ -1481,7 +1384,7 @@ export class DColor extends DCont {
             this._width = value;
             this.button.x = this._width  - this.button._width;
             this.panel.width = this._width;
-            this.image.width = this._width - this._otstup * 2;
+           // this.image.width = this._width - this._otstup * 2;
             var ww = this.button.x - this._otstup * 2;
             if (this.label == undefined) {
                 this.input.width = this.button.x- this.input.numLine;
@@ -1592,6 +1495,685 @@ export class DColor extends DCont {
         return this._openBool;
     }
 }
+
+
+export class DColorList extends DCont {
+    constructor(dCont, _x, _y, _color, _fun) {
+        super();
+        this.type = 'DColorList';
+        this.infoThis=`
+            let wind=new DColorlist(this.dCont,0,0,"#ff0000",function(){})  
+             
+        `
+        if (dcmParam == undefined) dcmParam = new DCM();
+        dcmParam.add(this);
+
+
+
+        var self = this;
+        this.x = _x || 0;
+        this.y = _y || 0;
+        if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
+        this._color = undefined//_color || '#ffffff';
+        this.fun = _fun;
+        this._value='#fffffd'
+        
+        this._borderRadius = dcmParam.borderRadius+0.01;
+        this.fun_mousemove = undefined;
+        this._width = 200;
+        this._otstup = dcmParam._otstup;
+        this._otstupLine = dcmParam._otstup*2;        
+        this._height = 150;
+     
+        //this._activMouse = true;
+        this._fontSize=dcmParam.fontSize
+       // var boolOp = true;
+        this.hhh=Math.round(dcmParam.wh/2)
+        this.panel = new DPanel(this);
+        this.panel.width=this._width;
+        this.panel.height=this._height;
+        let ppl=(this.hhh + this._otstupLine*2)
+        this.dc0=new DCont(this);
+        this.dc01=new DCont(this.dc0);
+        this.div0= document.createElement('div');
+        this.div0.style.position = 'fixed';
+        this.div0.style.top = '0px';
+        this.div0.style.left = '0px';
+        this.dc01.div.appendChild(this.div0)
+    
+        this.ap0=[ 
+            ['#ffffff','#ff0000'],  
+            ['#000000','#000000']
+        ]        
+        this.bm0=new DBitmapData(100,100, null);
+        dcmParam.getPolitBase64(this.bm0.canvas,this.ap0, 100, false)
+
+        this.div0.appendChild(this.bm0.canvas)
+
+        self._scaleX= 1
+        self._scaleY= 1
+        this.dc01.funZamenSXY=function(){
+            this.sx=self._scaleX*this._scale;
+            this.sy=self._scaleY*this._scale;            
+        }
+
+
+        this.dc1=new DCont(this);
+        let aa=['#f75147','#e89623','#fff301','#88fe01', '#01fb3a', '#0593ff', '#101bff', '#b601f1','#ff002a']
+        
+        this.ap1=[ aa,  aa]
+        
+        this.bm1=new DBitmapData(2,2, null);        
+        let p=dcmParam.getPolitBase64(this.bm1.canvas,this.ap1, this.hhh);
+        this.bm1.width=this.bm1.canvas.width;
+        this.bm1.height=this.bm1.canvas.height;
+
+        this.di1=new DImage(this.dc1, 0,0,p);
+        this.pi=new DPanel(this.dc1)
+
+        this.pi.alpha=0.001;
+
+
+        /////кнопки///////////
+        this.point0={x:0, y:0}
+        this.dcww0=new DCont(this)
+        this.dBut0=new DPanel(this.dcww0,-ppl/2,-ppl/2)
+        this.dBut0.width=this.dBut0.height= ppl;
+
+        this.dBut0.boolLine=true;
+        this.dBut0.whLine=this._otstupLine;
+        this.dBut0.colorLine=dcmParam.getColor(dcmParam._color1,40)
+
+        this.dBut0.borderRadius=this._borderRadius;
+        this.dBut0.activMouse=false
+
+
+        this.point1={x:0, y:0}
+        this.dcww1=new DCont(this)
+        this.dBut1=new DPanel(this.dcww1,-ppl/2,-ppl/2)
+        this.dBut1.width=this.dBut1.height= this.hhh + this._otstup*4;
+
+        this.dBut1.boolLine=true;
+        this.dBut1.whLine=this._otstupLine;
+        this.dBut1.colorLine=dcmParam.getColor(dcmParam._color1,40)
+
+        this.dBut1.borderRadius=this._borderRadius;
+        this.dBut1.activMouse=false
+
+        
+
+
+        let pp={x:0, y:0}
+        let dist, dist1
+        let ap=[1,1,1];
+        let css
+        this.getXY=function(bm, color){
+            pp.x=0;
+            pp.y=0;
+            dist=99999999;
+            ccol1=dcmParam.hexDec(color);
+
+           // css
+
+
+            for (var j = 0; j < bm.height; j++) {
+                for (var i = 0; i < bm.width; i++) {
+                    dist1=0;
+                    ccol=bm.getPixel(i,j);
+                    dist1+= Math.abs(ccol[0]-ccol1[0])
+                    dist1+= Math.abs(ccol[1]-ccol1[1])
+                    dist1+= Math.abs(ccol[2]-ccol1[2])                    
+                    if(dist>dist1){
+                        pp.x=i
+                        pp.y=j
+                        dist= dist1         
+                    }
+                }
+            }
+            return pp
+        }
+
+        let ret
+        this.getNorm=function(n, m){
+            ret=n
+            if(ret<ppl/2)ret=ppl/2
+            if(ret>m-ppl/2)ret=m  -ppl/2  
+            return ret+this._otstup
+        }
+
+        let poi
+        this.korPoz=function(){
+            
+
+            self.dcww0.x=this.getNorm(this.point0.x,www)
+            self.dcww0.y=this.getNorm(this.point0.y,hhh)
+
+            self.dcww1.x=this.getNorm(this.point1.x,www)
+            self.dcww1.y=this.point1.y
+        }
+    
+
+        this.dddd1=function(tip){
+            
+
+            sc=self.di1.width/self.bm1.canvas.width
+            xx2 = Math.round(self.point1.x/sc);
+            ccol=self.bm1.getPixel(xx2,1);
+            cxx=dcmParam.compToHexArray(ccol)
+            self.dragValue1_Color(cxx);
+            this.dBut1.color=cxx;
+            xx2=Math.round(self.point0.x/self._scaleX);           
+            yy2=Math.round(self.point0.y/self._scaleY);
+
+            ccol=self.bm0.getPixel(xx2,yy2);
+            cxx=dcmParam.compToHexArray(ccol);
+
+            this.dBut0.color=cxx;
+           
+
+            this._value = cxx           
+            this._value = cxx;
+            this.dragInput();
+            this.korPoz()
+            if(this.fun)this.fun()
+            
+        }
+
+
+        this.tip=0
+        ////////////////////
+        let xx1,xx2,yy,yy1,yy2,sc, ccol,ccol1, point, cxx
+        this.downC=function(e){
+            self.testScale(self, self.scaleDrag);
+            document.body.style.pointerEvents = 'none';
+            //
+            if(e.target.xzName==undefined){
+                self.rect = e.target.getBoundingClientRect();
+                self.tip=0
+                self.mousemove(e) 
+               
+            }else{
+                self.rect = e.target.getBoundingClientRect();
+                self.tip=1
+                self.mousemove(e) 
+            }
+
+            if (dcmParam.mobile == false) {
+                document.addEventListener('mouseup', self.mouseup);
+            } else {
+                document.addEventListener('touchend', self.mouseup);
+            }
+            dcmParam.addFunMove(self.mousemove);
+        }  
+
+
+        this.mouseup = function (e) {
+            document.body.style.pointerEvents = 'auto';
+
+            sp = undefined;
+            if (dcmParam.mobile == false) {
+                document.removeEventListener('mouseup', self.mouseup);
+            } else {
+                document.removeEventListener('touchend', self.mouseup);
+            }
+            dcmParam.removeFunMove(self.mousemove);
+
+            if (self.funChange) self.funChange();
+        };
+
+        var sx, sy;
+        var sp
+        this.mousemove = function (e, b) {
+            if (dcmParam.mobile == false) {
+                if (sp == undefined) {
+                    sp = {
+                        x: e.clientX,
+                        y: e.clientY,
+                        value: self.panel.x,
+                        b: false,
+                    };
+                } 
+                sp.x1=e.clientX/self.scaleDrag.s
+                sp.y1=e.clientY/self.scaleDrag.s
+                
+            } else {
+                if (sp == undefined) {
+                    sp = {
+                        x: e.targetTouches[0].clientX,
+                        y: e.targetTouches[0].clientY,
+                        value: self.panel.x,
+                    };
+                }
+                
+                sp.x1=e.targetTouches[0].clientX/self.scaleDrag.s
+                sp.y1=e.targetTouches[0].clientY/self.scaleDrag.s
+            }
+
+
+            if(self.tip==0){                
+                sx = sp.x1-self.rect.x
+                if(sx<0)sx=0
+                if(sx>self.rect.width-1)sx=self.rect.width -1  
+                self.point1.x=sx
+                self.dddd1(self.tip);
+            }
+            if(self.tip==1){                
+                sx = sp.x1-self.rect.x
+                if(sx<0)sx=0
+                if(sx>self.rect.width-1)sx=self.rect.width -1 
+
+                sy = sp.y1-self.rect.y
+                if(sy<0)sy=0
+                if(sy>self.rect.height-1)sy=self.rect.height -1   
+                self.point0.x=sx
+                self.point0.y=sy
+                self.dddd1(self.tip);               
+            }
+
+            
+        };
+
+        this.testScale = function (c, o) {
+            if (c.scale) o.s *= c.scale;
+            if (c.parent) {
+                self.testScale(c.parent, o);
+            }
+        };
+        this.scaleDrag = { s: 1 };
+
+
+
+        this.bm0.canvas.xzName="bm0"; 
+        if (dcmParam.mobile == false) {
+            this.bm0.canvas.addEventListener('mousedown', self.downC);            
+            this.pi.div.addEventListener('mousedown', self.downC);
+        } else {
+            this.bm0.canvas.addEventListener('touchstart', self.downC);
+            this.pi.div.addEventListener('touchstart', self.downC);
+        }
+
+
+
+        this.sob=function(){
+            if(this.obj.key=="nax"){
+                
+                self.value=self.getColor(this.value)
+            }else{
+
+                let c=dcmParam.compToHexArray([
+                    self.get256(self.arrayInputs[1].value*1),
+                    self.get256(self.arrayInputs[2].value*1),
+                    self.get256(self.arrayInputs[3].value*1)
+                ])
+                self.value = c;                
+            } 
+            if(self.fun)self.fun()           
+        }
+
+        this.arrayInputs=[];
+        this.colorZam=true
+
+
+        this.plus=function(o){
+            let inp=new DInput(this.panel, 0,0," ", this.sob)
+            inp.obj=o
+            inp.idArr=this.arrayInputs.length
+            this.arrayInputs.push(inp);
+            inp.label=new DLabel(inp,0,0,o.name)
+            inp.label.textAlign='center'
+            inp.label.fontSize=dcmParam._fontSizeLitte
+            inp.height= dcmParam.wh
+
+            if(o.key!='nax'){
+                inp.min=0;
+                inp.max=255;                
+                inp.setNum(1);
+                inp.bYY=false;
+            }
+
+        }
+        this.plus({key:"nax",   name:"hex"})
+        this.plus({key:"r",     name:"R"})
+        this.plus({key:"g",     name:"G"})
+        this.plus({key:"b",     name:"B"})
+        self._scaleX=1;
+        self._scaleY=1;       
+        let ww,xx,yyy,_mat,bbbn
+
+        var www,hhh
+        this.dragWH=function(){
+            this.panel.width=this._width;
+            this.panel.height=this._height;
+            this.panel.borderRadius = this._borderRadius;
+
+            this.dBut0.borderRadius=this._borderRadius
+            this.dBut1.borderRadius=this._borderRadius
+
+            ppl=(this.hhh + this._otstup*4)
+            this.dBut0.whLine=this._otstupLine;
+            this.dBut0.width=this.dBut0.height= ppl;
+            
+            this.dBut1.whLine=this._otstupLine;
+            this.dBut1.width=this.dBut1.height= ppl;
+
+            this.dBut0.x=this.dBut0.y=-ppl/2
+            this.dBut1.x=this.dBut1.y=-ppl/2
+
+            ww=(this._width-this._otstup*5)/5;
+            xx=this._otstup;
+            yyy=0
+            bbbn=true;
+
+            for (var i = 0; i < this.arrayInputs.length; i++) {
+
+                this.arrayInputs[i].fontSize=this.fontSize
+                this.arrayInputs[i].label.fontSize=this.fontSize
+                this.arrayInputs[i].height= this.fontSize+this._otstup*4
+
+
+
+
+                this.arrayInputs[i].borderRadius = this._borderRadius;
+                if(this.arrayInputs[i].obj.key=="nax"){
+                    this.arrayInputs[i].width=ww*2;
+                    if(this.arrayInputs[i].width<this.fontSize*7*0.7){
+                        bbbn=false
+                        this.arrayInputs[i].width=this._width-this._otstup*2
+                    }
+
+
+                }else{
+                    this.arrayInputs[i].width=ww
+                    this.arrayInputs[i].visible= bbbn
+                }
+                
+                this.arrayInputs[i].label.width=this.arrayInputs[i].width
+                this.arrayInputs[i].label.y=-(this.fontSize+this.fontSize*dcmParam.fontSizeErrorY+this._otstup)                
+                this.arrayInputs[i].x=xx;
+                this.arrayInputs[i].y=this._height-this.arrayInputs[i].height-this._otstup
+                xx+=this.arrayInputs[i].width+this._otstup;
+
+                yyy=this.arrayInputs[i].label.y+this.arrayInputs[i].y+this._otstup
+            }
+            yyy-=this.di1.height+this._otstup*3
+            
+            this.di1.height= this.hhh
+            this.di1.y=yyy//this._height-this._otstup*4-dcmParam._fontSizeLitte-dcmParam.wh-this.di1.height
+
+            this.point1.y=this.di1.y+this.hhh/2
+
+            this.di1.width=this._width-this._otstup*2
+            this.di1.x=this._otstup
+
+
+            this.di1.div.style.width=this.di1.width+"px";
+            this.di1.div.style.height=this.di1.height+"px";
+            var s ='inset(0px 0px 0px round '+this._borderRadius+'px '+this._borderRadius+'px)'//'polygon(100px 100px,0px 100px,0px 92px,100% 0%)'
+            this.di1.div.style.clipPath = s;
+            this.pi.width=this.di1.width;
+            this.pi.height=this.di1.height;
+            this.pi.borderRadius=this._borderRadius
+            this.pi.x=this.di1.x
+            this.pi.y=this.di1.y
+
+            www=this._width-this._otstup*2;
+            hhh=this.di1.y - this._otstup*3;
+
+            self._scaleX= www / this.bm0.canvas.width
+            self._scaleY= hhh / this.bm0.canvas.height
+           
+            let xz=this._width-100//this.bm0.canvas.width-(this.bm0.canvas.width*self._scaleX)
+            xz=xz/2;
+
+            this.dc01.dragBigXZ()
+            this.dc0.x=this._otstup;
+            this.dc0.y=this._otstup;            
+            this.dc0.div.style.width=www+"px";
+            this.dc0.div.style.height=hhh+"px";
+            var s ='inset(0px 0px 0px round '+this._borderRadius+'px '+this._borderRadius+'px)'//'polygon(100px 100px,0px 100px,0px 92px,100% 0%)'
+            this.dc0.div.style.clipPath = s;          
+            
+            this.dragValue1();
+
+        }
+
+        this.dragValue=function(){
+            this.dragValue1();
+            this.dragInput();
+        }
+        let mm, mmm, ccc,orgb1,po2
+        this.dragValue1 = function(){
+            orgb1=dcmParam.hexDec(this._value);
+
+            this.dBut0.color=this._value;
+            
+            
+
+            if(self.colorZam==true){
+                point = self.getXY(self.bm1, this._value);
+                xx = point.x / (this.bm1.canvas.width/www)
+                if(xx<(this.dBut1.width)/2 )xx=(this.dBut1.width)/2 
+                if(xx>www-(this.dBut1.width)/2)xx=www-(this.dBut1.width)/2 
+                this.point1.x = xx;
+                
+                orgb1 = self.bm1.getPixel(point.x, point.y)
+                ccc = dcmParam.compToHexArray(orgb1);
+                this.dBut1.color=ccc;
+
+
+                this.dragValue1_Color(ccc)
+            }  
+
+            point = self.getXY(self.bm0, this._value);
+
+            xx=point.x/(100/www)
+            yy=point.y/(100/hhh)
+            this.point0.x=xx//+this._otstup*2;
+            this.point0.y=yy//+this._otstup*2;
+            
+            this.korPoz()
+        }
+
+        this.dragValue1_Color = function(c){
+            this.ap0[0][1]=c;
+            dcmParam.getPolitBase64(this.bm0.canvas,this.ap0, 100, false)
+            this.bm0.width=this.bm0.canvas.width;
+            this.bm0.height=this.bm0.canvas.height;
+        }
+
+
+
+
+
+        let orgb={}
+        this.dragInput = function(){
+            this.arrayInputs[0].value=this._value;
+            orgb=dcmParam.hexDec(this._value);
+            this.arrayInputs[1].value=orgb[0];
+            this.arrayInputs[2].value=orgb[1];
+            this.arrayInputs[3].value=orgb[2];            
+        }   
+
+        this.getColor=function(_color){
+            let c="#ffffff";
+            if(_color){
+                if(typeof _color =='string' && _color[0]=="#")c=_color
+            }
+            return c
+        }
+        this.get256=function(_color){
+            let c=_color;
+            return c
+        }
+
+        this.dragWH()
+
+        
+        this.color = this.getColor(_color)
+
+  
+
+    }
+
+    set x(value) {
+        this.position.x = value;
+    }
+    get x() {
+        return this.position.x;
+    }
+    set y(value) {
+        this.position.y = value;
+    }
+    get y() {
+        return this.position.y;
+    }
+    set width(value) {
+        if (this._width != value) {
+            this._width = value;
+            this.dragWH()
+           // this.button.x = this._width  - this.button._width;
+          //  this.panel.width = this._width;
+           /* this.image.width = this._width - this._otstup * 2;
+            var ww = this.button.x - this._otstup * 2;
+            if (this.label == undefined) {
+                this.input.width = this.button.x- this.input.numLine;
+                this.input.x = 0;
+            } else {
+                this.input.width = ww / 2;
+                this.input.x =  ww / 2;
+            }*/
+        }
+    }
+    get width() {
+        return this._width;
+    }
+
+
+
+    set height(value) {
+        if (this._height != value) {
+            this._height = value;
+            this.dragWH()
+           // this.panel.height = this._height;
+           /* this.button.width = this.button.height = this._height ;
+            this.input.height = this._height ;
+            let ww=this._width
+            this._width=-1;
+            this.width=ww*/
+        }
+    }
+    get height() {
+        return this._height;
+    }
+    set otstup(value) {
+        if (this._otstup != value) {
+            this._otstup = value;
+            this.dragWH()
+          
+        }
+    }
+    get otstup() {
+        return this._otstup;
+    }
+
+    set otstupLine(value) {
+        if (this._otstupLine != value) {
+            this._otstupLine = value;
+            this.dragWH()
+          
+        }
+    }
+    get otstupLine() {
+        return this._otstupLine;
+    }
+
+
+
+    set fontSize(value) {
+        if (this._fontSize != value) {
+            this._fontSize = value;           
+           // this.input.fontSize = this._fontSize
+            this.dragWH()
+        }
+    }
+    get fontSize() {
+        return this._fontSize;
+    }
+    
+    set activMouse(value) {
+        if (this._activMouse != value) {
+            this._activMouse = value;
+           // this.input.activMouse = value;
+            //this.button.activMouse = value;
+        }
+    }
+    get activMouse() {
+        return this._activMouse;
+    }
+
+    set borderRadius(value) {
+        if (this._borderRadius != value) {
+            this._borderRadius = value;           
+            
+            this.dragWH()
+           
+        }
+    }
+    get borderRadius() {
+        return this._borderRadius;
+    }
+
+    set color(value) {
+        if (this._color != value) {
+            this._color = value;
+            this._value = value;
+            this.dragValue()           
+        }
+    }
+    get color() {
+        return this._color;
+    }
+
+    set value(v) {
+        if (this._color != v) {
+            this.color = v;
+            this.dragValue() 
+        }
+    }
+    get value() {
+        return this._value;
+    }
+/*
+    set text(value) {
+        if (this._text != value) {
+            this._text = value;
+            if (this.label == undefined) {
+                this.label = new DLabel(this, this._otstup, 13, this._text);
+            }
+            this.label.text = this._text;
+            this._width--;
+            this.width = this._width + 1;
+        }
+    }
+    get text() {
+        return this._text;
+    }
+
+    set openBool(value) {
+        if (this._openBool != value) {
+            this._openBool = value;
+            this.dragMenu();
+        }
+    }
+    get openBool() {
+        return this._openBool;
+    }*/
+}
+
+
+
+
+
 
 
 export class DComboBox extends DCont {
@@ -2948,12 +3530,14 @@ export class DCheckBox extends DCont {
         this.label.y = this._height - this._fontSize - 3;
 
         this.panel3 = new DPanel(this, 0, 0);
-        this.panel3.alpha = 0.0;
+        this.panel3.alpha = 0.00;
 
         this.label.div.style.cursor = 'pointer';
         this.panel3.div.style.cursor = 'pointer';
 
         this.reDrag = function () {
+            //let pp=this.label.getRect()
+           
             this.panel.width = this.panel.height = this.height;
             this.panel.color = this._color1;
 
@@ -2961,10 +3545,9 @@ export class DCheckBox extends DCont {
             this.panel1.color1 = this._color;
 
             this.label.x = this.height + 2;
-            this.label.y = this.height - this.fontSize //- 3;
+            this.label.y = this.height - this.fontSize - dcmParam.fontSizeErrorY*this.fontSize;
 
-            this.label.width =
-                this.label.x + this._text.length * (this._fontSize * 0.7)*2;
+            this.label.width = this.label.x + this._text.length * (this._fontSize * 0.7)*2;
 
             this.panel3.height = this.height;
             this.panel3.width = this.label.x + this._text.length * (this._fontSize * 0.7);
@@ -3235,6 +3818,7 @@ export class DCheckBox extends DCont {
             this._text = v;
             this.label.text = this._text;
             this.label.width = this._text.length * 10;
+            this.reDrag();
         }
     }
     get text() {
@@ -3290,7 +3874,9 @@ export class DPanel extends DCont {
         this._height = 100;
         this._color1 = dcmParam._color1;
         this._boolLine = dcmParam._boolLine;
-        this.whLine=1
+        this._whLine=1
+        this._colorLine=null;
+
 
         this._borderRadius = dcmParam.borderRadius;
 
@@ -3309,19 +3895,7 @@ export class DPanel extends DCont {
 
         
 
-        if (this._boolLine == true) {
-            this.dCont.div.style.border =
-                this.whLine+'px solid ' +
-                dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
-
-            this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
-            this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';    
-        } else {
-            this.dCont.div.style.border = '0px solid';
-
-            this.dCont.div.style.width = this._width  + 'px';
-            this.dCont.div.style.height = this._height  + 'px';
-        }
+      
 
         ///////////////
         this._otstupD=dcmParam._otstupD
@@ -3404,10 +3978,25 @@ export class DPanel extends DCont {
         }
 
         ///////////////
+        this.xz='solid'//'outset'//'inset'//"double"//'solid'
+        let cd
+        this.dragBorder=function(){
+            if (this._boolLine == true) {
+                cd=this._colorLine;
+                if(!cd)cd=dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
+                
+                this.dCont.div.style.border =(this._whLine)+'px '+this.xz+' ' +cd;//'6px ridge rgba(211, 220, 50, .5)'// (this._whLine)+'px solid ' +cd;
 
+                this.dCont.div.style.width = (this._width-this._whLine*2)  + 'px';
+                this.dCont.div.style.height = (this._height-this._whLine*2)  + 'px';
+            } else {
+                this.dCont.div.style.border = '0px solid';
 
-
-
+                this.dCont.div.style.width = (this._width)  + 'px';
+                this.dCont.div.style.height = (this._height)  + 'px'; 
+            }
+        }
+        this.dragBorder()
 
         this.content = new DCont(this);
         //this.content.y = this._wh;
@@ -3497,7 +4086,7 @@ export class DPanel extends DCont {
             
 
             if (this._boolLine == true) {
-                this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
+                this.dCont.div.style.width = (this._width-this._whLine*2)  + 'px';
             }else{
                 this.dCont.div.style.width = this._width  + 'px';
             }
@@ -3513,7 +4102,7 @@ export class DPanel extends DCont {
         if (this._height != value) {
             this._height = value;
             if (this._boolLine == true) {
-                this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';
+                this.dCont.div.style.height = (this._height-this._whLine*2)  + 'px';
             }else{
                 this.dCont.div.style.height = this._height  + 'px';
             }
@@ -3540,48 +4129,51 @@ export class DPanel extends DCont {
     set boolLine(value) {
         if (this._boolLine != value) {
             this._boolLine = value;
-            if (this._boolLine == true) {
-                this.dCont.div.style.border =
-                    this.whLine+'px solid ' +
-                    dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
 
-                    this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
-                    this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';    
-            } else {
-                this.dCont.div.style.border = '0px solid';
-
-                this.dCont.div.style.width = (this._width)  + 'px';
-            this.dCont.div.style.height = (this._height)  + 'px';    
-            }
+            this.dragBorder()
         }
     }
     get boolLine() {
         return this._boolLine;
     }
+    set colorLine(value) {
+        if (this._colorLine != value) {
+            this._colorLine = value;
+
+            this.dragBorder()
+        }
+    }
+    get colorLine() {
+        return this._colorLine;
+    }
+
+
 
     set color1(value) {
         if (this._color1 != value) {
             this._color1 = value;
             this.dCont.div.style.background = this._color1;
-            var c = dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
-            if (this._boolLine == true) {
-                this.dCont.div.style.border =
-                    this.whLine+'px solid ' +
-                    dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
-
-                    this.dCont.div.style.width = (this._width-this.whLine*2)  + 'px';
-                    this.dCont.div.style.height = (this._height-this.whLine*2)  + 'px';
-            } else {
-                this.dCont.div.style.border = '0px solid';
-
-                this.dCont.div.style.width = (this._width)  + 'px';
-                this.dCont.div.style.height = (this._height)  + 'px'; 
-            }
+            //var c = dcmParam.compToHexArray(dcmParam.hexDec(this._color1), -20);
+            this.dragBorder()
         }
     }
     get color1() {
         return this._color1;
     }
+
+    set whLine(value) {
+        if (this._whLine != value) {
+            this._whLine = value;
+            
+            
+            this.dragBorder()
+        }
+    }
+    get whLine() {
+        return this._whLine;
+    }
+
+
 
     set color(value) {
         this.color1 = value;
@@ -3737,6 +4329,98 @@ export class DImage extends DCont {
             this.load(true)
         }
 
+        let s=''
+        this.korectColor = function (str, color) {
+            s='' 
+            for (var i = 0; i < str.length; i++) {
+                if(str[i+6] && str[i]=='#'){
+                    if(str[i+7]=='"' || str[i+7]=="'" || str[i+7]==";"){
+                        s+=str[i] 
+                        s+=color[1]
+                        s+=color[2]
+                        s+=color[3]
+                        s+=color[4]
+                        s+=color[5]
+                        s+=color[6]                                            
+                        i+=7;   
+                    }
+                }
+                s+=str[i]
+            }                   
+            return s
+        }
+
+        let ppa, pop;
+        this.korectKey = function (str, color, key) {
+         
+            ppa=str.indexOf(key);
+            if(ppa!=-1){
+                pop=this.getKov(str, ppa, ["'",'"'])
+
+                if(pop){ 
+                    let k=pop[1]-pop[0]-1
+                    let pp=str.substr(pop[0]+1, k)
+                   
+                    if(pp!="none"){
+
+                        let s=str.substr(0, pop[0]+1)+color+this.korectKey(str.substr(pop[1]), color, key)
+                        return s
+                    }else{
+                        let s=str.substr(0, pop[0]+1)+"none"+this.korectKey(str.substr(pop[1]), color, key)
+                        return s
+                    }
+                    
+                }
+                
+
+
+
+            }
+            return str
+
+          /*  s='' 
+            for (var i = 0; i < str.length; i++) {
+                if(str[i+6] && str[i]=='#'){
+                    if(str[i+7]=='"' || str[i+7]=="'" || str[i+7]==";"){
+                        s+=str[i] 
+                        s+=color[1]
+                        s+=color[2]
+                        s+=color[3]
+                        s+=color[4]
+                        s+=color[5]
+                        s+=color[6]                                            
+                        i+=7;   
+                    }
+                }
+                s+=str[i]
+            }                   
+            return s*/
+        }
+
+
+
+        let sah = -1
+        let bbb = false
+        this.getKov = function (str, ii, aS ) {//впихиваем в '" то что там 
+            sah = -1
+            
+            for (var i = ii; i < str.length; i++) {
+                bbb = false
+                for (var j = 0; j < aS.length; j++) {
+                    if(aS[j]==str[i])bbb=true;
+                }
+                if(bbb){
+                    if(sah==-1){
+                        sah=i
+                    }else{
+                        return [sah, i]
+                    }
+                }
+            }                
+            return null
+        }
+
+
 
         var a=[]
         this.load = function (b) {
@@ -3752,59 +4436,13 @@ export class DImage extends DCont {
                             dataType: "text",
                             async: true,
                             success: function(msg){
-
-                                
-                                //if(sahLoad!==self.par.sahLoad)return
-                                var test = msg+"$$$$$$$$$$$$$$$$$$$$4";
-                                let tt=''
-                              
-
-                                for (var i = 0; i < msg.length; i++) {
-                            
-
-                                   /* if(msg[i+8] && msg[i]=='"' && msg[i+1]=='#'){
-                                        
-                                        
-                                        if(msg[i+8]=='"'){
-                                            tt+='"'
-                                            tt+="#"
-                                            tt+=self._svgColor[1]
-                                            tt+=self._svgColor[2]
-                                            tt+=self._svgColor[3]
-                                            tt+=self._svgColor[4]
-                                            tt+=self._svgColor[5]
-                                            tt+=self._svgColor[6]
-                                            tt+='"'
-                                            i+=9
-                                       
-                                        }
-                                    }
-                                    tt+=msg[i]*/
-                                    if(msg[i+6] && msg[i]=='#'){
-                                        //trace("=====",i,msg[i+1],msg[i+2],msg[i+3],msg[i+4],msg[i+5],msg[i+6],msg[i+7])
-                                        if(msg[i+7]=='"' || msg[i+7]=="'" || msg[i+7]==";"){
-
-                                           // trace("====!!=")
-                                            tt+=msg[i]
-                                        
-                                            
-                                            tt+=self._svgColor[1]
-                                            tt+=self._svgColor[2]
-                                            tt+=self._svgColor[3]
-                                            tt+=self._svgColor[4]
-                                            tt+=self._svgColor[5]
-                                            tt+=self._svgColor[6]
-                                            
-                                            i+=7
-                                           
-                                                
-                                        }
-                                    }
-                                    tt+=msg[i]
-                                }
-                                //trace("==0==",msg)
-                               // trace("==1==",tt)
-                                let blob = new Blob([tt], {type: 'image/svg+xml'});
+                                //trace(msg)
+                                let tt1=self.korectColor(msg, self._svgColor);
+                                let tt2=self.korectKey(tt1, self._svgColor,"stroke=");
+                                let tt3=self.korectKey(tt2, self._svgColor,"fill=");
+                       
+                               // trace(tt3)
+                                let blob = new Blob([tt3], {type: 'image/svg+xml'});
                                 let url = URL.createObjectURL(blob);                          
                                 self.loadDD(url)                                
                             },

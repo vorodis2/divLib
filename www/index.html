@@ -16,7 +16,7 @@
 	var ww=150
 	var dcmParam;
 	function downMy(s) {
-		trace(s,this.index,this)
+		//trace(s,this.index,this)
 
 		//setDin(this)			
 	}
@@ -52,8 +52,8 @@
 		
 
 		
-
-
+		dcmParam.fontFamily = "Open Sans"//"PT Mono";			//тип шрифта, надо подключать
+		dcmParam.fontSizeErrorY=0.1
 		
 
 		this.bmpPic=new DBitmapData(2,2); 
@@ -98,11 +98,46 @@
 
 		return*/
 
+
+		var bb=new DButton(null,0,0,"Button",downMy)
+		//var bb=new DButton(null,0,0,"Button",downMy,"resources/pic/0.png")
+		
+
+		//var bb=new DButton(null,0,0," ",downMy,sss)
+		plus(bb);
+		bb.height=111
+		bb.width=111
+		//bb.textAlign='Left'
+		bb.svgColor="#ff0012";
+		//bb.link="resources/pic/Sets.svg"
+		bb.link="https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-prod/appinfo/0154/0000515606/Components.svg"
+		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1228/0000509776/image.svg'
+		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0149/0000509758/root.svg'
+		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0155/0000509705/accessories.svg'
+		pObject.addObject(bb);
+
+
+
+	/*	var bb=new DPanel(null,0,0);
+		plus(bb);
+		
+		var bb=new DColor(null,0,0);
+		plus(bb);
+		
+		var bb=new DColorList(null,0,0,null,downMy);
+		plus(bb);
+
+		
+		pObject.addObject(bb);*/
+		
+
+
+		return
 		var bb=new DCheckBox(null,0,0,"DCheckBox",downMy);
 		plus(bb);
-		pObject.addObject(bb);
-		bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1228/0000509776/image.svg'
-		return
+		
+	
+		
 
 
 		var bb=new DButton(null,0,0,"Button",downMy)
@@ -418,4 +453,16 @@
 	});
 
 
-</script></head><body ></body></html>
+</script></head>
+
+<style type="text/css">
+	#stats { position: absolute; top:0; left: 200px; }
+	@font-face {
+	  	font-family: "Open Sans";
+	  	src: url(resources/font/open-sans.ttf) format("truetype");
+	}
+	
+
+</style>
+
+<body ></body></html>

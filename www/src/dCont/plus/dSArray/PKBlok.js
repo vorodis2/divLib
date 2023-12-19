@@ -22,7 +22,7 @@ export class PKBlok  {
         this.width=this._wComp;
         this._visible=true
 
-        trace("########",this.par.height)
+
         this.panel=new DPanel(this.dCont)
         this.panel.width=this._wComp;
         this.panel.height=this.par.height//par.hGal;

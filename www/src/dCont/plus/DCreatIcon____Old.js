@@ -381,21 +381,20 @@ export class DCreatIcon extends DCont{
         this.whFinal=100 
 
         // this.testVisi=function(c){
-        //     trace(">>>>>>>>>>>>",c)
+
         //     if(c.visible == false){
-        //         trace(">>>0>>")
         //         return false;
         //     }  
 
         //     if(c.parent){
         //         return this.testVisi(c.parent)                
         //     }else{
-        //         trace(">>>0>>")
+
         //         if(c.div.tagName=="DIV"){
         //             return false;
         //         }
         //         if(c.htmlBody==undefined){ 
-        //             trace(">>>1@@@@@@undefined@@@@@@@@>",c.htmlBody,c)                   
+                 
         //             return false;
         //         }else{
                     
@@ -407,11 +406,7 @@ export class DCreatIcon extends DCont{
 
         window.addEventListener("paste",e=>{            
             if(self.dCont==undefined)return
-            /*trace("@");    
-            if(self.testVisi(self.dCont)==false){
-                return
-            }
-            trace("@@");*/
+
             var items;
             if (e.clipboardData && e.clipboardData.items) {
                 items = e.clipboardData.items;                

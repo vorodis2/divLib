@@ -126,7 +126,7 @@ export class DHole extends DCont {
         };
 
         this.correctRect = function() {
-            //trace('correctRect started', this.rect);
+
         
             var x=0;
             if(Math.round(this.rect.width / this._ratio)!=this.rect.height){
@@ -135,25 +135,6 @@ export class DHole extends DCont {
 
 
 
-          /*  if (this.rect.x < 0) this.rect.x = 0;
-            if (this.rect.y < 0) this.rect.y = 0;
-
-            if (this.rect.width > this._width) {
-                this.rect.width = this._width;
-                this.rect.height = this.rect.width / this._ratio;
-            }
-
-            if (this.rect.height > this._height) {
-                this.rect.height = this._height;
-                this.rect.width = this.rect.height * this._ratio;
-            }
-
-            if (this.rect.height + this.rect.y > this._height) this.rect.y = this._height - this.rect.height;
-            if (this.rect.width + this.rect.x > this._width) this.rect.x = this._width - this.rect.width;
-            // 
-            this.rect.width = Math.round(this.rect.width);
-            this.rect.height = Math.round(this.rect.height);*/
-            //trace('correctRect ended',this.idArr,this.tip, this.rect);
         };
 
         ///////////////////////////////////////////////////////////////////////////////////
@@ -306,7 +287,7 @@ export class DHole extends DCont {
                 if(point.y<0)point.y=0
             }
 
-            trace(point1.bx, point1.by, point2.bx, point2.by,point1,point2)
+
             
             if(point1.bx==true){                
                 point1.x=point.x

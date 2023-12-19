@@ -51,15 +51,21 @@ export class DCont {
 		
 		this.tb='visible'
 		var _mat
+		this.sx=1
+		this.sy=1
+		this.funZamenSXY=undefined
 		this.dragBigXZ=function(){
+			self.sx=self._scale
+			self.sy=self._scale
+			if(self.funZamenSXY!=undefined)self.funZamenSXY()
 
-			if(self.xyPar==false)_mat = 'scaleX('+self._scale+') scaleY('+self._scale+') translate('+self.position._x+'px, '+self.position._y+'px)';
+			if(self.xyPar==false)_mat = 'scaleX('+self.sx+') scaleY('+self.sy+') translate('+self.position._x+'px, '+self.position._y+'px)';
 			else{
 				//if(self.parameter.visible==true){
 					self.xyp.x=0
 					self.xyp.y=0
 					self.funXYP(self, self.xyp)				
-					_mat = 'scaleX('+self._scale+') scaleY('+self._scale+') translate('+self.xyp.x+'px, '+self.xyp.y+'px)';
+					_mat = 'scaleX('+self.sx+') scaleY('+self.sy+') translate('+self.xyp.x+'px, '+self.xyp.y+'px)';
 				/*}else{
 					_mat = 'scaleX('+self._scale+') scaleY('+self._scale+') translate(-9999px, 0px)';
 				}*/
@@ -69,7 +75,6 @@ export class DCont {
 			}
 
 			self.div.style["transform"] = _mat;
-
 			self.div.style["ms-transform"] = _mat;
 			self.div.style["webkit-transform"] = _mat;
 			

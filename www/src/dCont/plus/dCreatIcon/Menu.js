@@ -290,7 +290,7 @@ export class MVerh {
                 let p={x:20, y:20};
                 self.dinBody = this.par.par.scane.drEvent.start(p)
 
-                trace(self.dinBody)
+
 
             }else{
 
@@ -317,7 +317,7 @@ export class MVerh {
             
             let x=100-(w)/2
             let y=h*s
-            trace(w,s,self.dinBody) 
+
 
             self.dinBody.array[0].x= x;
             //self.dinBody.array[0].y= y;  
@@ -325,11 +325,6 @@ export class MVerh {
             this.par.par.scane.drEvent.drButton.korText();                    
             self.par.mIBlok.mibLinsAnd.drag();
 
-            //trace(this.ta.object.scrollHeight+"     "+this.par.par.scane.drEvent.drButton.textarea.object.scrollHeight);
-          //  trace(this.par.par.scane.drEvent.drButton.textarea.object.scrollWidth);
-            //trace(this.par.par.scane.drEvent.drButton.textarea.scrollHeight)
-
-            /**/
 
 
         }

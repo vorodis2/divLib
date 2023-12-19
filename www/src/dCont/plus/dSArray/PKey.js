@@ -262,7 +262,7 @@ export class PKey{
             let minH=dcmParam.fontSize+this._otstup*5 + this._wh
             if(value<minH)value=minH
             this._height = value; 
-            trace("####",this._height,minH)   
+ 
             for (var i = 0; i < this.arrC.length; i++) {
                 this.arrC[i].panel.height=this._height
             }          
