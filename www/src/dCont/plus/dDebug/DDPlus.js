@@ -113,9 +113,23 @@ export class DDPlus{
             this.addPlus(new DDCanvas(), null, false)
 
 
-            this.addPlus(new DCreatIcon(), null, false)
+            let ci=new DCreatIcon()
 
+            this.addPlus(ci, null, false)
 
+            /*setTimeout(function() {
+                let s="resources/pic/0.png"
+                trace("@@@@@@==",s)
+                ci.setLink(s, true, true);
+
+            }, 1000);
+
+            setTimeout(function() {
+                let s="resources/pic/0.png"
+                trace("@@@@@@==",s)
+                ci.setLink(s, true, true);
+
+            }, 2000);*/
 
 
             var dShtora=new DShtora(null,0,0,function(s,p,p1){

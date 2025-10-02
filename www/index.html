@@ -79,27 +79,36 @@
 			sizeWindow()
 		});
 
+		var bb2=new DButton(null,0,0,"Button",downMy)
+		plus(bb2);
+		bb2.height=111
+		bb2.width=111
+		//bb2.textAlign='Left'
+		bb2.svgColor="#ff0012";
+		bb2.link="resources/pic/Vector (2).svg"
 
-	/*	var bbb=new DVupodalka(null,0,200,3,downMy)
-		//bbb.boolDragIndex=false
+
+		let wer=	new DInput(null,0,0,"DWindow",downMy)
+		plus(wer);
+		//wer.svgColor="#ff0012";
+		//wer.link="resources/pic/Vector (2).svg"
+		trace(wer)
+		wer.setEMail()
+		pObject.addObject(wer);
 		
-		//bbb.setTArr(["00","11","22","33","44","55"])
-		plus(bbb);
-		
-		bbb.y=200;
-		bbb.tip=3
-		bbb.array[1].link="resources/pic/3.png";
-		bbb.array[0].link="resources/pic/1.png";
-
-		bbb.array[0].color='#ff0000'
-		bbb.dragIndex()
-
-		pObject.addObject(bbb);
-
-		return*/
 
 
-		var bb=new DButton(null,0,0,"Button",downMy)
+
+
+
+		var bb=new DButton(null,0,0,"Button",function(){
+			this.ap0=[ 
+	            ['#ffffff','#ff0000'],  
+	            ['#000000','#000000']
+	        ]        
+	        this.bm0=new DBitmapData(10,10, null);
+	        dcmParam.getPolitBase64(this.bm0.canvas,this.ap0, 10, false)
+		})
 		//var bb=new DButton(null,0,0,"Button",downMy,"resources/pic/0.png")
 		
 
@@ -110,7 +119,7 @@
 		//bb.textAlign='Left'
 		bb.svgColor="#ff0012";
 		//bb.link="resources/pic/Sets.svg"
-		bb.link="https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-prod/appinfo/0154/0000515606/Components.svg"
+		bb.link="https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-prod/appinfo/0006/0000515856/de-language-icon.svg?0.5304529306401422"
 		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appsuperset/1228/0000509776/image.svg'
 		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0149/0000509758/root.svg'
 		//bb.link='https://dev-brwzr3d-com.s3.eu-central-1.amazonaws.com/media-dev/appinfo/0155/0000509705/accessories.svg'
@@ -118,7 +127,7 @@
 
 
 
-	/*	var bb=new DPanel(null,0,0);
+		var bb=new DPanel(null,0,0);
 		plus(bb);
 		
 		var bb=new DColor(null,0,0);
@@ -126,13 +135,13 @@
 		
 		var bb=new DColorList(null,0,0,null,downMy);
 		plus(bb);
-
+		bb.width=244
 		
-		pObject.addObject(bb);*/
+		pObject.addObject(bb);
+
+		/**/
 		
-
-
-		return
+		
 		var bb=new DCheckBox(null,0,0,"DCheckBox",downMy);
 		plus(bb);
 		
@@ -187,7 +196,7 @@
 
 		bb2.color=dcmParam.getColor("#ffff00", -55)
 		trace("ccc=",bb2.color)*/
-		return
+		//return
 
 
 
@@ -251,6 +260,7 @@
 		//return
 		plus(new DTextArea(null,0,0,"DTextArea",downMy));
 		plus(new DCheckBox(null,0,0,"DCheckBox",downMy));
+		
 		
 
 

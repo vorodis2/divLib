@@ -15,8 +15,12 @@ export function DSettings (_cont) {
     if (_cont != undefined) _cont.add(this.content);
 
     this.dinFun;
-
-    this._otstup = 2;
+    
+    
+    this.mobile = dcmParam.mobile
+    
+    this.wh = dcmParam.wh;
+    this._otstup = 2//dcmParam.otstup;
     this._width = 200;
     this._height = 200;
     this._heightMax = 1000;
@@ -616,6 +620,7 @@ export function DSettings (_cont) {
         if (_type == 'DStringDrag') {
             component = new DStringDrag(this.content, 0, 0, _param, this.down);
             component.width = this._width - this._otstup * 2;
+            component.height =this.wh
         }
 
         if (_type === 'DVisualLoader') {
@@ -650,23 +655,7 @@ export function DSettings (_cont) {
             component.tipRide=true;
             component.arrType.push("object")        
         }   
-        //  component.funChangeVisiblePanel = function () {
-        //      for (var i = 0; i < self.arrComp2.length; i++) {
-        //          if (self.arrComp2[i].idArr !== this.idArr) self.arrComp2[i].activMouse = !this.visiPanel;
-        //      }
-
-        //      if (self.funActMouse) self.funActMouse(this.visiPanel);
-        //  };
-        // }
-
-        // if (_type == 'PLTextArea') {
-        //  component = new PLTextArea(this.content, 0, 0, _param.text, this.down);
-        //  component.height = _param.height;
-        //  component.label.style.overflow = _param.labelStyle;
-        //  component.label.maxLength = _param.maxLength;
-        //  component.x = this._otstup;
-        //  component.width = this._width - this._otstup * 2;
-        // }
+       
 
         if (_type == 'DCheckBox') {
             component = new DCheckBox(this.content, 0, 0, _name, this.down);
@@ -699,6 +688,7 @@ export function DSettings (_cont) {
                 if (_param.file != undefined) component.startFile('.jpg, .png, .bmp, .jpeg');
             }
             component.width = this._width - 2;
+            component.height =this.wh
         }
 
         
@@ -710,7 +700,7 @@ export function DSettings (_cont) {
         
             component.width = this._width - this._otstup * 2;
             component.x = this._otstup;
-
+            component.height =this.wh
             
 
             /*if (_param != undefined) {
@@ -738,11 +728,14 @@ export function DSettings (_cont) {
             
             component = new DSliderBig(this.content, 0, 0, this.down, _name, min, max);
             component.boolDiapozon=true;
-            
+            component.height =this.wh
+            component.mobile=this.mobile
             
             component.okrug = okrug;
             component.x = this._otstup;
             component.width = this._width - this._otstup * 2;
+
+
 
             component.funChange = this.funComplit;
         }   
@@ -896,6 +889,7 @@ function DStringDrag (cont, _x, _y, _title, _fun) {
 
         this.input = new DInput(this, this.otstup, this.otstup, 'null', function () {
             self.value=this.value;
+            self.fun();
         });
         this.input.timeFun=1;
 
@@ -932,8 +926,8 @@ function DStringDrag (cont, _x, _y, _title, _fun) {
     this.drag = function () {
         
         this.input.width = (this._width - this.input.x) ;
-        
-        
+        this.input.height=this._height
+        this.but.height=this._height
     };
 
 

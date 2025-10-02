@@ -317,9 +317,29 @@ export class GBDButton extends DButton {
         this.setBody=function(body){
             this.body=body;
             this.body.button=this;
-            if(this.link!=this.body.link){
-                this.link=this.body.link                
-            }            
+
+            
+            let link=this.body.link;
+            if(!link && this.body._piclink){
+                link = this.body._piclink
+            }
+
+
+           
+            if(!link){
+                if(this.image){
+                    this.image.visible=false
+                }
+            }else{
+                if(this.link!=link){
+                    this.link=link                
+                } 
+                if(this.image){
+                    this.image.visible=true
+                }  
+            }
+
+                     
         }
 
         this.fun_mousedown=function(){ 

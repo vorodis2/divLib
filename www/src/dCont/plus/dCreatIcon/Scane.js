@@ -26,7 +26,7 @@ export class Scane {
 
         this.setLink=function(link, bClear, bType){
             let bb=true;
-            
+            //console.warn("===0===",link, bClear, bType)
             let a1=link.split(".");
             let ss=a1[a1.length-1].toUpperCase();
             if(bClear==true)this.wScane.clear();
@@ -41,6 +41,7 @@ export class Scane {
             if(ss=="SVG"){ 
 
                 if(window.$!=undefined){
+
                     window.$.ajax({
                         url: link,
                         dataType: "text",
@@ -50,7 +51,20 @@ export class Scane {
                             var test = msg;
                             if(self.uXml==undefined)self.uXml=new UXml()
 
-                            let o= JSON.parse( self.uXml.xml2json(self.uXml.testToDOM(test)))
+                            if(test.indexOf("devLib_DCI2")==-1){
+                                self.setLink2(link)
+                                if(bType==true)self.dragType(".png") 
+                                return    
+                            }    
+
+
+                            //console.warn("===1===",self.uXml) 
+                            //console.warn("===2===",test) 
+                            let  df=self.uXml.testToDOM(test)
+                            //console.warn("===2===",df) 
+                            let  df1=self.uXml.xml2json(df)
+                            //console.warn("===2===",df1) 
+                            let o = JSON.parse( df1)
                             
                             if(o && o.svg && o.svg["@id"] && o.svg["@id"]=="devLib_DCI2"){                                
                                 

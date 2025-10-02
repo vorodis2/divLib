@@ -108,6 +108,9 @@ export class DRedactPM extends DCont{
         }
 
 
+        
+
+
        
         
         this.panel.width=this.width;

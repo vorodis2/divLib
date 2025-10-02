@@ -120,6 +120,7 @@ export class DCreatIcon extends DCont{
 
         this.link=""
         this.restart=function(){
+            console.warn(this)
             this.link=this.scane.drScane.getPic()
             this.menu.mScaneA.setLink(this.link)
             this.menu.mVerhStart.input.text=this.link;

@@ -792,35 +792,40 @@ export class MibBase {
         this.panel=new DPanel(this.dCont,this.otstup,this.otstup*4+this.swh)
         this.panel.width=this.width1;
 
-        this.arrBName=[32, 64, 128, 200, 256];
+        this.arrBName=[32, 64, 128, 200, 256, 512, 1024];
 
         
         
         let yy=this.otstup;
+        let wwwhh=12
 
 
 
-        var l=new DLabel(this.panel,this.otstup,yy,"размер рх")
-        l.activMouse=false;
-        l.fontSize=this.fontSizeLitel
-        l.width=this.width1;
 
-        var l=new DLabel(this.panel,145,yy,"формат")
-        l.activMouse=false;
-        l.fontSize=this.fontSizeLitel
-        l.width=this.width1;
        
 
         yy+=this.fontSizeLitel+this.otstup
-        this.buttons=new DButtons(this.panel, this.par.otstup,yy,this.arrBName,function(){
+        this.buttons=new DButtons(this.panel, 30,this.otstup,this.arrBName,function(){
             self.obj.wh=self.arrBName[this.index]
             self.drag()
         })
         this.buttons.fontSize=this.fontSizeLitel
-        this.buttons.wh=this.swh;
+        //this.buttons.wh=this.swh;
+        this.buttons.wh=this.fontSizeLitel+this.otstup*2
+
+
+
+        var l=new DLabel(this.panel,this.otstup,this.buttons.y+this.buttons.height-this.fontSizeLitel,"size:")
+        l.activMouse=false;
+        l.fontSize=this.fontSizeLitel
+        l.width=this.width1;        
+
+
+
+     
         
         this.pan200=new DPanel(this.panel,0,0)
-        this.pan200.height=this.swh+this.otstup*2;
+        this.pan200.height=this.fontSizeLitel+this.otstup*4;
         this.pan200.color=dcmParam.colorActive
         this.pan200.alpha=0.75
 
@@ -829,20 +834,34 @@ export class MibBase {
         this.pan200.y=this.buttons.y-this.otstup
 
 
-        //yy+=this.buttons.height+this.otstup;
+
+
+
+        yy+=this.otstup*2
 
         
 
 
         this.arrTT=[".png",".svg"];
-        this.buttons1=new DButtons(this.panel, 145 ,yy,this.arrTT,function(){
+        this.buttons1=new DButtons(this.panel, 30 ,yy,this.arrTT,function(){
             self.obj.type=self.arrTT[this.index]
             self.drag()
         })
         this.buttons1.fontSize=this.fontSizeLitel
-        this.buttons1.wh=this.swh;
+        this.buttons1.wh=this.fontSizeLitel+this.otstup*2
+
+        var l1=new DLabel(this.panel,this.otstup,this.buttons1.y+this.buttons1.height-this.fontSizeLitel,"type:")
+        l1.activMouse=false;
+        l1.fontSize=this.fontSizeLitel
+        l1.width=this.width1;   
 
 
+        this.button=new DButton(this.panel, 30 ,yy,"getPNG",function(){
+            self.getImage();
+        })
+        this.button.fontSize=this.fontSizeLitel
+        this.button.height=this.fontSizeLitel+this.otstup*2
+        this.button.x=this.panel.width-this.button.width-this.otstup
         
 
         yy+=this.buttons1.height+this.otstup;
@@ -951,6 +970,29 @@ export class MibBase {
             this.bb.x=xx
         }
 
+        this.getImage=function(){
+            
+            let aa=self.obj.type
+            self.obj.type=self.arrTT[0]
+            self.drag()
+
+
+            let ss=this.par.par.mVerhStart.input.text
+            let n="image.png"           
+            nnn(ss,n)
+            self.obj.type=aa
+            self.drag()
+        }
+
+        function nnn(base64Data, filename) {
+            const link = document.createElement('a');
+            link.href = base64Data;
+            link.download = filename;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         this.arrBB=[]
         var yyyyy=yy
@@ -961,9 +1003,7 @@ export class MibBase {
                 
 
                 let k=this.objXZ.json
-                if(typeof k =="string")k=JSON.parse(this.objXZ.json)
-                
-
+                if(typeof k =="string")k=JSON.parse(this.objXZ.json) 
 
                 for(var s in k.base){
                     if(self.par.par.ols.base[s]!=undefined){

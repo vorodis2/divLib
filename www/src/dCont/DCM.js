@@ -301,14 +301,17 @@ export function DCM() {
 
         for (i = 0; i < ar.length - 1; i++) {
             for (j = 0; j < ar[i].length - 1; j++) {
+
                 this._wColor = this.parseColor(ar[i][j]);
                 this._wColor1 = this.parseColor(ar[i][j + 1]);
 
                 this._hColor = this.parseColor(ar[i + 1][j]);
-                this._hColor1 = this.parseColor(ar[i + 1][j + 1]);
-
+                this._hColor1 = this.parseColor(ar[i + 1][j + 1]);          
                 for (k = 0; k < this.wX; k++) {
-                    this._rr =
+                    this._rr =this.getCCSah(k,this.wX,this._wColor.r,this._wColor1.r);
+                    this._gg =this.getCCSah(k,this.wX,this._wColor.g,this._wColor1.g);
+                    this._bb =this.getCCSah(k,this.wX,this._wColor.b,this._wColor1.b);
+                    /*this._rr =
                         this._wColor.r +
                         Math.round(
                             (this._wColor1.r - this._wColor.r) *
@@ -325,7 +328,7 @@ export function DCM() {
                         Math.round(
                             (this._wColor1.b - this._wColor.b) *
                                 (k / (this.wX - 1))
-                        );
+                        );*/
                     this.colorA =
                         'rgb(' +
                         this._rr +
@@ -335,7 +338,10 @@ export function DCM() {
                         this._bb +
                         ')';
 
-                    this._rr =
+                    this._rr =this.getCCSah(k,this.wX,this._hColor.r,this._hColor1.r); 
+                    this._gg =this.getCCSah(k,this.wX,this._hColor.g,this._hColor1.g);
+                    this._bb =this.getCCSah(k,this.wX,this._hColor.b,this._hColor1.b);   
+                    /*this._rr =
                         this._hColor.r +
                         Math.round(
                             (this._hColor1.r - this._hColor.r) *
@@ -352,7 +358,7 @@ export function DCM() {
                         Math.round(
                             (this._hColor1.b - this._hColor.b) *
                                 (k / (this.wX - 1))
-                        );
+                        );*/
                     this.colorB =
                         'rgb(' +
                         this._rr +
@@ -375,16 +381,16 @@ export function DCM() {
                 }
             }
         }
-        //this.bmp.width = Math.floor(canVa.width);
-        //this.bmp.height = Math.floor(canVa.height);
-        //this.bmp.setCanvas(canVa, this.c2d);
-        
-
-        //this.colorPolit = canVa.toDataURL();
         if(br==undefined) return canVa.toDataURL();
-
     }
-
+    let pp3, pp4
+    this.getCCSah =  function (i, kol, num, num1 ){ 
+        pp4=num+Math.round(
+                            (num1 - num) *
+                                (i / (kol - 1))
+                        )   
+        return pp4        
+    }
 
 
 
@@ -733,6 +739,7 @@ export class DWindow extends DCont {
 
         this._colorText = dcmParam._colorText;
         this._fontSize = dcmParam.fontSize;
+        this._otstup=dcmParam._otstup;
 
         this._wh = dcmParam.wh;
 
@@ -743,6 +750,7 @@ export class DWindow extends DCont {
         this._dragBool = true;
         this._activMouse = true;
         this._dragBoolWH = false;
+        this._boolAllOpen = false;
         this._text = 'nullMMy';
         this._title = 'nullMMy';
         this.textPlus = '';
@@ -750,8 +758,14 @@ export class DWindow extends DCont {
         this.panel = new DPanel(this, 0, 0);
 
 
+        this._link = 'null';
+        //this._svgColor='#010203'//не астивный
 
-        this.button = new DButton(this, 0, 0, ' ');
+
+        this.button = new DButton(this, 0, 0, ' ', function(){
+      
+            if(self._boolAllOpen)self.checkMin(true)
+        });
         this.button.fun_mousedown = function () {
             if (self._dragBool != false) {
                 self.startDrag();
@@ -761,14 +775,27 @@ export class DWindow extends DCont {
         this.yy=23542
         this.button.otPic= this._fontSize/2
 
+        this.label=new DLabel(this, this._otstup, this._otstup, 'null');
+        this.label.color=this._colorText
+        this.label.width=444
+        this.dCIm=new DCont(this)
+        this.dCIm1=new DCont(this)
+        let ss='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" id="devLib_DCI2" style="width: 200px; height: 200px;"><path/><polyline points="70,70 140,100 70,130" stroke-linecap="butt" fill="#fdfdfd" stroke="none" stroke-width="none" ia="0"/></svg>'
+        this.image0=new DImage(this.dCIm, 0, 0, null);
+        this.image0.svgColor=this._colorText;
+        this.image0.link=ss;
+     
+       
+        let ss1='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" id="devLib_DCI2" style="width: 200px; height: 200px;"><path/><polyline points="130,70 100,140 70,70" stroke-linecap="butt" fill="#fdfdfd" stroke="none" stroke-width="none" ia="0"/></svg>'
+        this.image1=new DImage(this.dCIm, 0, 0, null);
+        this.image1.svgColor=this._colorText;
+        this.image1.link=ss1;
+      
+        this.image0.visible=false
+
+
         this.buttonMin = new DButton(this, 0, 0, ' ', function () {
-            if (self._dragBool != false) {               
-                if (self.xx==self.x &&  self.yy==self.y){}else {
-                    return
-                }
-            }
-            self.minimize = !self.minimize;                  
-            if (self.fun) self.fun();
+            self.checkMin()
         });
         this.buttonMin.fun_mousedown = function () {
             self.xx=self.x
@@ -781,13 +808,21 @@ export class DWindow extends DCont {
         this.button.textAlign = 'left'; //"center"//
         this.buttonMin.textAlign = 'left'; //"center"//
 
+
+
+
+
         this.content = new DCont(this);
         this.content.y = this._wh;
 
-        this.buttonMin.width = this._wh+this._fontSize/2;;
+        this.buttonMin.width = this._wh;
         this.buttonMin.height = this._wh
         this.buttonMin.visible = !this._hasMinimizeButton;
-        this.buttonMin.alpha = 0;
+        this.buttonMin.alpha = 0.01;
+
+       // this.buttonMin.boolFond=false;
+
+    
         var c = dcmParam.compToHexArray(dcmParam.hexDec(this._color), -50);
         this.button.color = c;
         this.button.object.style.textAlign = 'left';
@@ -809,6 +844,18 @@ export class DWindow extends DCont {
             self.startDrag(this.tip);
         };
         ////////////////////////////////
+
+        this.checkMin = function (b) {
+          
+            if (self._dragBool != false && !b) {               
+                if (self.xx==self.x &&  self.yy==self.y){}else {
+                    return
+                }
+            }
+            
+            self.minimize = !self.minimize;                  
+            if (self.fun) self.fun();
+        }    
 
         this._otstupD=dcmParam._otstupD
         this.dragD = function () {
@@ -986,6 +1033,66 @@ export class DWindow extends DCont {
         };
         this.scaleDrag = { s: 1 };
 
+
+        this.drahXZ=function(bool){
+            this.image0.x=0//this.image0.y=this._otstup;
+            this.image1.x=0//this.image1.y=this._otstup;
+            
+            this.image0.wh=this._wh//-this._otstup*2
+            this.image1.wh=this._wh//-this._otstup*2
+            
+            if(bool){
+                setTimeout(function() {
+                    self.drahXZ()
+                    return
+                }, 1);
+            }
+
+            let hh=this.label.getRect().height
+            if(hh==0)hh=this.label.fontSize
+
+            this.label.y=(this.wh-hh)/2
+
+            let xx = this._otstup;
+            
+            
+
+            if(this._hasMinimizeButton)xx+=this.wh-this._otstup
+            if(this.image){
+                this.dCIm1.x=xx;
+                this.image.wh=this._wh
+                xx+=this.wh+this._otstup
+            }
+
+            this.label.x=xx    
+
+        }
+
+        this.creatImage = function () {
+            if (this.image == undefined) {                
+                // this.panel1.parent.remove(this.panel1);
+                this.image = new DImage(this.dCIm1, 0, 0, null, function () {
+                    self.image.boolLoadXZ=true;                    
+                    self.drahXZ();
+                  
+                });
+                this.image.svgColor=this._colorText
+                this.image.div.style.pointerEvents = 'none'; 
+            }
+        }
+
+
+
+ 
+        this.loadImeg = function (s) {
+            this._link = s;
+            this.creatImage()
+            this.image.link = this._link;
+        };
+
+
+        
+
         this._width--;
         this._height--;
 
@@ -994,13 +1101,35 @@ export class DWindow extends DCont {
         this.height = this._height + 1;
         this.text = _text || 'null';
         this.hasMinimizeButton = true;
+
+        this.drahXZ(true)
+
+
+
     }
+
+
+    set link(value) {
+        if (this._link != value) {
+            this._link = value;
+            this.loadImeg(value);
+        }
+    }
+    get link() {
+        return this._link;
+    }
+
+
 
 
     set colorText(value) {
         if (this._colorText != value) {
             this._colorText = value;
-            this.button.colorText = value;    
+            
+            this.label.color=value;
+            if(this.image)this.image.svgColor=this._colorText
+            this.image0.svgColor=this._colorText    
+            this.image1.svgColor=this._colorText  
         }
     }
     get colorText() {
@@ -1010,7 +1139,9 @@ export class DWindow extends DCont {
     set fontSize(value) {
         if (this._fontSize != value) {
             this._fontSize = value;
-            this.button.fontSize = value;    
+            this.label.fontSize = value;   
+
+            this.drahXZ(true) 
         }
     }
     get fontSize() {
@@ -1022,12 +1153,23 @@ export class DWindow extends DCont {
             this._wh = value;
             this.button.height = value; 
             this.content.y = this._wh;
-            this.buttonMin.width = this._wh+this._fontSize/2;;
-            this.buttonMin.height = this._wh;   
+            this.buttonMin.width = this._wh;
+            this.buttonMin.height = this._wh; 
+            this.drahXZ()  
         }
     }
     get wh() {
         return this._wh;
+    }
+
+    set otstup(value) {
+        if (this._otstup != value) {
+            this._otstup = value;
+            this.drahXZ()  
+        }
+    }
+    get otstup() {
+        return this._otstup;
     }
 
 
@@ -1106,7 +1248,7 @@ export class DWindow extends DCont {
     set text(value) {
         this._text = value;
         this._title = value;
-        this.button.text = this.textPlus + ' ' + value;
+        this.label.text = this.textPlus + ' ' + value;
     }
     get text() {
         return this._text;
@@ -1123,12 +1265,16 @@ export class DWindow extends DCont {
     set minimize(value) {
         if (this._minimize != value) {
             this._minimize = value;
+            this.image0.visible=this._minimize
+            this.image1.visible=!this._minimize
+
             if (this._hasMinimizeButton == true) {
-                if (this._minimize == true) {
+                /*if (this._minimize == true) {
                     this.textPlus = '►  ';
                 } else {
                     this.textPlus = '▼  ';
-                }
+                }*/
+
                 this.text = this._text;
             }
             if(this._minimize!==true){
@@ -1163,7 +1309,10 @@ export class DWindow extends DCont {
         if (this._hasMinimizeButton != value) {
             this._hasMinimizeButton = value;
             this.buttonMin.visible = this._hasMinimizeButton;
-            if (value == true) {
+
+            this.dCIm.visible = this._hasMinimizeButton;
+            this.drahXZ()
+           /* if (value == true) {
                 if (this._minimize == true) {
                     this.textPlus = '►  ';
                 } else {
@@ -1171,13 +1320,24 @@ export class DWindow extends DCont {
                 }
             } else {
                 this.textPlus = '';
-            }
-            this.text = this._text;
+            }*/
+
+            this.text = this.textPlus+''+this._text;
         }
     }
     get hasMinimizeButton() {
         return this._hasMinimizeButton;
     }
+    set boolAllOpen(value) {
+        if (this._boolAllOpen != value) {
+            this._boolAllOpen = value;
+            
+        }
+    }
+    get boolAllOpen() {
+        return this._boolAllOpen;
+    }
+
 
     set dragBool(value) {
         if (this._dragBool != value) {
@@ -1234,7 +1394,7 @@ export class DColor extends DCont {
         var boolOp = true;
 
         
-
+        this.dColorList=undefined
 
         this.panel = new DPanel(this);
         this.button = new DButton(
@@ -1298,6 +1458,8 @@ export class DColor extends DCont {
             this.dColorList._borderRadius=this._borderRadius;
             this.dColorList._fontSize=this._fontSize;
             this.dColorList._color=this._color;
+            this.dColorList._width=this._width;
+            this.dColorList.dragWH()
             this.dColorList.div.xzParanDivd=this;
             this.input.div.xzParanDivd=this;
             this.button.div.xzParanDivd=this;
@@ -1323,7 +1485,7 @@ export class DColor extends DCont {
                 oo1.y = 0;
 
                 nP = this.getBigPar(this, oo1);
-        
+                
               //  cOld = self._color;
                 //this.panel.height = this._height + 100 + this._otstup;
                 this.dColorList.value=this.value
@@ -1336,6 +1498,9 @@ export class DColor extends DCont {
                 } 
                 this.dColorList.x = oo1.x;
                 this.dColorList.y = yy;
+                this.dColorList.width=this._width+1;
+                this.dColorList.width=this._width;
+                
                 document.addEventListener('mousedown', this.upBody);
                 //this.dColorList.div.addEventListener('mousedown', this.upBody1);
             }else{
@@ -1393,6 +1558,8 @@ export class DColor extends DCont {
                 this.input.width = ww / 2;
                 this.input.x =  ww / 2;
             }
+
+            if(this.dColorList)this.dColorList._width=this._width;
         }
     }
     get width() {
@@ -1524,7 +1691,7 @@ export class DColorList extends DCont {
         this._otstup = dcmParam._otstup;
         this._otstupLine = dcmParam._otstup*2;        
         this._height = 150;
-     
+        this._wh = dcmParam.wh;
         //this._activMouse = true;
         this._fontSize=dcmParam.fontSize
        // var boolOp = true;
@@ -1652,7 +1819,7 @@ export class DColorList extends DCont {
             self.dcww1.y=this.point1.y
         }
     
-
+        let gr=3
         this.dddd1=function(tip){
             
 
@@ -1665,11 +1832,20 @@ export class DColorList extends DCont {
             xx2=Math.round(self.point0.x/self._scaleX);           
             yy2=Math.round(self.point0.y/self._scaleY);
 
+            
             ccol=self.bm0.getPixel(xx2,yy2);
-            cxx=dcmParam.compToHexArray(ccol);
+            
+            for (var i = 0; i < ccol.length; i++) {
+                if(ccol[i]<gr)ccol[i]=0;
+                if(ccol[i]>255-gr)ccol[i]=255;
+            }
+
+
+            cxx = dcmParam.compToHexArray(ccol);
 
             this.dBut0.color=cxx;
-           
+            
+
 
             this._value = cxx           
             this._value = cxx;
@@ -1684,6 +1860,7 @@ export class DColorList extends DCont {
         ////////////////////
         let xx1,xx2,yy,yy1,yy2,sc, ccol,ccol1, point, cxx
         this.downC=function(e){
+            self.scaleDrag.s=1
             self.testScale(self, self.scaleDrag);
             document.body.style.pointerEvents = 'none';
             //
@@ -1724,6 +1901,7 @@ export class DColorList extends DCont {
         var sx, sy;
         var sp
         this.mousemove = function (e, b) {
+            
             if (dcmParam.mobile == false) {
                 if (sp == undefined) {
                     sp = {
@@ -1750,23 +1928,26 @@ export class DColorList extends DCont {
             }
 
 
-            if(self.tip==0){                
-                sx = sp.x1-self.rect.x
+            if(self.tip==0){  
+                         
+                sx = sp.x1*self.scaleDrag.s-self.rect.x
                 if(sx<0)sx=0
-                if(sx>self.rect.width-1)sx=self.rect.width -1  
-                self.point1.x=sx
+                if(sx>self.rect.width)sx=self.rect.width  
+                self.point1.x=sx/self.scaleDrag.s
                 self.dddd1(self.tip);
             }
             if(self.tip==1){                
-                sx = sp.x1-self.rect.x
+                sx = sp.x1*self.scaleDrag.s-self.rect.x
                 if(sx<0)sx=0
-                if(sx>self.rect.width-1)sx=self.rect.width -1 
+                if(sx>self.rect.width)sx=self.rect.width 
 
-                sy = sp.y1-self.rect.y
+                sy = sp.y1*self.scaleDrag.s-self.rect.y
                 if(sy<0)sy=0
-                if(sy>self.rect.height-1)sy=self.rect.height -1   
-                self.point0.x=sx
-                self.point0.y=sy
+                if(sy>self.rect.height)sy=self.rect.height   
+                self.point0.x=sx/self.scaleDrag.s
+                self.point0.y=sy/self.scaleDrag.s
+
+                
                 self.dddd1(self.tip);               
             }
 
@@ -1842,6 +2023,8 @@ export class DColorList extends DCont {
 
         var www,hhh
         this.dragWH=function(){
+
+            
             this.panel.width=this._width;
             this.panel.height=this._height;
             this.panel.borderRadius = this._borderRadius;
@@ -1868,7 +2051,7 @@ export class DColorList extends DCont {
 
                 this.arrayInputs[i].fontSize=this.fontSize
                 this.arrayInputs[i].label.fontSize=this.fontSize
-                this.arrayInputs[i].height= this.fontSize+this._otstup*4
+                this.arrayInputs[i].height= this._wh
 
 
 
@@ -2031,17 +2214,7 @@ export class DColorList extends DCont {
         if (this._width != value) {
             this._width = value;
             this.dragWH()
-           // this.button.x = this._width  - this.button._width;
-          //  this.panel.width = this._width;
-           /* this.image.width = this._width - this._otstup * 2;
-            var ww = this.button.x - this._otstup * 2;
-            if (this.label == undefined) {
-                this.input.width = this.button.x- this.input.numLine;
-                this.input.x = 0;
-            } else {
-                this.input.width = ww / 2;
-                this.input.x =  ww / 2;
-            }*/
+           
         }
     }
     get width() {
@@ -2054,12 +2227,7 @@ export class DColorList extends DCont {
         if (this._height != value) {
             this._height = value;
             this.dragWH()
-           // this.panel.height = this._height;
-           /* this.button.width = this.button.height = this._height ;
-            this.input.height = this._height ;
-            let ww=this._width
-            this._width=-1;
-            this.width=ww*/
+           
         }
     }
     get height() {
@@ -2086,7 +2254,16 @@ export class DColorList extends DCont {
     get otstupLine() {
         return this._otstupLine;
     }
-
+    set wh(value) {
+        if (this._wh != value) {
+            this._wh = value;
+            this.dragWH()
+          
+        }
+    }
+    get wh() {
+        return this._wh;
+    }
 
 
     set fontSize(value) {
@@ -2436,6 +2613,7 @@ export class DButton extends DCont {
 
         this._width = 100;
         this._height = dcmParam.wh;
+        this._wh = dcmParam.wh;
         this._color = dcmParam._color;
         this._colorText = dcmParam._colorText;
         this._fontSize = dcmParam._fontSize;
@@ -2627,7 +2805,7 @@ export class DButton extends DCont {
         var sp = 5;
         var ww, ww1;
         this.image = undefined;
-
+        this.pzl={x:0, y:0}
         this.reDrag = function () {
             this.panel.width = this._width ;
             this.panel1.width = this._width ;
@@ -2635,9 +2813,14 @@ export class DButton extends DCont {
             this.panel.height = this._height ;
             this.panel1.height = this._height ;
 
+            let _xl=0
+            if(this.pzl)_xl=this.pzl.x;
+            let _yl=0
+            if(this.pzl)_yl=this.pzl.y;
+
             sp = this._otPic;
             var s;
-            if (this.image != undefined) {
+            if (this.image != undefined && this.image.visible) {
 
 
                 s = (this._height-(this._otPic*2)) / this.image.picHeight;
@@ -2667,7 +2850,7 @@ export class DButton extends DCont {
             }
             let b = true;
 
-            if (this.image != undefined) {
+            if (this.image != undefined && this.image.visible) {
                 if (this._height >= self.label.fontSize * (this.vertElem / self.label.fontSize)) {
                     if (self.label.value.length >= 1) {
                         b = false;
@@ -2677,9 +2860,9 @@ export class DButton extends DCont {
             if (this.boolDrahVert == false) b = true;
             
             if (b) {
-                this.label.width = this._width - sp;
-                self.label.y = (this._height - this._fontSize) / 2;
-                self.label.x = sp;
+                this.label.width = this._width - sp-_xl;
+                self.label.y = (this._height - this._fontSize) / 2-this.fontSize*dcmParam.fontSizeErrorY ;
+                self.label.x = sp+_xl;
             } else {
                 s =
                     (this._height - self.label.fontSize * 2) /
@@ -2702,12 +2885,12 @@ export class DButton extends DCont {
                 this.image.y = Math.round((this._height - this.image.height) / 2);
 
                 this.label.div.style.zIndex = '10';
-                this.label.width = this._width;
-                self.label.y = this._height - this._fontSize * 1.5;
-                self.label.x = 0;
+                this.label.width = this._width-_xl;
+                self.label.y = this._height - this._fontSize * 1.5-this.fontSize*dcmParam.fontSizeErrorY ;
+                self.label.x = _xl;
             }
 
-            if (this.image != undefined) {
+            if (this.image != undefined && this.image.visible) {
                 if (this.image.parent==undefined){
                     if (this.image.boolLoadXZ==true){                       
                         this.dCont.add(this.image);
@@ -3062,6 +3245,19 @@ export class DButton extends DCont {
         return this._width;
     }
 
+    set wh(value) {
+        if (this._wh != value || this._height != this._wh|| this._width != this._wh) {
+            this._wh = value;
+            this._height = this._wh;          
+            this._width = this._wh;
+            
+            this.reDrag();
+        }
+    }
+    get wh() {
+        return this._wh;
+    }
+
     set scalePic(value) {
         if (this._scalePic != value) {
             this._scalePic = value;
@@ -3126,7 +3322,7 @@ export class DButton extends DCont {
     set fontSize(value) {
         if (this._fontSize != value) {
             this._fontSize = value;
-            this.label.y = (this._height - this._fontSize) / 2;
+            this.label.y = (this._height - this._fontSize) / 2-this.fontSize*dcmParam.fontSizeErrorY;
             this.label.fontSize = value;
             this.reDrag();
             // this.object.style.fontSize = value+"px";
@@ -3502,6 +3698,8 @@ export class DCheckBox extends DCont {
         this.fun_mouseout = undefined;
         this.fun_mousedown = undefined;
 
+        this._bCenter=false ;
+
         this._width = 100;
         this._height = dcmParam.wh * 0.75;
 
@@ -3545,7 +3743,13 @@ export class DCheckBox extends DCont {
             this.panel1.color1 = this._color;
 
             this.label.x = this.height + 2;
-            this.label.y = this.height - this.fontSize - dcmParam.fontSizeErrorY*this.fontSize;
+
+            if(this._bCenter==false){
+                this.label.y = this.height - this.fontSize - dcmParam.fontSizeErrorY*this.fontSize;
+            }else{
+                this.label.y = (this.height - this.fontSize)/2 - dcmParam.fontSizeErrorY*this.fontSize;
+            }
+            
 
             this.label.width = this.label.x + this._text.length * (this._fontSize * 0.7)*2;
 
@@ -3740,6 +3944,18 @@ export class DCheckBox extends DCont {
         return this._boolLine;
     }
 
+    set bCenter(value) {
+        if (this._bCenter != value) {
+            this._bCenter = value;
+            
+            this.reDrag();
+        }
+    }
+    get bCenter() {
+        return this._bCenter;
+    }
+
+
     set link(value) {
         if (this._link != value) {
             this._link = value;
@@ -3876,7 +4092,7 @@ export class DPanel extends DCont {
         this._boolLine = dcmParam._boolLine;
         this._whLine=1
         this._colorLine=null;
-
+        this._wh = dcmParam.wh
 
         this._borderRadius = dcmParam.borderRadius;
 
@@ -4114,6 +4330,18 @@ export class DPanel extends DCont {
         return this._height;
     }
 
+    set wh(value) {
+        if (this._wh != value || this._height != this._wh|| this._width != this._wh) {
+            this._wh = value;
+            this.height = this._wh;          
+            this.width = this._wh;          
+           
+        }
+    }
+    get wh() {
+        return this._wh;
+    }
+
     set borderRadius(value) {
         if (this._borderRadius != value) {
             this._borderRadius = value;
@@ -4246,6 +4474,7 @@ export class DImage extends DCont {
         if (dCont != undefined) if (dCont.add != undefined) dCont.add(this);
         this._width = 100;
         this._height = 100;
+        this._wh =100;
         this.picWidth = 100; // реальные размеры картинки
         this.picHeight = 100; // реальные размеры картинки
         this.funError = null;
@@ -4377,24 +4606,6 @@ export class DImage extends DCont {
 
             }
             return str
-
-          /*  s='' 
-            for (var i = 0; i < str.length; i++) {
-                if(str[i+6] && str[i]=='#'){
-                    if(str[i+7]=='"' || str[i+7]=="'" || str[i+7]==";"){
-                        s+=str[i] 
-                        s+=color[1]
-                        s+=color[2]
-                        s+=color[3]
-                        s+=color[4]
-                        s+=color[5]
-                        s+=color[6]                                            
-                        i+=7;   
-                    }
-                }
-                s+=str[i]
-            }                   
-            return s*/
         }
 
 
@@ -4424,7 +4635,15 @@ export class DImage extends DCont {
 
         var a=[]
         this.load = function (b) {
-            
+            if(typeof self._link =='string' && self._link.indexOf('></svg>')!=-1){//это текст
+                let c = null;
+                if(this._svgColor != '#010203')c=this._svgColor
+                self.loadSVG(self._link, c)      
+                return
+            }
+
+
+
 
             if(self._link && (typeof self._link =='string') && this._svgColor != '#010203'){
 
@@ -4436,15 +4655,17 @@ export class DImage extends DCont {
                             dataType: "text",
                             async: true,
                             success: function(msg){
-                                //trace(msg)
-                                let tt1=self.korectColor(msg, self._svgColor);
+                                
+                              /*  let tt1=self.korectColor(msg, self._svgColor);
                                 let tt2=self.korectKey(tt1, self._svgColor,"stroke=");
                                 let tt3=self.korectKey(tt2, self._svgColor,"fill=");
                        
-                               // trace(tt3)
+                          
                                 let blob = new Blob([tt3], {type: 'image/svg+xml'});
                                 let url = URL.createObjectURL(blob);                          
-                                self.loadDD(url)                                
+                                self.loadDD(url) */
+
+                                self.loadSVG(msg, self._svgColor)                               
                             },
                             error:function(msg){
                                 self.loadDD(self._link)                               
@@ -4462,6 +4683,21 @@ export class DImage extends DCont {
             }
             this.loadDD(self._link)
         };
+
+        this.loadSVG = function (str, color) {
+            let tt3=str
+            if(color){
+                let tt1=self.korectColor(str, self._svgColor);
+                let tt2=self.korectKey(tt1, self._svgColor,"stroke=");
+                tt3=self.korectKey(tt2, self._svgColor,"fill=");
+            }
+           
+   
+      
+            let blob = new Blob([tt3], {type: 'image/svg+xml'});
+            let url = URL.createObjectURL(blob);                          
+            self.loadDD(url) 
+        }        
 
 
         this.loadDD = function (_link) {
@@ -4539,6 +4775,7 @@ export class DImage extends DCont {
     get width() {
         return this._width;
     }
+
 
     set scalePic(value) {
         if (this._scalePic != value) {
@@ -4621,6 +4858,21 @@ export class DImage extends DCont {
     get height() {
         return this._height;
     }
+
+    set wh(value) {
+        if (this._wh != value) {
+            this._wh = value;
+            this._height = this._wh;
+            this.image.height = this._height; 
+            this._width = this._wh;
+            this.image.width = this._width; 
+            this.dragCanvas();
+        }
+    }
+    get wh() {
+        return this._wh;
+    }
+
 
     set link(value) {
         if (this._link != value) {
@@ -4723,7 +4975,7 @@ export class DLabel extends DCont {
             this.add(this.dCT1);
             this.add(this.dCT);
         };
-
+        this.metrics
         var dCt2=undefined;
         this.getTextWidth = function(_text, _font) {
             let strBold = this.bold == true ? 'bold ' : 'normal '
@@ -4736,8 +4988,9 @@ export class DLabel extends DCont {
             var canvas = dCt2// getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));    
             var context = canvas.getContext("2d", { willReadFrequently: true });
             context.font = font;
-            var metrics = context.measureText(text);
-            return metrics.width;
+            this.metrics = context.measureText(text);
+            
+            return this.metrics.width;
         }
         this.activMouse = false;
     }
@@ -5072,20 +5325,11 @@ export class DSlider extends DCont {
         };
 
         if (dcmParam.mobile == false) {
-            this.panel.div.addEventListener(
-                'mousedown',
-                self.mousedown.bind(this.panel)
-            );
-            this.pan.div.addEventListener(
-                'mousedown',
-                self.mousedown.bind(this.pan)
-            );
+            this.panel.div.addEventListener('mousedown', self.mousedown.bind(this.panel));
+            this.pan.div.addEventListener('mousedown',self.mousedown.bind(this.pan));
             this.pan.div.xz = true;
         } else {
-            this.panel.div.addEventListener(
-                'touchstart',
-                self.mousedown.bind(this)
-            );
+            this.panel.div.addEventListener('touchstart', self.mousedown.bind(this));
             this.pan.div.addEventListener(
                 'touchstart',
                 self.mousedown.bind(this)
@@ -5551,6 +5795,8 @@ export class DInput extends DCont {
             input.timeFun =1000 //задержка изменений =0 воще не дергаеться fun
             input.setNum(100)//При тыке заменяем числа input.bYY=true //вертикально false горизонтально
             input.bYY=true//по горизонтали или вертикали тоскаем
+            input.setEMail()//форма эмейла
+            input.animatColor("#ff0000",2222) //цвет текста по времени  
         `
         if (dcmParam == undefined) dcmParam = new DCM();
         dcmParam.add(this);
@@ -5568,6 +5814,7 @@ export class DInput extends DCont {
 
         this.funEnter = undefined;
 
+        
         
         this._activMouse = true;
         
@@ -5774,11 +6021,7 @@ export class DInput extends DCont {
 
         this.boolDrag=false
         this.setNum = function (okrug) {
-            this.okrug = okrug;
-           /* this.boolNum=true;
-            this.boolDrag=true;
-            this.actDown=true;*/
-
+            this.okrug = okrug;  
             if(okrug==0){
                 this.boolNum=false;
                 this.boolDrag=false;
@@ -5788,13 +6031,44 @@ export class DInput extends DCont {
                 this.boolNum=true;
                 this.boolDrag=true;
                 this.actDown=true;
-            }
-            /*if (dcmParam.mobile == false) {
-                this.object.addEventListener('mousedown', self.mousedown);
-            } else {
-                this.object.addEventListener('touchstart', self.mousedown);
-            }*/
+            }          
         };
+        
+        this.setEMail = function () {
+            this.text=''
+            this.object.type="email" 
+            this.object.id="email" 
+            this.object.pattern=".+@example\.com"
+        } 
+
+        this.tween
+        var color0={r:0, g:0, b:0}
+        var cc
+        this.animatColor = function (color, time) {
+
+            if(window.TWEEN==undefined)return
+            let c =dcmParam.parseColor(color)
+            let c1 =dcmParam.parseColor(this.colorText)
+
+           
+
+            if(this.tween==undefined){
+                this.tween=new TWEEN.Tween(color0);
+                this.tween.onUpdate(function(){
+              
+                    cc=dcmParam.compToHexArray([Math.round(color0.r),Math.round(color0.g),Math.round(color0.b) ])
+                    self.object.style.color = cc;
+                })
+            }
+            this.tween.stop()
+            color0.r=c.r;
+            color0.g=c.g;
+            color0.b=c.b;
+
+            this.tween.to({r:c1.r,g:c1.g,b:c1.b },time).start()
+
+        } 
+
 
 
 
@@ -5868,7 +6142,8 @@ export class DInput extends DCont {
 
     set actDown(value) {
         if (this._actDown != value) {
-            this._actDown = value;          
+            this._actDown = value;   
+               
             if(this._actDown==true){
                 if (dcmParam.mobile == false) {
                     this.object.addEventListener('mousedown', this.mousedown);
@@ -6626,7 +6901,15 @@ export class DBitmapData {
         this.arrRgba = [0, 0, 0, 0];
         // получить пиксель. x, y - позиция пикселя
         // возвращает масив [r,g,b,a]. при выходе за контекст [0, 0, 0, 0]
-        this.getPixel = function (x, y) {
+        
+        this.getPixel = function (_x, _y) {
+            let x=_x
+            let y=_y
+            if(x<0)x=0
+            if(x>this.imgData.width-1)x=this.imgData.width-1;   
+            if(y<0)y=0
+            if(y>this.imgData.height-1)y=this.imgData.height-1;    
+
             this.arrRgba[0] = this.imgData.data[
                 (y * this.imgData.width + x) * 4 + 0
             ];
@@ -7005,7 +7288,7 @@ export class DBitmapData {
         }
         this.blendColors = blendColors;
 
-
+        
         function resizeImageFile(b64, fun, _w, _h,_name, _boolB64) {            
             const img = new Image();
             img.onload = () => {
@@ -7990,6 +8273,8 @@ export function CtrlCV(cont) {
     });
 }
 
+
+/*
 export class DWindowS extends DCont {
     constructor(dCont, _x, _y, _text, _fun, _link) {
         super();
@@ -8273,7 +8558,7 @@ export class DWindowS extends DCont {
             } else {
                 this.textPlus = '';
             }
-            this.text = this._text;
+            this.text = this.textPlusthis._text;
         }
     }
     get hasMinimizeButton() {
@@ -8304,3 +8589,4 @@ export class DWindowS extends DCont {
     }
 }
 
+*/

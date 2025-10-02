@@ -47,7 +47,7 @@ export class DButtons extends DCont {
         this._activMouse = true;
         this._glowSah = 0;
         this._glowColor = '#000000';
-
+        this.downIndex=-1
         this._activeIndex = true;   
         this.arrAct = [];           
         this._tip=0; 
@@ -109,7 +109,7 @@ export class DButtons extends DCont {
 
 
         this.sob = function(){
-
+            self.downIndex=this.idArr
             if(self._activeIndex==false){
                 self.arrAct.length=0;      
                 if(this.color==self._color){
